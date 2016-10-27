@@ -61,7 +61,7 @@ class UserInterface1{
         case "Login":
             actionDelegate?.openLoginForm!();
         case "Post Strand":
-            updateInfoLabel(newText: "Tap wherever you want to post it", show: true);
+            updateInfoLabel(newText: "Tap wherever you want to post it", show: true, hideAfter: 0);
             self.tapToPost = true;
         default:
             toggleMenu();
@@ -83,7 +83,7 @@ class UserInterface1{
             print(tapPoint.x, "--", tapPoint.y);
             actionDelegate?.addStrandTapped!();
             self.tapToPost = false;
-            updateInfoLabel(newText: " ", show: false);
+            updateInfoLabel(newText: " ", show: false, hideAfter: 0);
         }else{
             //get strandinfo
         }
@@ -150,12 +150,18 @@ class UserInterface1{
     }
     
     //MARK: Update label contents
-    func updateInfoLabel(newText: String, show: Bool){
+    func updateInfoLabel(newText: String, show: Bool, hideAfter: Int){
         infoLabel.setTitle(newText, for: UIControlState());
         if(show == false){
             infoLabel.isHidden = true;
         }else{
             infoLabel.isHidden = false;
+        }
+        if(hideAfter != 0){
+            let timeToHide = DispatchTime.now() + .seconds(hideAfter)
+            DispatchQueue.main.asyncAfter(deadline: timeToHide, execute: {
+                self.infoLabel.isHidden = true;
+            })
         }
     }
     

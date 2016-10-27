@@ -158,7 +158,7 @@ class Scene{
         if(render==true){
             if (strands.count != 0) {
                 for var oldStrandID in 0...strands.count-1{
-                    strands[oldStrandID].removeFromParentNode()
+                    strands[oldStrandID].removeFromParentNode();
                 }
                 strands = [];
             }
@@ -167,11 +167,11 @@ class Scene{
         //render or move new strands
         var i = 0;
         for mPoint in mapPoints{
-            renderSingleStrand(renderID: i,mapPoint: mPoint, currMapPoint: currMapPoint, strandText: comments[0]["c_text"].rawString()!, render: render, addSceneManual: false);
+            renderSingleStrand(renderID: i,mapPoint: mPoint, currMapPoint: currMapPoint, strandText: comments[i][0]["c_text"].rawString()!, render: render, addSceneManual: false);
             //hide non-street visible strands
             for var hideID in toHideAsArr{
                 if (hideID == String(i)){
-                    //strands[i].isHidden = true;
+                    strands[i].isHidden = true;
                     break;
                 }else{
                     strands[i].isHidden = false;

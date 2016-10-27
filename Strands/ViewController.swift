@@ -116,6 +116,7 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate{
         map.updateSinglePin(coord: strandLocation);
         let firstCommentText = "YAYYYY POSTED> :) ";
         let strandMapPoint = MKMapPointForCoordinate(strandLocation.coordinate);
+        self.mapPoints.append(strandMapPoint);
         let currentMapPoint = MKMapPointForCoordinate(self.currentLocationGlobal.coordinate);
         self.scene.renderSingleStrand(renderID: 0, mapPoint: strandMapPoint, currMapPoint: currentMapPoint, strandText: firstCommentText, render: true, addSceneManual: true);
         strandNetwork.addStrand(socket: self.networkWebSocket, strandLocation: strandLocation,strandFirstPost: firstCommentText, onSuccess: {(success) in
@@ -123,7 +124,7 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate{
             if(success == true){
                 responseMessage = "Successfully posted new strand!";
             }
-            self.userInterface.updateInfoLabel(newText: responseMessage, show: true);
+            self.userInterface.updateInfoLabel(newText: responseMessage, show: true, hideAfter: 4);
         });
     }
     
@@ -151,6 +152,7 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate{
         //Initilize UI component
         userInterface.renderAll(view: self.view);
         userInterface.actionDelegate = self;
+        userInterface.updateInfoLabel(newText: "Please calibrate your phone by twisting it around", show: true, hideAfter: 4);
         
         //Initilize Motion Handler
         motionManager.deviceMotionUpdateInterval = 1.0 / 60.0;
