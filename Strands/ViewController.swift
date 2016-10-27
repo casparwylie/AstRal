@@ -12,6 +12,7 @@ import Darwin
 import CoreMotion
 import MapKit
 import Starscream
+import SwiftyJSON
 
 class ViewController: UIViewController, LocationDelegate, UIActionDelegate{
     
@@ -23,22 +24,23 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate{
     var userInterface = UserInterface1();
     var motionManager = CMMotionManager();
     var map = Map();
-    var network = Network();
+    var strandNetwork = StrandNetwork();
+    var networkSocket = NetworkSocketHandler();
     
     //MARK: general data
     var reRenderStrands = true;
     var firstRender = true;
     var thresholdDistRerender = 25.0;
     var oldRenderPosition: CLLocation!;
+    var networkWebSocket: WebSocket!;
+    var currentLocationGlobal: CLLocation!;
    
     var mapPoints: [MKMapPoint] = [];
+    var strandComments: JSON = [];
     
     //MARK: UI Action definitions
     
-    func updateLabel(text: String){
-        userInterface.updateLabel(labelID: 0, newText: text);
-    }
-    
+
     func toggleMap() {
         if self.view.viewWithTag(3)?.isHidden == false {
             self.view.viewWithTag(3)?.isHidden = true;
@@ -52,7 +54,7 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate{
     
     //MARK: Movement response method
     func updateAtmosphere(currentLocation: CLLocation, currentHeading: CLHeading){
-        
+        self.currentLocationGlobal = currentLocation;
         let currMapPoint = MKMapPointForCoordinate(currentLocation.coordinate);
         let pxVals = self.map.collectPXfromMapPoints(mapPoints: mapPoints, currMapPoint: currMapPoint);
         var currPointPX = pxVals.currPointPX;
@@ -67,7 +69,7 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate{
             
             //rerender or move strands
             self.scene.renderStrands(mapPoints:self.mapPoints, currMapPoint: currMapPoint,
-                                     render: self.reRenderStrands, currentHeading: currentHeading, toHide: toHideAsSTR!);
+                                     render: self.reRenderStrands, currentHeading: currentHeading, toHide: toHideAsSTR!, comments: self.strandComments);
             
             if(self.reRenderStrands==true){
                 self.scene.runScene();
@@ -87,17 +89,18 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate{
                 }
                 
                 //request new strand data from network
-                self.network.getRegionData(currLocation: currentLocation, onRecieveData: {(recievedCoordData) in
+                self.strandNetwork.getRegionData(socket: self.networkWebSocket, currLocation: currentLocation, onReceiveData: {(receivedCoordData, strandComments) in
                     
                     //change data to newly received
-                    self.mapPoints = self.map.getCoordsAsMapPoints(coords: recievedCoordData);
-                    self.map.updatePins(coords: recievedCoordData);
+                    self.mapPoints = self.map.getCoordsAsMapPoints(coords: receivedCoordData);
+                    self.map.updatePins(coords: receivedCoordData);
                     
                     //reset area threshold handlers
                     self.reRenderStrands = true;
                     self.oldRenderPosition = currentLocation;
+                    self.strandComments = strandComments;
                     self.pCount += 1;
-                    self.userInterface.updateLabel(labelID: 0, newText: "PASSED 25. New render."+String(recievedCoordData.count)+", ID: "+String(self.pCount));
+
                 });
 
             }else{
@@ -105,6 +108,23 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate{
             }
         });
         print(self.reRenderStrands);
+    }
+    
+  
+    func addStrandTapped(){
+        let strandLocation = location.getPolarCoords(distance: 5.0);
+        map.updateSinglePin(coord: strandLocation);
+        let firstCommentText = "YAYYYY POSTED> :) ";
+        let strandMapPoint = MKMapPointForCoordinate(strandLocation.coordinate);
+        let currentMapPoint = MKMapPointForCoordinate(self.currentLocationGlobal.coordinate);
+        self.scene.renderSingleStrand(renderID: 0, mapPoint: strandMapPoint, currMapPoint: currentMapPoint, strandText: firstCommentText, render: true, addSceneManual: true);
+        strandNetwork.addStrand(socket: self.networkWebSocket, strandLocation: strandLocation,strandFirstPost: firstCommentText, onSuccess: {(success) in
+            var responseMessage = "Unknown Error. Please try again later.";
+            if(success == true){
+                responseMessage = "Successfully posted new strand!";
+            }
+            self.userInterface.updateInfoLabel(newText: responseMessage, show: true);
+        });
     }
     
     
@@ -147,7 +167,7 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate{
         });
         
         //Initilize Network socket component
-        network.connectWebSocket();
+        networkWebSocket = networkSocket.connectWebSocket();
         
         
     

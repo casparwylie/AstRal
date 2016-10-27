@@ -16,6 +16,7 @@ import Foundation
 import SceneKit
 import CoreMotion
 import MapKit
+import SwiftyJSON
 
 class Scene{
     
@@ -75,15 +76,14 @@ class Scene{
         return (x: pX, y: pY);
     }
     
-    func DAEtoSCNNodeWithText(filepath:String) -> SCNNode {
+    func DAEtoSCNNodeWithText(filepath:String, commentText: String) -> SCNNode {
         
         //setup text nodes
         let singNode = SCNNode();
         let localScene = SCNScene(named: filepath);
         let singNodeArray = localScene!.rootNode.childNodes;
-        let nodeTextString = "Hello, and welcome to a Strand Sign Post prototype, version 1.0. A geographic social network for anyone. Information and opinion is everywhere, and now you can see it anywhere. Created By Caspar Wylie, Founded By Arthur James";
-        let textRenderFront = SCNText(string: nodeTextString, extrusionDepth:1);
-        let textRenderBack = SCNText(string: nodeTextString, extrusionDepth:1);
+        let textRenderFront = SCNText(string: commentText, extrusionDepth:1);
+        let textRenderBack = SCNText(string: commentText, extrusionDepth:1);
         
         //attribute option setting
         let textContainerFrame = CGRect(x: 0,y: 0, width: 270, height: 100);
@@ -123,9 +123,34 @@ class Scene{
         return singNode;
     }
     
+    func renderSingleStrand(renderID: Int, mapPoint: MKMapPoint, currMapPoint: MKMapPoint, strandText: String, render: Bool, addSceneManual: Bool){
+        
+        var strandCoord = (x: mapPoint.x - currMapPoint.x, y: mapPoint.y - currMapPoint.y);
+        strandCoord = rotateAroundPoint(pointXY: strandCoord, angle: -90);
+        
+        if(render==true){
+            //initiate strands
+            let strand = DAEtoSCNNodeWithText(filepath: "strandpost.dae", commentText: strandText);
+            strand.position = SCNVector3(x: Float(strandCoord.x), y: 0, z:  Float(strandCoord.y));
+            strands.append(strand);
+            
+            
+            if(addSceneManual == true){
+                self.scene.rootNode.addChildNode(strands.last!);
+            }
+        }else{
+            //update strand position
+            let newPos = SCNVector3(x: Float(strandCoord.x), y: 0.0, z:  Float(strandCoord.y));
+            let moveToAction = SCNAction.move(to: newPos, duration: 1);
+            strands[renderID].runAction(moveToAction);
+        }
+
+        
+    }
     
     //MARK: render or update strand within 3D atmosphere
-    func renderStrands(mapPoints: [MKMapPoint], currMapPoint: MKMapPoint, render: Bool, currentHeading: CLHeading, toHide: String){
+    func renderStrands(mapPoints: [MKMapPoint], currMapPoint: MKMapPoint,
+                       render: Bool, currentHeading: CLHeading, toHide: String, comments: JSON){
         
         let toHideAsArr = toHide.components(separatedBy: ",");
         
@@ -142,25 +167,11 @@ class Scene{
         //render or move new strands
         var i = 0;
         for mPoint in mapPoints{
-            var strandCoord = (x: mPoint.x - currMapPoint.x, y: mPoint.y - currMapPoint.y);
-                strandCoord = rotateAroundPoint(pointXY: strandCoord, angle: -90);
-            if(render==true){
-                //initiate strands
-                let strand = DAEtoSCNNodeWithText(filepath: "strandpost.dae");
-                strand.position = SCNVector3(x: Float(strandCoord.x), y: 0, z:  Float(strandCoord.y));
-                strands.append(strand);
-                
-            }else{
-                //update strand position
-                let newPos = SCNVector3(x: Float(strandCoord.x), y: 0.0, z:  Float(strandCoord.y));
-                let moveToAction = SCNAction.move(to: newPos, duration: 1);
-                strands[i].runAction(moveToAction);
-            }
-            
+            renderSingleStrand(renderID: i,mapPoint: mPoint, currMapPoint: currMapPoint, strandText: comments[0]["c_text"].rawString()!, render: render, addSceneManual: false);
             //hide non-street visible strands
             for var hideID in toHideAsArr{
                 if (hideID == String(i)){
-                    strands[i].isHidden = true;
+                    //strands[i].isHidden = true;
                     break;
                 }else{
                     strands[i].isHidden = false;

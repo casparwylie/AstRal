@@ -42,16 +42,20 @@ class Map: NSObject, MKMapViewDelegate{
     }
     
     //MARK: update pins that represent strand
+    
+    func updateSinglePin(coord: CLLocation){
+        let CLLCoordType = CLLocationCoordinate2D(latitude: coord.coordinate.latitude,
+                                                  longitude: coord.coordinate.longitude);
+        let pin = MKPointAnnotation();
+        pin.coordinate = CLLCoordType;
+        mapView.addAnnotation(pin);
+    }
+    
     func updatePins(coords: [CLLocation]){
         mapView.removeAnnotations(mapView.annotations);
         for coord in coords{
-            let CLLCoordType = CLLocationCoordinate2D(latitude: coord.coordinate.latitude,
-                                                      longitude: coord.coordinate.longitude);
-            let pin = MKPointAnnotation();
-            pin.coordinate = CLLCoordType;
-            mapView.addAnnotation(pin);
+            updateSinglePin(coord: coord);
         }
-        
     }
     
      //MARK: get map view snap shot for openCV wrapper

@@ -18,7 +18,6 @@ import CoreLocation
 
 //delegate design for viewController communication
 protocol LocationDelegate {
-    func updateLabel(text: String);
     func updateAtmosphere(currentLocation: CLLocation, currentHeading: CLHeading);
 }
 
@@ -51,6 +50,23 @@ class Location: NSObject, CLLocationManagerDelegate{
         }
     }
     
+    
+    func getPolarCoords(distance: Double) ->CLLocation{
+        
+        let earthRadius = 6371000.0;
+        let bearingRadians = (currentHeading?.trueHeading)! * (M_PI / 180);
+        let distanceByER = Double(distance/earthRadius);
+        
+        let latitude = (currentLocation?.coordinate.latitude)!  * (M_PI / 180);
+        let longitude  = (currentLocation?.coordinate.longitude)!  * (M_PI / 180);
+        
+        let newLatitude = asin(sin(latitude)*cos(distanceByER) + cos(latitude)*sin(distanceByER)*cos(bearingRadians));
+        let newLongitude = longitude + atan2(sin(bearingRadians)*sin(distanceByER)*cos(latitude),
+                                             cos(distanceByER)-sin(latitude)*sin(newLatitude));
+        
+        return CLLocation(latitude: newLatitude * (180 / M_PI), longitude: newLongitude * (180 / M_PI));
+        
+    }
     
     //MARK: Automatic delegation call on heading update, update heading data.
     @objc func locationManager(_ manager: CLLocationManager, didUpdateHeading newHeading: CLHeading){
