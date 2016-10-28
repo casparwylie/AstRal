@@ -51,10 +51,12 @@ class Location: NSObject, CLLocationManagerDelegate{
     }
     
     
-    func getPolarCoords(distance: Double) ->CLLocation{
+    func getPolarCoords(distance: Double, bearingDiff: Double) ->CLLocation{
         
         let earthRadius = 6371000.0;
-        let bearingRadians = (currentHeading?.trueHeading)! * (M_PI / 180);
+        let bearingDegrees = (currentHeading?.trueHeading)! - bearingDiff/2.0;
+        let bearingRadians = bearingDegrees * (M_PI / 180);
+        print("cd:",bearingDegrees);
         let distanceByER = Double(distance/earthRadius);
         
         let latitude = (currentLocation?.coordinate.latitude)!  * (M_PI / 180);

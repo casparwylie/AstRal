@@ -16,9 +16,17 @@ import Darwin
  
  */
 
+
+@objc protocol mapActionDelegate {
+    @objc optional func renderTempStrandFromMap(mapTapCoord: CLLocationCoordinate2D);
+}
+
 class Map: NSObject, MKMapViewDelegate{
     
     var mapView = MKMapView();
+    var mapActionDelegate: mapActionDelegate?;
+    var tapMapToPost = false;
+    var tempPin: MKPointAnnotation!;
     
     //MARK: setup map
     func renderMap(view: UIView){
@@ -26,10 +34,11 @@ class Map: NSObject, MKMapViewDelegate{
         mapView.mapType = MKMapType.standard;
         mapView.isZoomEnabled = false;
         mapView.isScrollEnabled = false;
-        mapView.isUserInteractionEnabled = false;
+        //mapView.isUserInteractionEnabled = false;
         mapView.delegate = self;
         mapView.tag = 3;
         mapView.showsUserLocation = true;
+        addStrandMapTapRecognizer();
         view.addSubview(mapView);
     }
     
@@ -41,20 +50,52 @@ class Map: NSObject, MKMapViewDelegate{
         return coordinateRegion;
     }
     
+    //MARK: add strand map tap
+    func addStrandMapTapRecognizer(){
+        let tapRec: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(wrapTappedMap));
+        tapRec.numberOfTapsRequired = 1;
+        mapView.addGestureRecognizer(tapRec);
+        
+    }
+    
+    @objc func wrapTappedMap(touch: UITapGestureRecognizer){
+        let tapPoint = touch.location(in: mapView);
+        let tapCoords = mapView.convert(tapPoint, toCoordinateFrom: mapView);
+        if(self.tapMapToPost == true){
+            mapActionDelegate?.renderTempStrandFromMap!(mapTapCoord: tapCoords);
+        }else{
+            //get strandinfo
+        }
+    }
+    
+    func cancelTempStrand(){
+        mapView.removeAnnotation(tempPin);
+    }
+    
     //MARK: update pins that represent strand
     
-    func updateSinglePin(coord: CLLocation){
+    func updateSinglePin(coord: CLLocation, temp: Bool){
         let CLLCoordType = CLLocationCoordinate2D(latitude: coord.coordinate.latitude,
                                                   longitude: coord.coordinate.longitude);
-        let pin = MKPointAnnotation();
-        pin.coordinate = CLLCoordType;
-        mapView.addAnnotation(pin);
+        
+        if(temp == true){
+            if(tempPin != nil){
+                mapView.removeAnnotation(tempPin);
+            }
+            tempPin = MKPointAnnotation();
+            tempPin?.coordinate = CLLCoordType;
+            mapView.addAnnotation(tempPin);
+        }else{
+            let pin = MKPointAnnotation();
+            pin.coordinate = CLLCoordType;
+            mapView.addAnnotation(pin);
+        }
     }
     
     func updatePins(coords: [CLLocation]){
         mapView.removeAnnotations(mapView.annotations);
         for coord in coords{
-            updateSinglePin(coord: coord);
+            updateSinglePin(coord: coord, temp: false);
         }
     }
     

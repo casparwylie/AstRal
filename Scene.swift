@@ -23,8 +23,8 @@ class Scene{
     //MARK: Node initiation
     let lightNode = SCNNode();
     let cameraNode = SCNNode();
-    var cubeNode: SCNNode!;
     let scene = SCNScene();
+    var tempStrandNode: SCNNode!;
     var strands: [SCNNode] = [];
     
     //MARK: Add scene view to view
@@ -123,34 +123,48 @@ class Scene{
         return singNode;
     }
     
-    func renderSingleStrand(renderID: Int, mapPoint: MKMapPoint, currMapPoint: MKMapPoint, strandText: String, render: Bool, addSceneManual: Bool){
+    func renderSingleStrand(renderID: Int, mapPoint: MKMapPoint, currMapPoint: MKMapPoint, strandText: String, render: Bool, tempStrand: Bool, addSceneManual: Bool){
         
         var strandCoord = (x: mapPoint.x - currMapPoint.x, y: mapPoint.y - currMapPoint.y);
         strandCoord = rotateAroundPoint(pointXY: strandCoord, angle: -90);
         
         if(render==true){
             //initiate strands
-            let strand = DAEtoSCNNodeWithText(filepath: "strandpost.dae", commentText: strandText);
-            strand.position = SCNVector3(x: Float(strandCoord.x), y: 0, z:  Float(strandCoord.y));
-            strands.append(strand);
             
-            
-            if(addSceneManual == true){
-                self.scene.rootNode.addChildNode(strands.last!);
+            if(tempStrand == false){
+                let strand = DAEtoSCNNodeWithText(filepath: "strandpost.dae", commentText: strandText);
+                strand.position = SCNVector3(x: Float(strandCoord.x), y: 0, z:  Float(strandCoord.y));
+                strands.append(strand);
+                if(addSceneManual == true){
+                    self.scene.rootNode.addChildNode(strands.last!);
+                }
+            }else{
+                tempStrandNode = DAEtoSCNNodeWithText(filepath: "strandpost.dae", commentText: strandText);
+                tempStrandNode.position = SCNVector3(x: Float(strandCoord.x), y: 0, z:  Float(strandCoord.y));
+                self.scene.rootNode.addChildNode(tempStrandNode);
             }
+            
         }else{
             //update strand position
             let newPos = SCNVector3(x: Float(strandCoord.x), y: 0.0, z:  Float(strandCoord.y));
-            let moveToAction = SCNAction.move(to: newPos, duration: 1);
-            strands[renderID].runAction(moveToAction);
+            if(tempStrand == false){
+                let moveToAction = SCNAction.move(to: newPos, duration: 1);
+                strands[renderID].runAction(moveToAction);
+            }else{
+                tempStrandNode.position = newPos;
+            }
         }
 
         
     }
     
+    func removeTempStrand(){
+        tempStrandNode.removeFromParentNode();
+    }
+    
     //MARK: render or update strand within 3D atmosphere
     func renderStrands(mapPoints: [MKMapPoint], currMapPoint: MKMapPoint,
-                       render: Bool, currentHeading: CLHeading, toHide: String, comments: JSON){
+                       render: Bool, currentHeading: CLHeading, toHide: String, comments: JSON,addSceneManual: Bool){
         
         let toHideAsArr = toHide.components(separatedBy: ",");
         
@@ -167,11 +181,11 @@ class Scene{
         //render or move new strands
         var i = 0;
         for mPoint in mapPoints{
-            renderSingleStrand(renderID: i,mapPoint: mPoint, currMapPoint: currMapPoint, strandText: comments[i][0]["c_text"].rawString()!, render: render, addSceneManual: false);
+            renderSingleStrand(renderID: i,mapPoint: mPoint, currMapPoint: currMapPoint, strandText: comments[i][0]["c_text"].rawString()!, render: render, tempStrand: false,addSceneManual: addSceneManual);
             //hide non-street visible strands
             for var hideID in toHideAsArr{
                 if (hideID == String(i)){
-                    strands[i].isHidden = true;
+                    //strands[i].isHidden = true;
                     break;
                 }else{
                     strands[i].isHidden = false;

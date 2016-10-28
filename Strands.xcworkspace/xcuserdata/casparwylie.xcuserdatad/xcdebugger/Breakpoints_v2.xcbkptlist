@@ -42,11 +42,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Strands/ViewController.swift"
-            timestampString = "499277023.750157"
+            timestampString = "499361799.458891"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "92"
-            endingLineNumber = "92"
+            startingLineNumber = "94"
+            endingLineNumber = "94"
             landmarkName = "updateAtmosphere(currentLocation:currentHeading:)"
             landmarkType = "7">
             <Locations>
@@ -122,11 +122,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Strands/ViewController.swift"
-            timestampString = "499277023.750157"
+            timestampString = "499361799.458891"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "95"
-            endingLineNumber = "95"
+            startingLineNumber = "97"
+            endingLineNumber = "97"
             landmarkName = "updateAtmosphere(currentLocation:currentHeading:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -218,11 +218,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "UserInterface.swift"
-            timestampString = "499278373.061059"
+            timestampString = "499362590.76171"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "118"
-            endingLineNumber = "118"
+            startingLineNumber = "213"
+            endingLineNumber = "213"
             landmarkName = "renderMenu()"
             landmarkType = "7">
          </BreakpointContent>
@@ -234,12 +234,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Strands/ViewController.swift"
-            timestampString = "499281124.372695"
+            timestampString = "499361799.458891"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "118"
-            endingLineNumber = "118"
-            landmarkName = "addStrandTapped()"
+            startingLineNumber = "179"
+            endingLineNumber = "179"
+            landmarkName = "addStrandReady(comment:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -265,13 +265,29 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Scene.swift"
-            timestampString = "499277676.915731"
+            filePath = "Map.swift"
+            timestampString = "499355037.929006"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "136"
-            endingLineNumber = "136"
-            landmarkName = "renderSingleStrand(renderID:mapPoint:currMapPoint:strandText:render:addSceneManual:)"
+            startingLineNumber = "83"
+            endingLineNumber = "83"
+            landmarkName = "updateSinglePin(coord:temp:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "UserInterface.swift"
+            timestampString = "499362590.76171"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "141"
+            endingLineNumber = "141"
+            landmarkName = "renderPostCommentForm()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

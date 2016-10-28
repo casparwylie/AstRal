@@ -14,7 +14,7 @@ import MapKit
 import Starscream
 import SwiftyJSON
 
-class ViewController: UIViewController, LocationDelegate, UIActionDelegate{
+class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapActionDelegate{
     
     //MARK: Component allocation
     var misc = Misc();
@@ -41,8 +41,10 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate{
     //MARK: UI Action definitions
     
 
-    func toggleMap() {
-        if self.view.viewWithTag(3)?.isHidden == false {
+    func toggleMap(isAddingStrand: Bool) {
+        map.tapMapToPost = isAddingStrand;
+        if self.view.viewWithTag(3)?.isHidden == false && isAddingStrand == false {
+            
             self.view.viewWithTag(3)?.isHidden = true;
         }else{
             self.view.viewWithTag(3)?.isHidden = false;
@@ -69,7 +71,7 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate{
             
             //rerender or move strands
             self.scene.renderStrands(mapPoints:self.mapPoints, currMapPoint: currMapPoint,
-                                     render: self.reRenderStrands, currentHeading: currentHeading, toHide: toHideAsSTR!, comments: self.strandComments);
+                                     render: self.reRenderStrands, currentHeading: currentHeading, toHide: toHideAsSTR!, comments: self.strandComments, addSceneManual: false);
             
             if(self.reRenderStrands==true){
                 self.scene.runScene();
@@ -110,16 +112,79 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate{
         print(self.reRenderStrands);
     }
     
-  
-    func addStrandTapped(){
-        let strandLocation = location.getPolarCoords(distance: 5.0);
-        map.updateSinglePin(coord: strandLocation);
-        let firstCommentText = "YAYYYY POSTED> :) ";
+    //MARK: new strand setting and rendering request handlers
+    var addTempFirst = true;
+    var phonePitch = 0;
+    var newStrandDistMetres = 0.0;
+    var newStrandDegDiff = 0.0;
+    var latestDesiredStrandLocation: CLLocation!;
+    
+    func renderTempStrandFromMap(mapTapCoord: CLLocationCoordinate2D){
+        let strandLocation = CLLocation(latitude: mapTapCoord.latitude, longitude: mapTapCoord.longitude);
+        addStrandTemp(strandLocation: strandLocation);
+    }
+    
+    func renderTempStrandFromUI(tapX: Int, tapY: Int){
+        newStrandDistMetres = 0.0;
+        
+        let hozPx = 230;
+        
+        print(tapX, tapY);
+        var yPos = tapY;
+        if(tapY < hozPx){
+            yPos = hozPx;
+        }
+        
+        let acc1 = 500.0;
+        let acc2 = 15.0;
+        let acc3 = acc1/acc2 - Double(self.phonePitch-10);
+        print("pp", self.phonePitch);
+        newStrandDistMetres = (acc2-(Double(yPos)/acc3))*5;
+        if(newStrandDistMetres < 0){
+            newStrandDistMetres = 3;
+        }
+        print("b",newStrandDistMetres);
+        
+        let pxMidDiff = 160.0 - Double(tapX);
+        let step = 320.0/54.0;
+        self.newStrandDegDiff = pxMidDiff/step;
+        let strandLocation = location.getPolarCoords(distance: newStrandDistMetres, bearingDiff: self.newStrandDegDiff);
+    
+        addStrandTemp(strandLocation: strandLocation);
+    }
+    func addStrandTemp(strandLocation: CLLocation){
+        
+        self.latestDesiredStrandLocation = strandLocation;
+        self.userInterface.showTapFinishedOptions();
         let strandMapPoint = MKMapPointForCoordinate(strandLocation.coordinate);
+        let currentMapPoint = MKMapPointForCoordinate(self.currentLocationGlobal.coordinate);
+        
+        //render temp strand as possible as position
+        map.updateSinglePin(coord: strandLocation, temp: true);
+        self.scene.renderSingleStrand(renderID: 0, mapPoint: strandMapPoint, currMapPoint: currentMapPoint, strandText: " ", render: self.addTempFirst, tempStrand: true, addSceneManual: false);
+        self.addTempFirst = false;
+
+    }
+    
+    func cancelNewStrand() {
+        self.scene.removeTempStrand();
+        self.map.cancelTempStrand();
+        self.addTempFirst = true;
+    }
+  
+    func addStrandReady(comment: String){
+        
+        self.addTempFirst = true;
+        map.updateSinglePin(coord: self.latestDesiredStrandLocation, temp: false);
+        let strandMapPoint = MKMapPointForCoordinate(self.latestDesiredStrandLocation.coordinate);
         self.mapPoints.append(strandMapPoint);
         let currentMapPoint = MKMapPointForCoordinate(self.currentLocationGlobal.coordinate);
-        self.scene.renderSingleStrand(renderID: 0, mapPoint: strandMapPoint, currMapPoint: currentMapPoint, strandText: firstCommentText, render: true, addSceneManual: true);
-        strandNetwork.addStrand(socket: self.networkWebSocket, strandLocation: strandLocation,strandFirstPost: firstCommentText, onSuccess: {(success) in
+        self.scene.removeTempStrand();
+        
+        //render temp strand with text
+        self.scene.renderSingleStrand(renderID: 0, mapPoint: strandMapPoint, currMapPoint: currentMapPoint, strandText: comment, render: true, tempStrand: false, addSceneManual: true);
+        
+        strandNetwork.addStrand(socket: self.networkWebSocket, strandLocation: self.latestDesiredStrandLocation,strandFirstPost: comment, onSuccess: {(success) in
             var responseMessage = "Unknown Error. Please try again later.";
             if(success == true){
                 responseMessage = "Successfully posted new strand!";
@@ -146,7 +211,7 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate{
         
         //Initilize Map component
         map.renderMap(view: self.view);
-        
+        map.mapActionDelegate = self;
         self.view.viewWithTag(3)?.isHidden = true;
         
         //Initilize UI component
@@ -162,6 +227,7 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate{
             withHandler: {
                 (gyroData: CMDeviceMotion?, NSError) ->Void in
                 let mData: CMAttitude = gyroData!.attitude;
+                self.phonePitch = 90 - Int(mData.pitch * (180 / M_PI));
                 self.scene.rotateCamera(gyroData: mData);
                 if(NSError != nil){
                     print("\(NSError)");
