@@ -69,7 +69,9 @@ class Map: NSObject, MKMapViewDelegate{
     }
     
     func cancelTempStrand(){
-        mapView.removeAnnotation(tempPin);
+        if(tempPin != nil){
+            mapView.removeAnnotation(tempPin);
+        }
     }
     
     //MARK: update pins that represent strand

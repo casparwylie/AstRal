@@ -38,7 +38,7 @@ class Location: NSObject, CLLocationManagerDelegate{
             CLLocationManager.authorizationStatus() == CLAuthorizationStatus.authorizedWhenInUse){
             
             //Location header data
-            locManager.distanceFilter = 1;
+            locManager.distanceFilter = 3;
             locManager.desiredAccuracy = kCLLocationAccuracyBest;
             locManager.startUpdatingLocation();
             //todo : check headingAvaliable

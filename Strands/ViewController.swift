@@ -26,9 +26,11 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
     var map = Map();
     var strandNetwork = StrandNetwork();
     var networkSocket = NetworkSocketHandler();
+    var userNetwork = UserNetwork();
     
     //MARK: general data
     var reRenderStrands = true;
+    var loggedinUserData = (id: 0, username: "Unknown", fullname: "Unknown", email: "Unknown");
     var firstRender = true;
     var thresholdDistRerender = 25.0;
     var oldRenderPosition: CLLocation!;
@@ -138,12 +140,11 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
         let acc1 = 500.0;
         let acc2 = 15.0;
         let acc3 = acc1/acc2 - Double(self.phonePitch-10);
-        print("pp", self.phonePitch);
+
         newStrandDistMetres = (acc2-(Double(yPos)/acc3))*5;
         if(newStrandDistMetres < 0){
             newStrandDistMetres = 3;
         }
-        print("b",newStrandDistMetres);
         
         let pxMidDiff = 160.0 - Double(tapX);
         let step = 320.0/54.0;
@@ -161,7 +162,7 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
         
         //render temp strand as possible as position
         map.updateSinglePin(coord: strandLocation, temp: true);
-        self.scene.renderSingleStrand(renderID: 0, mapPoint: strandMapPoint, currMapPoint: currentMapPoint, strandText: " ", render: self.addTempFirst, tempStrand: true, addSceneManual: false);
+        self.scene.renderSingleStrand(renderID: 0, mapPoint: strandMapPoint, currMapPoint: currentMapPoint, strandDisplayInfo: (" ", " "), render: self.addTempFirst, tempStrand: true, addSceneManual: false);
         self.addTempFirst = false;
 
     }
@@ -182,9 +183,10 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
         self.scene.removeTempStrand();
         
         //render temp strand with text
-        self.scene.renderSingleStrand(renderID: 0, mapPoint: strandMapPoint, currMapPoint: currentMapPoint, strandText: comment, render: true, tempStrand: false, addSceneManual: true);
+        self.scene.renderSingleStrand(renderID: 0, mapPoint: strandMapPoint, currMapPoint: currentMapPoint, strandDisplayInfo: (comment, self.loggedinUserData.username), render: true, tempStrand: false, addSceneManual: true);
         
-        strandNetwork.addStrand(socket: self.networkWebSocket, strandLocation: self.latestDesiredStrandLocation,strandFirstPost: comment, onSuccess: {(success) in
+        let strandInfo = (comment: comment, author: self.loggedinUserData.username, userID: self.loggedinUserData.id);
+        strandNetwork.addStrand(socket: self.networkWebSocket, strandLocation: self.latestDesiredStrandLocation,strandDisplayInfo: strandInfo, onSuccess: {(success) in
             var responseMessage = "Unknown Error. Please try again later.";
             if(success == true){
                 responseMessage = "Successfully posted new strand!";
@@ -193,6 +195,36 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
         });
     }
     
+    func loginRequest(username: String, password: String) {
+        userNetwork.loginUserRequest(socket: self.networkWebSocket, username: username, password: password, onLoginResponse: {(userID, fullname, email, username)
+            in
+            var responseMessage = "Incorrect username or password.";
+            if(userID>0){
+                self.userInterface.hideAnyViews();
+                self.userInterface.renderMenu(loggedin: true);
+                self.loggedinUserData.id = userID;
+                self.loggedinUserData.username = username;
+                self.loggedinUserData.fullname = fullname;
+                self.loggedinUserData.email = email;
+                responseMessage = "Welcome " + fullname.components(separatedBy: " ")[0] + "!";
+            }
+            self.userInterface.updateInfoLabel(newText: responseMessage, show: true, hideAfter: 5);
+        });
+    }
+    
+    func signUpRequest(username: String, password: String, fullname: String, email: String) {
+        userNetwork.signUpUserRequest(socket: self.networkWebSocket, username: username, password: password, fullname: fullname, email: email, onSignUpResponse: {(success, errorMsg)
+            in
+            var responseMessage: String!;
+            if(success==true){
+                self.userInterface.hideAnyViews();
+                responseMessage = "Successfully signed up. You can login now!";
+            }else{
+                responseMessage = errorMsg;
+            }
+            self.userInterface.updateInfoLabel(newText: responseMessage, show: true, hideAfter: 5);
+        });
+    }
     
     //MARK: Main stem
     override func viewDidLoad() {

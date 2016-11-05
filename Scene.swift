@@ -76,14 +76,16 @@ class Scene{
         return (x: pX, y: pY);
     }
     
-    func DAEtoSCNNodeWithText(filepath:String, commentText: String) -> SCNNode {
+    func DAEtoSCNNodeWithText(filepath:String, strandDisplayInfo: (comment: String, author: String)) -> SCNNode {
         
         //setup text nodes
         let singNode = SCNNode();
         let localScene = SCNScene(named: filepath);
         let singNodeArray = localScene!.rootNode.childNodes;
-        let textRenderFront = SCNText(string: commentText, extrusionDepth:1);
-        let textRenderBack = SCNText(string: commentText, extrusionDepth:1);
+        let midText = ((strandDisplayInfo.author != " ") ? " \n\n By " : "");
+        let displayText = strandDisplayInfo.comment + midText + strandDisplayInfo.author;
+        let textRenderFront = SCNText(string: displayText, extrusionDepth:1);
+        let textRenderBack = SCNText(string: displayText, extrusionDepth:1);
         
         //attribute option setting
         let textContainerFrame = CGRect(x: 0,y: 0, width: 270, height: 100);
@@ -123,7 +125,7 @@ class Scene{
         return singNode;
     }
     
-    func renderSingleStrand(renderID: Int, mapPoint: MKMapPoint, currMapPoint: MKMapPoint, strandText: String, render: Bool, tempStrand: Bool, addSceneManual: Bool){
+    func renderSingleStrand(renderID: Int, mapPoint: MKMapPoint, currMapPoint: MKMapPoint, strandDisplayInfo: (String, String), render: Bool, tempStrand: Bool, addSceneManual: Bool){
         
         var strandCoord = (x: mapPoint.x - currMapPoint.x, y: mapPoint.y - currMapPoint.y);
         strandCoord = rotateAroundPoint(pointXY: strandCoord, angle: -90);
@@ -132,14 +134,14 @@ class Scene{
             //initiate strands
             
             if(tempStrand == false){
-                let strand = DAEtoSCNNodeWithText(filepath: "strandpost.dae", commentText: strandText);
+                let strand = DAEtoSCNNodeWithText(filepath: "strandpost.dae", strandDisplayInfo: strandDisplayInfo);
                 strand.position = SCNVector3(x: Float(strandCoord.x), y: 0, z:  Float(strandCoord.y));
                 strands.append(strand);
                 if(addSceneManual == true){
                     self.scene.rootNode.addChildNode(strands.last!);
                 }
             }else{
-                tempStrandNode = DAEtoSCNNodeWithText(filepath: "strandpost.dae", commentText: strandText);
+                tempStrandNode = DAEtoSCNNodeWithText(filepath: "strandpost.dae", strandDisplayInfo: strandDisplayInfo);
                 tempStrandNode.position = SCNVector3(x: Float(strandCoord.x), y: 0, z:  Float(strandCoord.y));
                 self.scene.rootNode.addChildNode(tempStrandNode);
             }
@@ -159,7 +161,7 @@ class Scene{
     }
     
     func removeTempStrand(){
-        tempStrandNode.removeFromParentNode();
+        tempStrandNode?.removeFromParentNode();
     }
     
     //MARK: render or update strand within 3D atmosphere
@@ -181,7 +183,9 @@ class Scene{
         //render or move new strands
         var i = 0;
         for mPoint in mapPoints{
-            renderSingleStrand(renderID: i,mapPoint: mPoint, currMapPoint: currMapPoint, strandText: comments[i][0]["c_text"].rawString()!, render: render, tempStrand: false,addSceneManual: addSceneManual);
+            let strandDisplayInfo = (comment: comments[i][0]["c_text"].rawString()!, author: comments[i][0]["c_u_uname"].rawString()!);
+            
+            renderSingleStrand(renderID: i,mapPoint: mPoint, currMapPoint: currMapPoint, strandDisplayInfo: strandDisplayInfo, render: render, tempStrand: false,addSceneManual: addSceneManual);
             //hide non-street visible strands
             for var hideID in toHideAsArr{
                 if (hideID == String(i)){

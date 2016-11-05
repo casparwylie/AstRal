@@ -23,20 +23,35 @@ import UIKit
     @objc optional func addStrandReady(comment: String);
     @objc optional func renderTempStrandFromUI(tapX: Int, tapY: Int);
     @objc optional func cancelNewStrand();
+    @objc optional func loginRequest(username: String, password: String);
+    @objc optional func signUpRequest(username: String, password: String, fullname: String, email: String);
 }
 
 class UserInterface1{
     
     //MARK: Item initiation
-    var buttons: [UIButton] = [];
+    
+    var menuButtons: [UIButton] = [];
     var setPOIbutton: UIButton!;
     var infoLabel: UIButton!;
     var doneChoosingTapPosButton: UIButton!;
     var cancelChoosingButton: UIButton!;
     var toggleMenuButton: UIButton!;
-    var commentForm: UIView!;
     var postStrandButton: UIButton!;
-    var commentTextfield : UITextField!;
+    var loginSubmitButton: UIButton!;
+    var cancelLoginButton: UIButton!;
+    var signUpSubmitButton: UIButton!;
+    var cancelSignUpButton: UIButton!;
+    
+    var usernameLoginField: UITextField!;
+    var passwordLoginField: UITextField!;
+    var commentTextfield: UITextField!;
+    var signUpFields: (username: UITextField?,password: UITextField?,fullname: UITextField?,email: UITextField?);
+    
+    var loginForm: UIView!;
+    var commentForm: UIView!;
+    var signUpForm: UIView!;
+    
     var actionDelegate: UIActionDelegate?;
     var tapToPost = false;
     var scrollView: UIScrollView!;
@@ -46,13 +61,14 @@ class UserInterface1{
     
     //MARK: UI constants
     let mainFont = UIFont(name: "Futura", size: 12);
+    let textFieldFont = UIFont(name: "Futura", size: 15);
     let mainFontColor = UIColor.black;
     let infoLabelYPos = 20;
     let buttonSpace = 2;
     let buttonHeight = 40;
     let buttonCornerRadius = CGFloat(3.0);
     let generalButtonWidth = 40;
-    
+    let textFieldSize = (width: 190, height: 40);
     var screenSize: CGRect = UIScreen.main.bounds;
     
    
@@ -69,7 +85,8 @@ class UserInterface1{
             sender.setTitle("Show Map", for: UIControlState());
             mapShowing = false;
         case "Login":
-            actionDelegate?.openLoginForm!();
+            hideAnyViews();
+            loginForm.isHidden = false;
         case "Post Strand":
             if(mapShowing==true){
                 actionDelegate?.toggleMap!(isAddingStrand: true);
@@ -78,19 +95,29 @@ class UserInterface1{
             cancelChoosingButton.isHidden = false;
             toggleMenu();
             self.tapToPost = true;
+        case "Sign Up":
+            hideAnyViews();
+            signUpForm.isHidden = false;
         default:
             toggleMenu();
         }
     }
     
     func toggleMenu(){
-        for var button in buttons{
+        for var button in menuButtons{
             if(button.isHidden == false){
                 button.isHidden = true;
             }else{
                 button.isHidden = false;
             }
         }
+    }
+    
+    @objc func hideAnyViews(){
+        loginForm.isHidden = true;
+        commentForm.isHidden = true;
+        signUpForm.isHidden = true;
+        self.view.endEditing(true);
     }
     
     @objc func wrapTapped(touch: UITapGestureRecognizer){
@@ -102,12 +129,26 @@ class UserInterface1{
         }
     }
     
+    
+    @objc func loginSubmitWrapper(sender: UIButton!){
+        self.view.endEditing(true);
+        if((usernameLoginField.text?.characters.count)! > 0 && (passwordLoginField.text?.characters.count)! > 0){
+            actionDelegate?.loginRequest!(username: usernameLoginField.text!, password: passwordLoginField.text!);
+        }
+    }
+    
+    @objc func signUpSubmitWrapper(sender: UIButton!){
+        self.view.endEditing(true);
+        actionDelegate?.signUpRequest!(username: (signUpFields.username?.text)!, password: (signUpFields.password?.text)!, fullname: (signUpFields.fullname?.text)!, email: (signUpFields.email?.text)!);
+
+    }
+
+    
     func showTapFinishedOptions(){
         doneChoosingTapPosButton.isHidden = false;
         updateInfoLabel(newText: "Tap 'Done' when you have choosen a position", show: true, hideAfter: 0);
     }
     
-   
     
     @objc func cancelTap(){
         doneChoosingTapPosButton.isHidden = true;
@@ -141,20 +182,94 @@ class UserInterface1{
         commentForm.isHidden = true;
         commentForm.insertSubview(processBlurEffect(bounds: commentForm.bounds, cornerRadiusVal: buttonCornerRadius), at: 0);
         
-        commentTextfield = UITextField(frame: CGRect(x: 5, y: 30, width: 190, height: 40));
-        commentTextfield.borderStyle = UITextBorderStyle.line;
-        commentTextfield.layer.cornerRadius = buttonCornerRadius;
-        commentTextfield.layer.borderWidth = 1;
-        commentTextfield.textColor = mainFontColor;
-        commentTextfield.font = mainFont;
+        commentTextfield = addTextFieldProperties(pos: CGRect(x: 5, y: 30, width: textFieldSize.width, height: textFieldSize.height));
         commentTextfield.text = "Enter Comment...";
         
         let postStrandButtonRect = CGRect(x: 5, y: 80, width: 100, height: 40)
         postStrandButton = addButtonProperties(title: "Post Strand", hidden: false, pos: postStrandButtonRect, cornerRadius: buttonCornerRadius);
-        postStrandButton.addTarget(self, action: #selector(postStrand), for: .touchUpInside);       commentForm.addSubview(commentTextfield);
+        postStrandButton.addTarget(self, action: #selector(postStrand), for: .touchUpInside);
+        
+        commentForm.addSubview(commentTextfield);
         commentForm.addSubview(postStrandButton);
         self.view.addSubview(commentForm);
     }
+    
+    func renderLoginForm(){
+        let formWidth = 250;
+        let formHeight = 190;
+        let buttonWidthLogin =  120;
+        let textWidthLogin =  240;
+        
+        loginForm = UIView(frame: CGRect(x:Int(screenSize.width/2)-formWidth/2,y: 60 + buttonSpace,width: formWidth, height: formHeight));
+        loginForm.isHidden = true;
+        loginForm.insertSubview(processBlurEffect(bounds: loginForm.bounds, cornerRadiusVal: buttonCornerRadius), at: 0);
+        
+        usernameLoginField = addTextFieldProperties(pos: CGRect(x: 5, y: 5, width: textWidthLogin, height: textFieldSize.height));
+        usernameLoginField.text = "Username...";
+        
+        passwordLoginField = addTextFieldProperties(pos: CGRect(x: 5, y: 55, width: textWidthLogin, height: textFieldSize.height));
+        passwordLoginField.text = "Password...";
+        passwordLoginField.isSecureTextEntry = true;
+        
+        
+        
+        let loginSubmitButtonRect = CGRect(x: 5, y: 130, width: buttonWidthLogin, height: textFieldSize.height);
+        loginSubmitButton = addButtonProperties(title: "Login", hidden: false, pos: loginSubmitButtonRect, cornerRadius: buttonCornerRadius);
+        loginSubmitButton.addTarget(self, action: #selector(loginSubmitWrapper), for: .touchUpInside);
+        
+        let cancelLoginButtonRect = CGRect(x: 125, y: 130, width: buttonWidthLogin, height: textFieldSize.height);
+        cancelLoginButton = addButtonProperties(title: "Cancel", hidden: false, pos: cancelLoginButtonRect, cornerRadius: buttonCornerRadius);
+        cancelLoginButton.addTarget(self, action: #selector(hideAnyViews), for: .touchUpInside);
+        
+        
+        loginForm.addSubview(usernameLoginField);
+        loginForm.addSubview(passwordLoginField);
+        loginForm.addSubview(loginSubmitButton);
+        loginForm.addSubview(cancelLoginButton);
+        self.view.addSubview(loginForm);
+    }
+
+    func renderSignUpForm(){
+        let formWidth = 250;
+        let formHeight = 290;
+        let buttonWidthSignUp =  120;
+        let textWidthSignUp =  240;
+        
+        signUpForm = UIView(frame: CGRect(x:Int(screenSize.width/2)-formWidth/2,y: 60 + buttonSpace,width: formWidth, height: formHeight));
+        signUpForm.isHidden = true;
+        signUpForm.insertSubview(processBlurEffect(bounds: signUpForm.bounds, cornerRadiusVal: buttonCornerRadius), at: 0);
+        
+        signUpFields.username = addTextFieldProperties(pos: CGRect(x: 5, y: 5, width: textWidthSignUp, height: textFieldSize.height));
+        signUpFields.username?.text = "Username...";
+        
+        signUpFields.password = addTextFieldProperties(pos: CGRect(x: 5, y: 55, width: textWidthSignUp, height: textFieldSize.height));
+        signUpFields.password?.text = "Password...";
+        signUpFields.password?.isSecureTextEntry = true;
+        
+        signUpFields.fullname = addTextFieldProperties(pos: CGRect(x: 5, y: 105, width: textWidthSignUp, height: textFieldSize.height));
+        signUpFields.fullname?.text = "Fullname...";
+        
+        signUpFields.email = addTextFieldProperties(pos: CGRect(x: 5, y: 155, width: textWidthSignUp, height: textFieldSize.height));
+        signUpFields.email?.text = "Email...";
+        
+        let signUpSubmitButtonRect = CGRect(x: 5, y: 225, width: buttonWidthSignUp, height: textFieldSize.height);
+        signUpSubmitButton = addButtonProperties(title: "Sign Up", hidden: false, pos: signUpSubmitButtonRect, cornerRadius: buttonCornerRadius);
+        signUpSubmitButton.addTarget(self, action: #selector(signUpSubmitWrapper), for: .touchUpInside);
+        
+        let cancelSignUpButtonRect = CGRect(x: 125, y: 225, width: buttonWidthSignUp, height: textFieldSize.height);
+        cancelSignUpButton = addButtonProperties(title: "Cancel", hidden: false, pos: cancelSignUpButtonRect, cornerRadius: buttonCornerRadius);
+        cancelSignUpButton.addTarget(self, action: #selector(hideAnyViews), for: .touchUpInside);
+        
+        
+        signUpForm.addSubview(signUpFields.username!);
+        signUpForm.addSubview(signUpFields.password!);
+        signUpForm.addSubview(signUpFields.fullname!);
+        signUpForm.addSubview(signUpFields.email!);
+        signUpForm.addSubview(signUpSubmitButton);
+        signUpForm.addSubview(cancelSignUpButton);
+        self.view.addSubview(signUpForm);
+    }
+
     
     func addStrandTapRecognizer(){
         
@@ -190,6 +305,17 @@ class UserInterface1{
         return button;
     }
     
+    
+    func addTextFieldProperties(pos: CGRect) -> UITextField{
+        let textField = UITextField(frame: pos);
+        textField.layer.cornerRadius = buttonCornerRadius;
+        textField.layer.borderWidth = 1;
+        textField.layer.borderColor = UIColor.gray.cgColor;
+        textField.textColor = mainFontColor;
+        textField.font = textFieldFont;
+        return textField;
+    }
+    
     func renderGeneralButtons(){
         
         let doneChoosingTapPosButtonRect = CGRect(x: Int(screenSize.width)-buttonSpace - (2*generalButtonWidth + 5),y: infoLabelYPos + buttonHeight + buttonSpace,width: generalButtonWidth, height: buttonHeight);
@@ -205,8 +331,14 @@ class UserInterface1{
     }
     
     //MARK:  menu setups
-    func renderMenu(){
-        
+    func renderMenu(loggedin: Bool){
+        if(menuButtons.count>0){
+            for button in menuButtons{
+                button.removeFromSuperview();
+            }
+            toggleMenuButton.removeFromSuperview();
+            menuButtons = [];
+        }
         let yPos = Int(screenSize.height) - buttonHeight - 60;
         let toggleWidth = 50;
         let halfTW = toggleWidth/2;
@@ -215,9 +347,10 @@ class UserInterface1{
         toggleMenuButton.addTarget(self, action: #selector(buttonAction), for: .touchUpInside);
         self.view.addSubview(toggleMenuButton);
         
-        let buttonList = ["Show Map","Login","Sign Up","Post Strand","Help"];
-        //logggedin "see map", "post strand", "profile", "help
-        
+        var buttonList = ["Show Map","Login","Sign Up","Post Strand","Help"];
+        if(loggedin == true){
+            buttonList = ["Show Map","Post Strand"," Me ", "Help"];
+        }
         
         var menuWidth = 0;
         let letterToWidthScale = 8;
@@ -233,9 +366,9 @@ class UserInterface1{
             
             let buttonWidth = buttonTitle.characters.count*letterToWidthScale;
             let buttonRect = CGRect(x: bxPos,y: yPos, width: buttonWidth,height: buttonHeight);
-            buttons.append(addButtonProperties(title: buttonTitle, hidden: true, pos: buttonRect, cornerRadius: buttonCornerRadius));
-            buttons[bCount].addTarget(self, action: #selector(buttonAction), for: .touchUpInside);
-            self.view.addSubview(buttons[bCount]);
+            menuButtons.append(addButtonProperties(title: buttonTitle, hidden: true, pos: buttonRect, cornerRadius: buttonCornerRadius));
+            menuButtons[bCount].addTarget(self, action: #selector(buttonAction), for: .touchUpInside);
+            self.view.addSubview(menuButtons[bCount]);
             bCount += 1;
             bxPos += buttonWidth + buttonSpace;
         }
@@ -262,9 +395,11 @@ class UserInterface1{
     func renderAll(view: UIView){
         self.view = view;
         renderLabel();
-        renderMenu();
+        renderMenu(loggedin: false);
         renderGeneralButtons();
         addStrandTapRecognizer();
+        renderLoginForm();
+        renderSignUpForm();
         renderPostCommentForm();
     }
     

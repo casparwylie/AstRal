@@ -21,7 +21,7 @@ import SwiftyJSON
 class NetworkSocketHandler{
     
     let socket = WebSocket(url: URL(string: "ws://casparwylie.me:3000/")!);
-    let thetet = "hi";
+    
     //MARK: Initial server connection
     func connectWebSocket() -> WebSocket{
         socket.connect();
@@ -31,21 +31,67 @@ class NetworkSocketHandler{
         
         return socket;
     }
-}
-
-class UserNetwork{
-    
-    
-}
-
-class StrandNetwork{
     
     func processResponseAsJSON(responseData: String) -> JSON{
         let responseData = responseData.data(using: String.Encoding.utf8,allowLossyConversion: false);
         let responseJSON = JSON(data: responseData!);
         return responseJSON;
     }
+}
+
+class UserNetwork{
     
+    func loginUserRequest(socket: WebSocket, username: String, password: String, onLoginResponse: @escaping (Int, String, String, String)->()){
+        
+        let requestJSONname = JSON("loginUser");
+        let requestJSONauthData = JSON(["username": username, "password": password]);
+        let requestJSON = JSON(["request": requestJSONname, "authData": requestJSONauthData]);
+        
+        let responseIdent = "loginResponse";
+        socket.write(string: requestJSON.rawString()!);
+        socket.onText = { (responseData: String) in
+            let responseJSON = NetworkSocketHandler().processResponseAsJSON(responseData: responseData);
+            if(String(describing: responseJSON["response"]) == responseIdent){
+                var userID = 0;
+                var username = "";
+                var fullname =  "";
+                var email =  "";
+                if(responseJSON["success"].rawString()! == "true"){
+                    userID = Int(responseJSON["result"]["u_id"].rawString()!)!;
+                    username = responseJSON["result"]["u_uname"].rawString()!;
+                    fullname = responseJSON["result"]["u_fullname"].rawString()!;
+                    email = responseJSON["result"]["u_email"].rawString()!;
+                }
+                onLoginResponse(userID, fullname, email, username);
+            }
+        }
+    }
+    
+    func signUpUserRequest(socket: WebSocket, username: String, password: String, fullname: String, email: String, onSignUpResponse: @escaping (Bool, String)->()){
+        
+        let requestJSONname = JSON("signUpUser");
+        let requestJSONuserData = JSON(["username":username, "password": password, "email": email, "fullname": fullname]);
+        
+        let requestJSON = JSON(["request":requestJSONname, "userData": requestJSONuserData]);
+        
+        let responseIdent = "signUpResponse";
+        socket.write(string: requestJSON.rawString()!);
+        socket.onText = { (responseData: String) in
+            let responseJSON = NetworkSocketHandler().processResponseAsJSON(responseData: responseData);
+            if(String(describing: responseJSON["response"]) == responseIdent){
+                var success = true;
+                if(responseJSON["success"] == "false"){
+                    success = false;
+                }
+                onSignUpResponse(success, responseJSON["errorMsg"].rawString()!);
+            }
+        }
+    }
+    
+}
+
+class StrandNetwork{
+
     //MARK: Recurring request on new strand coord data
     func getRegionData(socket: WebSocket, currLocation: CLLocation,
                        onReceiveData: @escaping ([CLLocation],JSON)->()){
@@ -57,12 +103,17 @@ class StrandNetwork{
         let responseIdent = "regionData";
         let responseStrandDataKey = "regionStrandData";
         let responseStrandCommentKey = "strandComments";
-        let requestStringJSON = "{\"request\":\"getRegionData\", \"currentLocation\":{\"longitude\":\""+String(currentLon)+"\",\"latitude\":\""+String(currentLat)+"\"}}";
-        socket.write(string: requestStringJSON);
+        
+        
+        let requestJSONname = JSON("getRegionData");
+        let requestJSONcurrentLocation = JSON(["longitude": String(currentLon), "latitude": String(currentLat)]);
+        let requestJSON = JSON(["request": requestJSONname, "currentLocation": requestJSONcurrentLocation]);
+        
+        socket.write(string: requestJSON.rawString()!);
         //receive response
         socket.onText = { (responseData: String) in
             
-            let responseJSON = self.processResponseAsJSON(responseData: responseData);
+            let responseJSON = NetworkSocketHandler().processResponseAsJSON(responseData: responseData);
             
             //format and organise response
             if(String(describing: responseJSON["response"]) == responseIdent && responseJSON[responseStrandDataKey].count != 0){
@@ -83,15 +134,22 @@ class StrandNetwork{
     }
     
     //MARK: Add strand request to network (save in database)
-    func addStrand(socket: WebSocket, strandLocation: CLLocation, strandFirstPost: String, onSuccess: @escaping (Bool)->()){
+    func addStrand(socket: WebSocket, strandLocation: CLLocation,strandDisplayInfo: (comment: String, author: String, userID: Int),onSuccess: @escaping (Bool)->()){
         
         let responseIdent = "addedStrand";
         let strandLat = strandLocation.coordinate.latitude;
         let strandLon = strandLocation.coordinate.longitude;
-        let requestStringJSON = "{\"request\":\"addStrandRequest\", \"strandLocation\":{\"longitude\":\""+String(strandLon)+"\",\"latitude\":\""+String(strandLat)+"\"}, \"strandPostText\":\""+strandFirstPost+"\"}";
-        socket.write(string: requestStringJSON);
+
+        
+        
+        let requestJSONname = JSON("addStrandRequest");
+        let requestJSONstrandLocation = JSON(["longitude":String(strandLon), "latitude": String(strandLat)]);
+        let requestJSONstrandMedia = JSON(["postText": strandDisplayInfo.comment, "author": strandDisplayInfo.author, "userID": strandDisplayInfo.userID]);
+        
+        var requestJSON: JSON = JSON(["request":requestJSONname, "strandLocation":requestJSONstrandLocation, "strandMedia":requestJSONstrandMedia]);
+        socket.write(string: requestJSON.rawString()!);
         socket.onText = { (responseData: String) in
-            let responseJSON = self.processResponseAsJSON(responseData: responseData);
+            let responseJSON = NetworkSocketHandler().processResponseAsJSON(responseData: responseData);
              if(String(describing: responseJSON["response"]) == responseIdent){
                 let success: Bool = (responseJSON["success"]=="true" ? true: false);
                 onSuccess(success);
