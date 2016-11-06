@@ -14,7 +14,8 @@
 
 import Foundation
 import UIKit
-
+import SwiftyJSON
+import CoreLocation
 
 //MARK: Delegate declaration of all UI actions
 @objc protocol UIActionDelegate {
@@ -25,6 +26,8 @@ import UIKit
     @objc optional func cancelNewStrand();
     @objc optional func loginRequest(username: String, password: String);
     @objc optional func signUpRequest(username: String, password: String, fullname: String, email: String);
+    @objc optional func logoutUser();
+    @objc optional func requestUserStrands();
 }
 
 class UserInterface1{
@@ -42,6 +45,8 @@ class UserInterface1{
     var cancelLoginButton: UIButton!;
     var signUpSubmitButton: UIButton!;
     var cancelSignUpButton: UIButton!;
+    var closeUserStrandView: UIButton!;
+    var closeUserProfileView: UIButton!;
     
     var usernameLoginField: UITextField!;
     var passwordLoginField: UITextField!;
@@ -51,25 +56,39 @@ class UserInterface1{
     var loginForm: UIView!;
     var commentForm: UIView!;
     var signUpForm: UIView!;
+    var userStrandListView: UIView!;
+    var userProfileView: UIView!;
     
     var actionDelegate: UIActionDelegate?;
     var tapToPost = false;
-    var scrollView: UIScrollView!;
+    var userScrollStrandListView: UIScrollView!;
     var view: UIView!;
     var setTapPointForPost = (x: 0, y: 0);
     var mapShowing = false;
+    var vertList = ["My Strands", "Profile", "Logout"];
+    var mainMenuShowing = false;
+    var vertMenuShowing = false;
+    var userStrandLabelYPos = 5;
+    var tagsForBlur = 100;
+    var currBlurState = "light";
+    var screenSize: CGRect = UIScreen.main.bounds;
     
     //MARK: UI constants
-    let mainFont = UIFont(name: "Futura", size: 12);
-    let textFieldFont = UIFont(name: "Futura", size: 15);
+    let mainTypeFace = "Futura";
+    var viewPageWidth: Int!
+    var mainFont: UIFont!;
+    var textFieldFont: UIFont!;
     let mainFontColor = UIColor.black;
     let infoLabelYPos = 20;
     let buttonSpace = 2;
+    let userStrandLabelHeight = 18;
+    let formWidth = 250;
+    let defaultFormY = 150;
     let buttonHeight = 40;
     let buttonCornerRadius = CGFloat(3.0);
     let generalButtonWidth = 40;
     let textFieldSize = (width: 190, height: 40);
-    var screenSize: CGRect = UIScreen.main.bounds;
+    
     
    
     //MARK:  UIActionDelegate method wrappers
@@ -80,35 +99,73 @@ class UserInterface1{
             actionDelegate?.toggleMap!(isAddingStrand: self.tapToPost);
             sender.setTitle("Hide Map", for: UIControlState());
             mapShowing = true;
+            changeBlurToggle();
+            
         case "Hide Map":
             actionDelegate?.toggleMap!(isAddingStrand: false);
             sender.setTitle("Show Map", for: UIControlState());
             mapShowing = false;
+            changeBlurToggle();
+            
         case "Login":
             hideAnyViews();
             loginForm.isHidden = false;
+            
         case "Post Strand":
+            hideAnyViews();
             if(mapShowing==true){
                 actionDelegate?.toggleMap!(isAddingStrand: true);
             }
             updateInfoLabel(newText: "Tap wherever you want to post it (from camera or map)", show: true, hideAfter: 0);
             cancelChoosingButton.isHidden = false;
-            toggleMenu();
+            toggleMenu(vert: false);
             self.tapToPost = true;
+            
         case "Sign Up":
             hideAnyViews();
             signUpForm.isHidden = false;
+            
+        case " Me ":
+            toggleMenu(vert: true);
+            
+        case "My Strands":
+            toggleMenu(vert: true);
+            hideAnyViews();
+            actionDelegate?.requestUserStrands!();
+            userStrandListView.isHidden = false;
+        
+        case "Profile":
+            toggleMenu(vert: true);
+            hideAnyViews();
+            userProfileView.isHidden = false;
+        
+        case "Logout":
+            toggleMenu(vert: true);
+            renderMenu(loggedin: false);
+            actionDelegate?.logoutUser!();
+            
         default:
-            toggleMenu();
+            toggleMenu(vert: false);
         }
     }
     
-    func toggleMenu(){
-        for var button in menuButtons{
-            if(button.isHidden == false){
-                button.isHidden = true;
+    func toggleMenu(vert: Bool){
+        for button in menuButtons{
+            if(vert == true){
+                if(vertList.contains((button.titleLabel?.text)!) == true ){
+                    if(button.isHidden == true){
+                        button.isHidden = false;
+                    }else{
+                        button.isHidden = true;
+                    }
+                }
             }else{
-                button.isHidden = false;
+                if(button.isHidden == true && vertList.contains((button.titleLabel?.text)!) == false){
+                    button.isHidden = false;
+                }else{
+                    button.isHidden = true;
+                }
+                
             }
         }
     }
@@ -117,6 +174,8 @@ class UserInterface1{
         loginForm.isHidden = true;
         commentForm.isHidden = true;
         signUpForm.isHidden = true;
+        userStrandListView.isHidden = true;
+        userProfileView.isHidden = true;
         self.view.endEditing(true);
     }
     
@@ -174,19 +233,17 @@ class UserInterface1{
     }
     
     //MARK: render UI components
-    
     func renderPostCommentForm(){
-        let formWidth = 200;
-        let formHeight = 140;
-        commentForm = UIView(frame: CGRect(x:Int(screenSize.width/2)-formWidth/2,y: 60 + buttonSpace,width: formWidth, height: formHeight));
+        let formHeight = 100;
+        commentForm = UIView(frame: CGRect(x:Int(screenSize.width/2)-formWidth/2,y: defaultFormY + buttonSpace,width: formWidth, height: formHeight));
         commentForm.isHidden = true;
-        commentForm.insertSubview(processBlurEffect(bounds: commentForm.bounds, cornerRadiusVal: buttonCornerRadius), at: 0);
+        commentForm.insertSubview(processBlurEffect(bounds: commentForm.bounds, cornerRadiusVal: buttonCornerRadius, light: true), at: 0);
         
-        commentTextfield = addTextFieldProperties(pos: CGRect(x: 5, y: 30, width: textFieldSize.width, height: textFieldSize.height));
+        commentTextfield = addTextFieldProperties(pos: CGRect(x: 5, y: 5, width: 240, height: textFieldSize.height));
         commentTextfield.text = "Enter Comment...";
         
-        let postStrandButtonRect = CGRect(x: 5, y: 80, width: 100, height: 40)
-        postStrandButton = addButtonProperties(title: "Post Strand", hidden: false, pos: postStrandButtonRect, cornerRadius: buttonCornerRadius);
+        let postStrandButtonRect = CGRect(x: 5, y: 5+textFieldSize.height+10, width: 100, height: 40);
+        postStrandButton = addButtonProperties(title: "Post Strand", hidden: false, pos: postStrandButtonRect, cornerRadius: buttonCornerRadius, blurLight: true);
         postStrandButton.addTarget(self, action: #selector(postStrand), for: .touchUpInside);
         
         commentForm.addSubview(commentTextfield);
@@ -194,31 +251,57 @@ class UserInterface1{
         self.view.addSubview(commentForm);
     }
     
+    func changeBlurToggle(){
+        var light = false;
+        if(currBlurState == "dark"){
+            light = true;
+            currBlurState = "light";
+        }else{
+            currBlurState = "dark";
+        }
+
+        for tag in 100...tagsForBlur{
+            let element = self.view.viewWithTag(tag);
+            let fromView = element?.superview;
+            let useCornerRadius = element?.layer.cornerRadius;
+            element?.removeFromSuperview();
+            
+            let newColor = ((currBlurState == "dark") ? UIColor.white : mainFontColor);
+            if let viewAsButton = fromView as? UIButton{
+                viewAsButton.setTitleColor(newColor, for: .normal);
+            }
+            if let viewAsTextField = fromView as? UITextField{
+                viewAsTextField.textColor = newColor;
+            }
+            
+            fromView?.insertSubview(processBlurEffect(bounds: (element?.bounds)!, cornerRadiusVal: useCornerRadius!, light: light), at: 0);
+        }
+    }
+    
     func renderLoginForm(){
-        let formWidth = 250;
-        let formHeight = 190;
+        let formHeight = 176;
         let buttonWidthLogin =  120;
         let textWidthLogin =  240;
         
-        loginForm = UIView(frame: CGRect(x:Int(screenSize.width/2)-formWidth/2,y: 60 + buttonSpace,width: formWidth, height: formHeight));
+        loginForm = UIView(frame: CGRect(x:Int(screenSize.width/2)-formWidth/2,y: defaultFormY + buttonSpace,width: formWidth, height: formHeight));
         loginForm.isHidden = true;
-        loginForm.insertSubview(processBlurEffect(bounds: loginForm.bounds, cornerRadiusVal: buttonCornerRadius), at: 0);
+        loginForm.insertSubview(processBlurEffect(bounds: loginForm.bounds, cornerRadiusVal: buttonCornerRadius, light: true), at: 0);
         
         usernameLoginField = addTextFieldProperties(pos: CGRect(x: 5, y: 5, width: textWidthLogin, height: textFieldSize.height));
-        usernameLoginField.text = "Username...";
+        usernameLoginField.text = "Test123";
         
         passwordLoginField = addTextFieldProperties(pos: CGRect(x: 5, y: 55, width: textWidthLogin, height: textFieldSize.height));
-        passwordLoginField.text = "Password...";
+        passwordLoginField.text = "test123";
         passwordLoginField.isSecureTextEntry = true;
         
         
         
         let loginSubmitButtonRect = CGRect(x: 5, y: 130, width: buttonWidthLogin, height: textFieldSize.height);
-        loginSubmitButton = addButtonProperties(title: "Login", hidden: false, pos: loginSubmitButtonRect, cornerRadius: buttonCornerRadius);
+        loginSubmitButton = addButtonProperties(title: "Login", hidden: false, pos: loginSubmitButtonRect, cornerRadius: buttonCornerRadius, blurLight: true);
         loginSubmitButton.addTarget(self, action: #selector(loginSubmitWrapper), for: .touchUpInside);
         
         let cancelLoginButtonRect = CGRect(x: 125, y: 130, width: buttonWidthLogin, height: textFieldSize.height);
-        cancelLoginButton = addButtonProperties(title: "Cancel", hidden: false, pos: cancelLoginButtonRect, cornerRadius: buttonCornerRadius);
+        cancelLoginButton = addButtonProperties(title: "Cancel", hidden: false, pos: cancelLoginButtonRect, cornerRadius: buttonCornerRadius, blurLight: true);
         cancelLoginButton.addTarget(self, action: #selector(hideAnyViews), for: .touchUpInside);
         
         
@@ -230,14 +313,14 @@ class UserInterface1{
     }
 
     func renderSignUpForm(){
-        let formWidth = 250;
-        let formHeight = 290;
+        toggleMenu(vert: true);
+        let formHeight = 271;
         let buttonWidthSignUp =  120;
         let textWidthSignUp =  240;
         
-        signUpForm = UIView(frame: CGRect(x:Int(screenSize.width/2)-formWidth/2,y: 60 + buttonSpace,width: formWidth, height: formHeight));
+        signUpForm = UIView(frame: CGRect(x:Int(screenSize.width/2)-formWidth/2,y: defaultFormY + buttonSpace,width: formWidth, height: formHeight));
         signUpForm.isHidden = true;
-        signUpForm.insertSubview(processBlurEffect(bounds: signUpForm.bounds, cornerRadiusVal: buttonCornerRadius), at: 0);
+        signUpForm.insertSubview(processBlurEffect(bounds: signUpForm.bounds, cornerRadiusVal: buttonCornerRadius, light: true), at: 0);
         
         signUpFields.username = addTextFieldProperties(pos: CGRect(x: 5, y: 5, width: textWidthSignUp, height: textFieldSize.height));
         signUpFields.username?.text = "Username...";
@@ -253,11 +336,11 @@ class UserInterface1{
         signUpFields.email?.text = "Email...";
         
         let signUpSubmitButtonRect = CGRect(x: 5, y: 225, width: buttonWidthSignUp, height: textFieldSize.height);
-        signUpSubmitButton = addButtonProperties(title: "Sign Up", hidden: false, pos: signUpSubmitButtonRect, cornerRadius: buttonCornerRadius);
+        signUpSubmitButton = addButtonProperties(title: "Sign Up", hidden: false, pos: signUpSubmitButtonRect, cornerRadius: buttonCornerRadius, blurLight: true);
         signUpSubmitButton.addTarget(self, action: #selector(signUpSubmitWrapper), for: .touchUpInside);
         
         let cancelSignUpButtonRect = CGRect(x: 125, y: 225, width: buttonWidthSignUp, height: textFieldSize.height);
-        cancelSignUpButton = addButtonProperties(title: "Cancel", hidden: false, pos: cancelSignUpButtonRect, cornerRadius: buttonCornerRadius);
+        cancelSignUpButton = addButtonProperties(title: "Cancel", hidden: false, pos: cancelSignUpButtonRect, cornerRadius: buttonCornerRadius, blurLight: true);
         cancelSignUpButton.addTarget(self, action: #selector(hideAnyViews), for: .touchUpInside);
         
         
@@ -269,7 +352,80 @@ class UserInterface1{
         signUpForm.addSubview(cancelSignUpButton);
         self.view.addSubview(signUpForm);
     }
+    
+    func renderUserStrandsView(){
+        let viewHeight = 370;
+        userStrandListView = UIView(frame: CGRect(x:Int(screenSize.width/2)-viewPageWidth/2,y: 60 + buttonSpace,width: viewPageWidth, height: viewHeight));
+        userStrandListView.isHidden = true;
+        userScrollStrandListView = UIScrollView(frame: CGRect(x:5,y: 25,width: viewPageWidth, height: viewHeight-30));
+        userScrollStrandListView.contentSize = CGSize(width: CGFloat(viewPageWidth), height: CGFloat(viewHeight));
+        userStrandListView.insertSubview(processBlurEffect(bounds: userStrandListView.bounds, cornerRadiusVal: buttonCornerRadius, light: true), at: 0);
+        
+        let closeButtonWidth = 40;
+        let closeUserStrandViewRect = CGRect(x: viewPageWidth-(closeButtonWidth+5), y: 5, width: closeButtonWidth, height: 20);
+        closeUserStrandView = addButtonProperties(title: "Close", hidden: false, pos: closeUserStrandViewRect, cornerRadius: buttonCornerRadius, blurLight: true);
+        closeUserStrandView.addTarget(self, action: #selector(hideAnyViews), for: .touchUpInside);
 
+        userStrandListView.addSubview(closeUserStrandView);
+        userStrandListView.addSubview(userScrollStrandListView);
+        self.view.addSubview(userStrandListView);
+    }
+    
+    func addUserStrandLabel(text: String, areaName: String){
+        let strandTextLabel: UILabel  = UILabel(frame: CGRect(x: 25, y: userStrandLabelYPos+10, width: 250, height: userStrandLabelHeight));
+        let strandAreaLabel: UILabel  = UILabel(frame: CGRect(x: 25, y: userStrandLabelYPos+userStrandLabelHeight+10, width: 250, height: userStrandLabelHeight));
+        
+        let strandIconDest = "strand_icon.png";
+        let strandIcon = UIImage(named: strandIconDest);
+        let strandIconView = UIImageView(image: strandIcon!);
+        strandIconView.frame = CGRect(x: 0, y:  userStrandLabelYPos+12, width: 20, height: 30);
+        
+        strandTextLabel.text = text;
+        strandAreaLabel.text = "in " + areaName;
+        strandTextLabel.font = UIFont(name: mainTypeFace, size: 17);
+        strandAreaLabel.font = UIFont(name: mainTypeFace+"-Bold", size: 13);
+        userScrollStrandListView.addSubview(strandTextLabel);
+        userScrollStrandListView.addSubview(strandAreaLabel);
+        userScrollStrandListView.addSubview(strandIconView);
+    }
+    
+    func populateUserStrands(strands: JSON, firstComments: JSON){
+        for subview in userScrollStrandListView.subviews{
+            subview.removeFromSuperview();
+        }
+        userStrandLabelYPos = 5;
+        let labelHeight = 2*userStrandLabelHeight+10;
+        userScrollStrandListView.contentSize = CGSize(width: CGFloat(viewPageWidth), height: CGFloat(5+(strands.count*labelHeight)));
+        var count = 0;
+        for strand in strands{
+            let coordLocation = CLLocation(latitude: strands[count]["s_coord_lat"].double!, longitude: strands[count]["s_coord_lon"].double!);
+            CLGeocoder().reverseGeocodeLocation(coordLocation, completionHandler: {(placemarks,err) in
+                var areaName = "";
+                if((placemarks?.count)!>0){
+                    let placemark = (placemarks?[0])! as CLPlacemark;
+                    areaName = placemark.thoroughfare! + ", " + placemark.locality!;
+                }
+                self.addUserStrandLabel(text: firstComments[count]["c_text"].rawString()!, areaName: areaName);
+                self.userStrandLabelYPos += 2*self.userStrandLabelHeight + 10;
+                count += 1;
+            });
+        }
+    }
+    
+    func renderProfileView(){
+        let viewHeight = 370;
+        userProfileView = UIView(frame: CGRect(x:Int(screenSize.width/2)-viewPageWidth/2,y: 60 + buttonSpace,width: viewPageWidth, height: viewHeight));
+        userProfileView.isHidden = true;
+        userProfileView.insertSubview(processBlurEffect(bounds: userProfileView.bounds, cornerRadiusVal: buttonCornerRadius, light: true), at: 0);
+        
+        let closeButtonWidth = 40;
+        let closeUserProfileViewRect = CGRect(x: viewPageWidth-(closeButtonWidth+5), y: 5, width: closeButtonWidth, height: 20);
+        closeUserProfileView = addButtonProperties(title: "Close", hidden: false, pos: closeUserProfileViewRect, cornerRadius: buttonCornerRadius, blurLight: true);
+        closeUserProfileView.addTarget(self, action: #selector(hideAnyViews), for: .touchUpInside);
+        
+        userProfileView.addSubview(closeUserProfileView);
+        self.view.addSubview(userProfileView);
+    }
     
     func addStrandTapRecognizer(){
         
@@ -279,37 +435,48 @@ class UserInterface1{
         
     }
 
-    func processBlurEffect(bounds: CGRect, cornerRadiusVal: CGFloat) -> UIVisualEffectView {
+    func processBlurEffect(bounds: CGRect, cornerRadiusVal: CGFloat, light: Bool) -> UIVisualEffectView {
+        
+        var style = UIBlurEffectStyle.light;
+        if(light==false){
+            style = UIBlurEffectStyle.dark;
+        }
+        
         let blurEffect = UIVisualEffectView(effect: UIBlurEffect(style:
-            UIBlurEffectStyle.light));
+            style));
         blurEffect.frame = bounds;
         blurEffect.isUserInteractionEnabled = false;
         blurEffect.layer.cornerRadius = cornerRadiusVal;
         blurEffect.clipsToBounds = true;
+        blurEffect.tag = tagsForBlur;
+        tagsForBlur += 1;
         return blurEffect;
     }
     
     func renderLabel(){
         let infoLabelRect = CGRect(x: 5,y: 20,width: Int(screenSize.width)-10,height: buttonHeight);
-        infoLabel = addButtonProperties(title: " ", hidden: true, pos: infoLabelRect, cornerRadius: buttonCornerRadius);
+        infoLabel = addButtonProperties(title: " ", hidden: true, pos: infoLabelRect, cornerRadius: buttonCornerRadius, blurLight: true);
         self.view.addSubview(infoLabel);
     }
     
-    func addButtonProperties(title: String, hidden: Bool, pos: CGRect, cornerRadius: CGFloat) ->UIButton{
+    func addButtonProperties(title: String, hidden: Bool, pos: CGRect, cornerRadius: CGFloat, blurLight: Bool) ->UIButton{
         let button = UIButton(frame: pos);
+        if(blurLight == true){
+            button.setTitleColor(mainFontColor, for: .normal);
+        }else{
+            button.setTitleColor(UIColor.white, for: .normal);
+        }
         button.setTitle(title, for: UIControlState());
-        button.insertSubview(processBlurEffect(bounds: button.bounds, cornerRadiusVal: cornerRadius), at: 0);
+        button.insertSubview(processBlurEffect(bounds: button.bounds, cornerRadiusVal: cornerRadius, light: blurLight), at: 0);
         button.titleLabel!.font =  mainFont;
         button.isHidden = hidden;
-        button.setTitleColor(mainFontColor, for: .normal);
         return button;
     }
     
     
     func addTextFieldProperties(pos: CGRect) -> UITextField{
         let textField = UITextField(frame: pos);
-        textField.layer.cornerRadius = buttonCornerRadius;
-        textField.layer.borderWidth = 1;
+        textField.insertSubview(processBlurEffect(bounds: textField.bounds, cornerRadiusVal: buttonCornerRadius, light: true), at: 0);
         textField.layer.borderColor = UIColor.gray.cgColor;
         textField.textColor = mainFontColor;
         textField.font = textFieldFont;
@@ -319,13 +486,13 @@ class UserInterface1{
     func renderGeneralButtons(){
         
         let doneChoosingTapPosButtonRect = CGRect(x: Int(screenSize.width)-buttonSpace - (2*generalButtonWidth + 5),y: infoLabelYPos + buttonHeight + buttonSpace,width: generalButtonWidth, height: buttonHeight);
-        doneChoosingTapPosButton = addButtonProperties(title: "Done", hidden: true, pos: doneChoosingTapPosButtonRect,cornerRadius: buttonCornerRadius);
+        doneChoosingTapPosButton = addButtonProperties(title: "Done", hidden: true, pos: doneChoosingTapPosButtonRect,cornerRadius: buttonCornerRadius, blurLight: true);
         doneChoosingTapPosButton.addTarget(self, action: #selector(newStrandComment), for: .touchUpInside);
         self.view.addSubview(doneChoosingTapPosButton);
         
         
         let cancelChoosingButtonRect = CGRect(x: Int(screenSize.width-5) - generalButtonWidth,y: infoLabelYPos + buttonHeight + buttonSpace,width: generalButtonWidth, height: buttonHeight);
-        cancelChoosingButton = addButtonProperties(title: "Cancel", hidden: true, pos: cancelChoosingButtonRect,cornerRadius: buttonCornerRadius);
+        cancelChoosingButton = addButtonProperties(title: "Cancel", hidden: true, pos: cancelChoosingButtonRect,cornerRadius: buttonCornerRadius, blurLight: true);
         cancelChoosingButton.addTarget(self, action: #selector(cancelTap), for: .touchUpInside);
         self.view.addSubview(cancelChoosingButton);
     }
@@ -339,40 +506,67 @@ class UserInterface1{
             toggleMenuButton.removeFromSuperview();
             menuButtons = [];
         }
+        
+        var mapName = "Show Map";
+        var blurLight = true;
+        if(mapShowing==true){
+            mapName = "Hide Map"
+            blurLight = false;
+        }
+        
+        
         let yPos = Int(screenSize.height) - buttonHeight - 60;
         let toggleWidth = 50;
         let halfTW = toggleWidth/2;
         let toggleMenuRect  = CGRect(x: Int(screenSize.width*0.5)-halfTW,y: yPos+toggleWidth-7, width: toggleWidth,height: toggleWidth);
-        toggleMenuButton = addButtonProperties(title: " ", hidden: false, pos: toggleMenuRect, cornerRadius: CGFloat(halfTW));
+        toggleMenuButton = addButtonProperties(title: " ", hidden: false, pos: toggleMenuRect, cornerRadius: CGFloat(halfTW), blurLight: blurLight);
         toggleMenuButton.addTarget(self, action: #selector(buttonAction), for: .touchUpInside);
         self.view.addSubview(toggleMenuButton);
         
-        var buttonList = ["Show Map","Login","Sign Up","Post Strand","Help"];
+       
+        var buttonList = [mapName,"Login","Sign Up","Post Strand"," Help "];
         if(loggedin == true){
-            buttonList = ["Show Map","Post Strand"," Me ", "Help"];
+            buttonList = [mapName,"Post Strand"," Me ", " Help ", "My Strands", "Profile", "Logout"];
         }
         
         var menuWidth = 0;
         let letterToWidthScale = 8;
         
         for var buttonTitle in buttonList{
-            menuWidth += buttonTitle.characters.count*letterToWidthScale + buttonSpace;
+            if(vertList.contains(buttonTitle) == false){
+                menuWidth += buttonTitle.characters.count*letterToWidthScale + buttonSpace;
+            }
         }
         
         var bCount = 0;
         var bxPos = Int((Int(screenSize.width)-menuWidth) / 2) + 1;
-        
+        var vertYPos = 0;
         for var buttonTitle in buttonList{
             
             let buttonWidth = buttonTitle.characters.count*letterToWidthScale;
-            let buttonRect = CGRect(x: bxPos,y: yPos, width: buttonWidth,height: buttonHeight);
-            menuButtons.append(addButtonProperties(title: buttonTitle, hidden: true, pos: buttonRect, cornerRadius: buttonCornerRadius));
+            var useYPos = yPos;
+            var useXPos = bxPos;
+            var hidden = false;
+            var buttonWidthUse = buttonWidth;
+            if(vertList.contains(buttonTitle)){
+                vertYPos -= buttonHeight + buttonSpace;
+                useXPos = 172;
+                buttonWidthUse = 82;
+                hidden = true;
+                useYPos = useYPos + vertYPos;
+            }else{
+                
+            }
+            let buttonRect = CGRect(x: useXPos,y: useYPos, width: buttonWidthUse,height: buttonHeight);
+            
+            
+            menuButtons.append(addButtonProperties(title: buttonTitle, hidden: hidden, pos: buttonRect, cornerRadius: buttonCornerRadius, blurLight: blurLight));
             menuButtons[bCount].addTarget(self, action: #selector(buttonAction), for: .touchUpInside);
             self.view.addSubview(menuButtons[bCount]);
             bCount += 1;
             bxPos += buttonWidth + buttonSpace;
         }
-        
+
     }
     
     //MARK: Update label contents
@@ -394,6 +588,11 @@ class UserInterface1{
     //MARK: Render all items
     func renderAll(view: UIView){
         self.view = view;
+        
+        mainFont = UIFont(name: mainTypeFace, size: 12);
+        textFieldFont = UIFont(name: mainTypeFace, size: 15);
+        viewPageWidth = Int(screenSize.width)-10;
+        
         renderLabel();
         renderMenu(loggedin: false);
         renderGeneralButtons();
@@ -401,6 +600,8 @@ class UserInterface1{
         renderLoginForm();
         renderSignUpForm();
         renderPostCommentForm();
+        renderProfileView();
+        renderUserStrandsView();
     }
     
 }

@@ -24,6 +24,7 @@ using namespace std;
 @implementation OpenCVWrapper
 +(NSString*) strandsToHide: (double[][2])pxVals image:(UIImage*)UIMap currPoint:(double[2])currPointPX pxLength:(int) pxLength{
 
+    int testing = false;
     //setup matrix
     cv::Mat orgFrame, taskFrame;
     UIImageToMat(UIMap, orgFrame);
@@ -42,8 +43,6 @@ using namespace std;
     int count = 0;
     string toHide = "";
     
-    //visualisation of output
-    //cv::circle(orgFrame, currPoint, 2, cv::Scalar(0,0,255));
     
     while(count<pxLength){
         
@@ -52,7 +51,9 @@ using namespace std;
         cv::Point pointXY = cv::Point(colsX,rowsY);
         
         //visualisation of output
-        //cv::circle(orgFrame, pointXY, 2, cv::Scalar(255,0,255));
+        if(testing == true){
+            cv::circle(orgFrame, pointXY, 2, cv::Scalar(255,0,255));
+        }
         
         cv::LineIterator lineIter(taskFrame, currPoint, pointXY);
         int buildingProb = 0;
@@ -63,20 +64,28 @@ using namespace std;
                 buildingProb++;
                 if(buildingDectectThicknessOffset <= buildingProb){
                     toHide += to_string(count) + ",";
-                    break;
+                    if(testing == false){
+                        break;
+                    }
                 }
 
                 //visualisation of output
-                //circle(orgFrame, lineIter.pos(), 1, cv::Scalar(0,255,0));
+                if(testing == true){
+                    circle(orgFrame, lineIter.pos(), 1, cv::Scalar(0,255,0));
+                }
             }else{
-                //circle(orgFrame, lineIter.pos(), 1, cv::Scalar(0,0,255));
+                if(testing == true){
+                    circle(orgFrame, lineIter.pos(), 1, cv::Scalar(0,0,255));
+                }
             }
         }
                count++;
     }
     
     //convert to UIIMAGE for view (for testing)
+
     //UIImage* new1IMG = MatToUIImage(orgFrame);
+    
     
     NSString* toHideReturn = [NSString stringWithUTF8String:toHide.c_str()];
     return toHideReturn;

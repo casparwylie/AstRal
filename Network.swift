@@ -146,7 +146,7 @@ class StrandNetwork{
         let requestJSONstrandLocation = JSON(["longitude":String(strandLon), "latitude": String(strandLat)]);
         let requestJSONstrandMedia = JSON(["postText": strandDisplayInfo.comment, "author": strandDisplayInfo.author, "userID": strandDisplayInfo.userID]);
         
-        var requestJSON: JSON = JSON(["request":requestJSONname, "strandLocation":requestJSONstrandLocation, "strandMedia":requestJSONstrandMedia]);
+        let requestJSON: JSON = JSON(["request":requestJSONname, "strandLocation":requestJSONstrandLocation, "strandMedia":requestJSONstrandMedia]);
         socket.write(string: requestJSON.rawString()!);
         socket.onText = { (responseData: String) in
             let responseJSON = NetworkSocketHandler().processResponseAsJSON(responseData: responseData);
@@ -155,6 +155,22 @@ class StrandNetwork{
                 onSuccess(success);
             }
         }
+    }
+    
+    func getUserStrands(socket: WebSocket,userID: Int, onReceive: @escaping (JSON, JSON)->()){
         
+        let responseIdent = "userStrands";
+        
+        let requestJSONname = JSON("getUserStrands");
+        let requestJSONuserID = JSON(userID);
+        let requestJSON = JSON(["request": requestJSONname, "userID": requestJSONuserID]);
+
+        socket.write(string: requestJSON.rawString()!);
+        socket.onText = { (responseData: String) in
+            let responseJSON = NetworkSocketHandler().processResponseAsJSON(responseData: responseData);
+            if(String(describing: responseJSON["response"]) == responseIdent){
+                onReceive(responseJSON["strands"], responseJSON["fComments"]);
+            }
+        }
     }
 }

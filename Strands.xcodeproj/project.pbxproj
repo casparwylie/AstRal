@@ -27,6 +27,7 @@
 		B0E356221D995E1E0088EB10 /* strandpost in Resources */ = {isa = PBXBuildFile; fileRef = B0E3561F1D995E1E0088EB10 /* strandpost */; };
 		B0E356231D995E1E0088EB10 /* strandpost.dae in Resources */ = {isa = PBXBuildFile; fileRef = B0E356201D995E1E0088EB10 /* strandpost.dae */; };
 		B0E356271D995F5C0088EB10 /* opencv2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0E356261D995F5C0088EB10 /* opencv2.framework */; };
+		B0FCBD691DCFB45800622352 /* strand_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = B0FCBD681DCFB45800622352 /* strand_icon.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -75,6 +76,7 @@
 		B0E3561F1D995E1E0088EB10 /* strandpost */ = {isa = PBXFileReference; lastKnownFileType = folder; path = strandpost; sourceTree = "<group>"; };
 		B0E356201D995E1E0088EB10 /* strandpost.dae */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml.dae; path = strandpost.dae; sourceTree = "<group>"; };
 		B0E356261D995F5C0088EB10 /* opencv2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = opencv2.framework; sourceTree = "<group>"; };
+		B0FCBD681DCFB45800622352 /* strand_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = strand_icon.png; sourceTree = "<group>"; };
 		D38F9152C59B50F78FC6CDFE /* Pods-Strands.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Strands.release.xcconfig"; path = "Pods/Target Support Files/Pods-Strands/Pods-Strands.release.xcconfig"; sourceTree = "<group>"; };
 		EA76AEA0DC651EA2EB870D49 /* Pods_Strands.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Strands.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -128,6 +130,7 @@
 		B0E355D31D995DBF0088EB10 = {
 			isa = PBXGroup;
 			children = (
+				B0FCBD681DCFB45800622352 /* strand_icon.png */,
 				B0E356261D995F5C0088EB10 /* opencv2.framework */,
 				B0E3561F1D995E1E0088EB10 /* strandpost */,
 				B0E356201D995E1E0088EB10 /* strandpost.dae */,
@@ -313,6 +316,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B0FCBD691DCFB45800622352 /* strand_icon.png in Resources */,
 				B0E356221D995E1E0088EB10 /* strandpost in Resources */,
 				B0E355EA1D995DBF0088EB10 /* LaunchScreen.storyboard in Resources */,
 				B0E355E71D995DBF0088EB10 /* Assets.xcassets in Resources */,

@@ -30,7 +30,7 @@ class Map: NSObject, MKMapViewDelegate{
     
     //MARK: setup map
     func renderMap(view: UIView){
-        mapView.frame = CGRect(x: 0, y: 30, width: view.frame.size.width, height: view.frame.size.height);
+        mapView.frame = CGRect(x: 0, y: 0, width: view.frame.size.width, height: view.frame.size.height);
         mapView.mapType = MKMapType.standard;
         mapView.isZoomEnabled = false;
         mapView.isScrollEnabled = false;

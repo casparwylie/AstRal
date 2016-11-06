@@ -226,6 +226,20 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
         });
     }
     
+    func logoutUser() {
+        loggedinUserData = (id: 0, username: "Unknown", fullname: "Unknown", email: "Unknown");
+        self.userInterface.updateInfoLabel(newText: "You are logged out!", show: true, hideAfter: 2);
+    }
+    
+    func requestUserStrands() {
+        strandNetwork.getUserStrands(socket: self.networkWebSocket, userID: self.loggedinUserData.id, onReceive: {(strands, fComments)
+            in
+            
+            self.userInterface.populateUserStrands(strands: strands, firstComments: fComments);
+        
+        });
+    }
+    
     //MARK: Main stem
     override func viewDidLoad() {
         
