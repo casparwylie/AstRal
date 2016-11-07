@@ -56,6 +56,23 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
     
     var pCount = 0;
     
+    func setNewRegionData(){
+        //request new strand data from network
+        self.strandNetwork.getRegionData(socket: self.networkWebSocket, currLocation: currentLocationGlobal, onReceiveData: {(receivedCoordData, strandComments) in
+            
+            //change data to newly received
+            self.mapPoints = self.map.getCoordsAsMapPoints(coords: receivedCoordData);
+            self.map.updatePins(coords: receivedCoordData);
+            
+            //reset area threshold handlers
+            self.reRenderStrands = true;
+            self.oldRenderPosition = self.currentLocationGlobal;
+            self.strandComments = strandComments;
+            self.pCount += 1;
+            
+        });
+    }
+    
     //MARK: Movement response method
     func updateAtmosphere(currentLocation: CLLocation, currentHeading: CLHeading){
         self.currentLocationGlobal = currentLocation;
@@ -92,21 +109,8 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
                     self.firstRender = false;
                 }
                 
-                //request new strand data from network
-                self.strandNetwork.getRegionData(socket: self.networkWebSocket, currLocation: currentLocation, onReceiveData: {(receivedCoordData, strandComments) in
-                    
-                    //change data to newly received
-                    self.mapPoints = self.map.getCoordsAsMapPoints(coords: receivedCoordData);
-                    self.map.updatePins(coords: receivedCoordData);
-                    
-                    //reset area threshold handlers
-                    self.reRenderStrands = true;
-                    self.oldRenderPosition = currentLocation;
-                    self.strandComments = strandComments;
-                    self.pCount += 1;
-
-                });
-
+                self.setNewRegionData();
+                
             }else{
                 self.reRenderStrands = false;
             }
@@ -188,8 +192,10 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
         let strandInfo = (comment: comment, author: self.loggedinUserData.username, userID: self.loggedinUserData.id);
         strandNetwork.addStrand(socket: self.networkWebSocket, strandLocation: self.latestDesiredStrandLocation,strandDisplayInfo: strandInfo, onSuccess: {(success) in
             var responseMessage = "Unknown Error. Please try again later.";
+            var msgType = "error";
             if(success == true){
                 responseMessage = "Successfully posted new strand!";
+                msgType = "success";
             }
             self.userInterface.updateInfoLabel(newText: responseMessage, show: true, hideAfter: 4);
         });
@@ -199,6 +205,8 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
         userNetwork.loginUserRequest(socket: self.networkWebSocket, username: username, password: password, onLoginResponse: {(userID, fullname, email, username)
             in
             var responseMessage = "Incorrect username or password.";
+            var msgType = "error";
+            
             if(userID>0){
                 self.userInterface.hideAnyViews();
                 self.userInterface.renderMenu(loggedin: true);
@@ -207,6 +215,7 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
                 self.loggedinUserData.fullname = fullname;
                 self.loggedinUserData.email = email;
                 responseMessage = "Welcome " + fullname.components(separatedBy: " ")[0] + "!";
+                msgType = "success";
             }
             self.userInterface.updateInfoLabel(newText: responseMessage, show: true, hideAfter: 5);
         });
@@ -216,9 +225,11 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
         userNetwork.signUpUserRequest(socket: self.networkWebSocket, username: username, password: password, fullname: fullname, email: email, onSignUpResponse: {(success, errorMsg)
             in
             var responseMessage: String!;
+            var msgType = "error";
             if(success==true){
                 self.userInterface.hideAnyViews();
                 responseMessage = "Successfully signed up. You can login now!";
+                msgType = "success";
             }else{
                 responseMessage = errorMsg;
             }
@@ -234,9 +245,17 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
     func requestUserStrands() {
         strandNetwork.getUserStrands(socket: self.networkWebSocket, userID: self.loggedinUserData.id, onReceive: {(strands, fComments)
             in
-            
             self.userInterface.populateUserStrands(strands: strands, firstComments: fComments);
-        
+        });
+    }
+    
+    func deleteStrandRequest(realID: Int){
+        strandNetwork.deleteStrand(socket: self.networkWebSocket, strandID: realID, onResponse: {(success)
+            in
+            self.userInterface.updateInfoLabel(newText: "Successfully Deleted!", show: true, hideAfter: 2);
+            self.userInterface.closeSingleStrandInfoViewWrap();
+            self.requestUserStrands();
+            self.setNewRegionData();
         });
     }
     

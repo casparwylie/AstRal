@@ -41,54 +41,6 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Strands/ViewController.swift"
-            timestampString = "499798724.995716"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "96"
-            endingLineNumber = "96"
-            landmarkName = "updateAtmosphere(currentLocation:currentHeading:)"
-            landmarkType = "7">
-            <Locations>
-               <Location
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "Strands.ViewController.(updateAtmosphere (currentLocation : __ObjC.CLLocation, currentHeading : __ObjC.CLHeading) -&gt; ()).(closure #1)"
-                  moduleName = "Strands"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/casparwylie/Desktop/%20%20/Projects/Strands/Strands/ViewController.swift"
-                  timestampString = "499176796.337355"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "91"
-                  endingLineNumber = "91"
-                  offsetFromSymbolStart = "3496">
-               </Location>
-               <Location
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "Strands.ViewController.(updateAtmosphere (currentLocation : __ObjC.CLLocation, currentHeading : __ObjC.CLHeading) -&gt; ()).(closure #1).(closure #1)"
-                  moduleName = "Strands"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/casparwylie/Desktop/%20%20/Projects/Strands/Strands/ViewController.swift"
-                  timestampString = "499176796.340141"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "94"
-                  endingLineNumber = "94"
-                  offsetFromSymbolStart = "36">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
             filePath = "Network.swift"
             timestampString = "500063037.742739"
             startingColumnNumber = "9223372036854775807"
@@ -112,22 +64,6 @@
             startingLineNumber = "125"
             endingLineNumber = "125"
             landmarkName = "getRegionData(socket:currLocation:onReceiveData:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Strands/ViewController.swift"
-            timestampString = "499798724.995716"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "99"
-            endingLineNumber = "99"
-            landmarkName = "updateAtmosphere(currentLocation:currentHeading:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -218,11 +154,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "UserInterface.swift"
-            timestampString = "500153769.295035"
+            timestampString = "500242213.516317"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "520"
-            endingLineNumber = "520"
+            startingLineNumber = "603"
+            endingLineNumber = "603"
             landmarkName = "renderMenu(loggedin:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -234,11 +170,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Strands/ViewController.swift"
-            timestampString = "499798724.995716"
+            timestampString = "500241514.497572"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "180"
-            endingLineNumber = "180"
+            startingLineNumber = "184"
+            endingLineNumber = "184"
             landmarkName = "addStrandReady(comment:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -250,11 +186,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Network.swift"
-            timestampString = "500063037.742739"
+            timestampString = "500242213.516317"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "150"
-            endingLineNumber = "150"
+            startingLineNumber = "162"
+            endingLineNumber = "162"
             landmarkName = "addStrand(socket:strandLocation:strandDisplayInfo:onSuccess:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -282,11 +218,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "UserInterface.swift"
-            timestampString = "500152047.957685"
+            timestampString = "500242213.516317"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "239"
-            endingLineNumber = "239"
+            startingLineNumber = "323"
+            endingLineNumber = "323"
             landmarkName = "renderPostCommentForm()"
             landmarkType = "7">
          </BreakpointContent>
@@ -314,11 +250,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "UserInterface.swift"
-            timestampString = "500152047.957685"
+            timestampString = "500240149.569357"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "193"
-            endingLineNumber = "193"
+            startingLineNumber = "217"
+            endingLineNumber = "217"
             landmarkName = "loginSubmitWrapper(sender:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -330,11 +266,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Strands/ViewController.swift"
-            timestampString = "500058851.813535"
+            timestampString = "500241514.497572"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "199"
-            endingLineNumber = "199"
+            startingLineNumber = "205"
+            endingLineNumber = "205"
             landmarkName = "loginRequest(username:password:)"
             landmarkType = "7">
             <Locations>
@@ -378,11 +314,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Strands/ViewController.swift"
-            timestampString = "500058851.813535"
+            timestampString = "500241514.497572"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "202"
-            endingLineNumber = "202"
+            startingLineNumber = "210"
+            endingLineNumber = "210"
             landmarkName = "loginRequest(username:password:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -410,11 +346,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "UserInterface.swift"
-            timestampString = "500152047.957685"
+            timestampString = "500242213.516317"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "339"
-            endingLineNumber = "339"
+            startingLineNumber = "423"
+            endingLineNumber = "423"
             landmarkName = "renderSignUpForm()"
             landmarkType = "7">
          </BreakpointContent>
@@ -426,11 +362,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Strands/ViewController.swift"
-            timestampString = "500057423.352251"
+            timestampString = "500241514.497572"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "185"
-            endingLineNumber = "185"
+            startingLineNumber = "189"
+            endingLineNumber = "189"
             landmarkName = "addStrandReady(comment:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -442,11 +378,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Strands/ViewController.swift"
-            timestampString = "500057497.017923"
+            timestampString = "500241514.497572"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "165"
-            endingLineNumber = "165"
+            startingLineNumber = "169"
+            endingLineNumber = "169"
             landmarkName = "addStrandTemp(strandLocation:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -458,11 +394,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Network.swift"
-            timestampString = "500063037.742739"
+            timestampString = "500242213.516317"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "145"
-            endingLineNumber = "145"
+            startingLineNumber = "144"
+            endingLineNumber = "144"
             landmarkName = "addStrand(socket:strandLocation:strandDisplayInfo:onSuccess:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -474,11 +410,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "UserInterface.swift"
-            timestampString = "500152047.957685"
+            timestampString = "500240149.569357"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "155"
-            endingLineNumber = "155"
+            startingLineNumber = "174"
+            endingLineNumber = "174"
             landmarkName = "toggleMenu(vert:)"
             landmarkType = "7">
             <Locations>
@@ -522,11 +458,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "UserInterface.swift"
-            timestampString = "500152047.957685"
+            timestampString = "500242213.516317"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "267"
-            endingLineNumber = "267"
+            startingLineNumber = "351"
+            endingLineNumber = "351"
             landmarkName = "changeBlurToggle()"
             landmarkType = "7">
          </BreakpointContent>
@@ -538,11 +474,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "UserInterface.swift"
-            timestampString = "500152047.957685"
+            timestampString = "500242213.516317"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "263"
-            endingLineNumber = "263"
+            startingLineNumber = "347"
+            endingLineNumber = "347"
             landmarkName = "changeBlurToggle()"
             landmarkType = "7">
          </BreakpointContent>
@@ -586,11 +522,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Strands/ViewController.swift"
-            timestampString = "500143913.147244"
+            timestampString = "500241514.497572"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "238"
-            endingLineNumber = "238"
+            startingLineNumber = "248"
+            endingLineNumber = "248"
             landmarkName = "requestUserStrands()"
             landmarkType = "7">
          </BreakpointContent>
@@ -602,11 +538,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Network.swift"
-            timestampString = "500143962.477125"
+            timestampString = "500242213.516317"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "172"
-            endingLineNumber = "172"
+            startingLineNumber = "184"
+            endingLineNumber = "184"
             landmarkName = "getUserStrands(socket:userID:onReceive:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -618,11 +554,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Network.swift"
-            timestampString = "500144173.41779"
+            timestampString = "500242213.516317"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "171"
-            endingLineNumber = "171"
+            startingLineNumber = "183"
+            endingLineNumber = "183"
             landmarkName = "getUserStrands(socket:userID:onReceive:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -634,11 +570,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Network.swift"
-            timestampString = "500144174.463819"
+            timestampString = "500242213.516317"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "170"
-            endingLineNumber = "170"
+            startingLineNumber = "182"
+            endingLineNumber = "182"
             landmarkName = "getUserStrands(socket:userID:onReceive:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -650,12 +586,28 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "UserInterface.swift"
-            timestampString = "500152236.062543"
+            timestampString = "500240149.569357"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "401"
-            endingLineNumber = "401"
-            landmarkName = "populateUserStrands(strands:firstComments:)"
+            startingLineNumber = "297"
+            endingLineNumber = "297"
+            landmarkName = "showSingleStrandInfo(sender:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "UserInterface.swift"
+            timestampString = "500240149.569357"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "295"
+            endingLineNumber = "295"
+            landmarkName = "showSingleStrandInfo(sender:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

@@ -84,7 +84,7 @@ using namespace std;
     
     //convert to UIIMAGE for view (for testing)
 
-    //UIImage* new1IMG = MatToUIImage(orgFrame);
+    UIImage* new1IMG = MatToUIImage(orgFrame);
     
     
     NSString* toHideReturn = [NSString stringWithUTF8String:toHide.c_str()];

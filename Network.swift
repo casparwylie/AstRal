@@ -139,15 +139,27 @@ class StrandNetwork{
         let responseIdent = "addedStrand";
         let strandLat = strandLocation.coordinate.latitude;
         let strandLon = strandLocation.coordinate.longitude;
-
         
         
         let requestJSONname = JSON("addStrandRequest");
         let requestJSONstrandLocation = JSON(["longitude":String(strandLon), "latitude": String(strandLat)]);
-        let requestJSONstrandMedia = JSON(["postText": strandDisplayInfo.comment, "author": strandDisplayInfo.author, "userID": strandDisplayInfo.userID]);
         
-        let requestJSON: JSON = JSON(["request":requestJSONname, "strandLocation":requestJSONstrandLocation, "strandMedia":requestJSONstrandMedia]);
-        socket.write(string: requestJSON.rawString()!);
+        
+        
+        
+        CLGeocoder().reverseGeocodeLocation(strandLocation, completionHandler: {(placemarks,err) in
+            var areaName = "N/A";
+            if((placemarks?.count)!>0){
+                let placemark = (placemarks?[0])! as CLPlacemark;
+                areaName = placemark.thoroughfare! + ", " + placemark.locality!;
+            }
+            let requestJSONstrandMedia = JSON(["postText": strandDisplayInfo.comment, "author": strandDisplayInfo.author, "userID": strandDisplayInfo.userID, "areaName": areaName]);
+            let requestJSON: JSON = JSON(["request":requestJSONname, "strandLocation":requestJSONstrandLocation, "strandMedia":requestJSONstrandMedia]);
+            socket.write(string: requestJSON.rawString()!);
+    
+        });
+        
+        
         socket.onText = { (responseData: String) in
             let responseJSON = NetworkSocketHandler().processResponseAsJSON(responseData: responseData);
              if(String(describing: responseJSON["response"]) == responseIdent){
@@ -170,6 +182,24 @@ class StrandNetwork{
             let responseJSON = NetworkSocketHandler().processResponseAsJSON(responseData: responseData);
             if(String(describing: responseJSON["response"]) == responseIdent){
                 onReceive(responseJSON["strands"], responseJSON["fComments"]);
+            }
+        }
+    }
+    
+    func deleteStrand(socket: WebSocket,strandID: Int, onResponse: @escaping (Bool)->()){
+        
+        let responseIdent = "deletedStrands";
+        
+        let requestJSONname = JSON("deleteStrandRequest");
+        let requestJSONstrandID = JSON(strandID);
+        let requestJSON = JSON(["request": requestJSONname, "strandID": requestJSONstrandID]);
+        
+        socket.write(string: requestJSON.rawString()!);
+        socket.onText = { (responseData: String) in
+            let responseJSON = NetworkSocketHandler().processResponseAsJSON(responseData: responseData);
+            if(String(describing: responseJSON["response"]) == responseIdent){
+                let success: Bool = (responseJSON["success"]=="true" ? true: false);
+                onResponse(success);
             }
         }
     }

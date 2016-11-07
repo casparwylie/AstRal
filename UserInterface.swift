@@ -28,12 +28,14 @@ import CoreLocation
     @objc optional func signUpRequest(username: String, password: String, fullname: String, email: String);
     @objc optional func logoutUser();
     @objc optional func requestUserStrands();
+    @objc optional func deleteStrandRequest(realID: Int);
 }
 
 class UserInterface1{
     
     //MARK: Item initiation
     
+    //UI Buttons
     var menuButtons: [UIButton] = [];
     var setPOIbutton: UIButton!;
     var infoLabel: UIButton!;
@@ -47,18 +49,27 @@ class UserInterface1{
     var cancelSignUpButton: UIButton!;
     var closeUserStrandView: UIButton!;
     var closeUserProfileView: UIButton!;
+    var closeSingleStrandInfoView: UIButton!;
+    var deleteStrandButton: UIButton!;
     
+    //UI Text Fields
     var usernameLoginField: UITextField!;
     var passwordLoginField: UITextField!;
     var commentTextfield: UITextField!;
     var signUpFields: (username: UITextField?,password: UITextField?,fullname: UITextField?,email: UITextField?);
     
+    //UI Views
     var loginForm: UIView!;
     var commentForm: UIView!;
     var signUpForm: UIView!;
     var userStrandListView: UIView!;
     var userProfileView: UIView!;
+    var singleStrandInfoView: UIView!;
     
+    //UI Labels
+    var singleStrandFcommentTitle: UILabel!;
+    
+    //General Presets
     var actionDelegate: UIActionDelegate?;
     var tapToPost = false;
     var userScrollStrandListView: UIScrollView!;
@@ -70,8 +81,13 @@ class UserInterface1{
     var vertMenuShowing = false;
     var userStrandLabelYPos = 5;
     var tagsForBlur = 100;
+    let strandIconDest = "strand_icon.png";
+    var posStrandToDeleteRealID = 0;
+    var userStrandsJSON: JSON!;
+    var userStrandFirstCommentsJSON: JSON!;
     var currBlurState = "light";
     var screenSize: CGRect = UIScreen.main.bounds;
+    var singleStrandTapRecs: [UITapGestureRecognizer] = [];
     
     //MARK: UI constants
     let mainTypeFace = "Futura";
@@ -81,8 +97,11 @@ class UserInterface1{
     let mainFontColor = UIColor.black;
     let infoLabelYPos = 20;
     let buttonSpace = 2;
+    let singleStrandIconSize = (width: 60, height: 95);
     let userStrandLabelHeight = 18;
     let formWidth = 250;
+    let closeButtonWidth = 40;
+    let closeButtonHeight = 20;
     let defaultFormY = 150;
     let buttonHeight = 40;
     let buttonCornerRadius = CGFloat(3.0);
@@ -175,8 +194,13 @@ class UserInterface1{
         commentForm.isHidden = true;
         signUpForm.isHidden = true;
         userStrandListView.isHidden = true;
+        singleStrandInfoView.isHidden = true;
         userProfileView.isHidden = true;
         self.view.endEditing(true);
+    }
+    
+    @objc func closeSingleStrandInfoViewWrap(){
+        singleStrandInfoView.isHidden = true;
     }
     
     @objc func wrapTapped(touch: UITapGestureRecognizer){
@@ -231,6 +255,66 @@ class UserInterface1{
         actionDelegate?.addStrandReady!(comment: commentTextfield.text!);
         self.view.endEditing(true);
     }
+    
+    @objc func deleteStrandWrap(){
+        actionDelegate?.deleteStrandRequest!(realID: posStrandToDeleteRealID);
+    }
+    
+    func addUserStrandLabel(text: String, areaName: String, localID: Int){
+        
+        let strandTextLabel: UILabel  = UILabel(frame: CGRect(x: 25, y: userStrandLabelYPos+10, width: 250, height: userStrandLabelHeight));
+        let strandAreaLabel: UILabel  = UILabel(frame: CGRect(x: 25, y: userStrandLabelYPos+userStrandLabelHeight+10, width: 250, height: userStrandLabelHeight));
+        
+        
+        let strandIcon = UIImage(named: strandIconDest);
+        let strandIconView = UIImageView(image: strandIcon!);
+        strandIconView.tag = localID;
+        strandIconView.frame = CGRect(x: 0, y:  userStrandLabelYPos+12, width: 20, height: 30);
+        strandTextLabel.text = text;
+        strandAreaLabel.text = "in " + areaName;
+        
+        let uiImageTap = UITapGestureRecognizer(target: self, action: #selector(showSingleStrandInfo));
+        strandIconView.isUserInteractionEnabled = true;
+        strandIconView.addGestureRecognizer(uiImageTap);
+        strandTextLabel.font = UIFont(name: mainTypeFace, size: 17);
+        strandAreaLabel.font = UIFont(name: mainTypeFace+"-Bold", size: 13);
+        
+        userScrollStrandListView.addSubview(strandTextLabel);
+        userScrollStrandListView.addSubview(strandAreaLabel);
+        userScrollStrandListView.addSubview(strandIconView);
+        
+    }
+    
+    @objc func showSingleStrandInfo(sender: UITapGestureRecognizer){
+        
+        let strandInfoLocalID = sender.view?.tag;
+        posStrandToDeleteRealID = userStrandsJSON[strandInfoLocalID!]["s_id"].int!;
+
+        let relTitleText = userStrandFirstCommentsJSON[strandInfoLocalID!]["c_text"].rawString()!;
+        
+        singleStrandFcommentTitle.text = relTitleText;
+
+        singleStrandInfoView.isHidden = false;
+    }
+    
+    func populateUserStrands(strands: JSON, firstComments: JSON){
+        userStrandsJSON = strands;
+        userStrandFirstCommentsJSON = firstComments;
+        for subview in userScrollStrandListView.subviews{
+            subview.removeFromSuperview();
+        }
+        userStrandLabelYPos = 5;
+        let labelHeight = 2*userStrandLabelHeight+10;
+        userScrollStrandListView.contentSize = CGSize(width: CGFloat(viewPageWidth), height: CGFloat(5+(strands.count*labelHeight)));
+        var count = 0;
+        for strand in strands{
+            let areaName = strands[count]["s_area_name"].rawString()!;
+            self.addUserStrandLabel(text: firstComments[count]["c_text"].rawString()!, areaName: areaName, localID: count);
+            self.userStrandLabelYPos += 2*self.userStrandLabelHeight + 10;
+            count += 1;
+        }
+    }
+
     
     //MARK: render UI components
     func renderPostCommentForm(){
@@ -353,6 +437,46 @@ class UserInterface1{
         self.view.addSubview(signUpForm);
     }
     
+    func renderSingleStrandInfoView(){
+        let viewHeight = 250;
+        singleStrandInfoView = UIView(frame: CGRect(x:Int(screenSize.width/2)-viewPageWidth/2,y: 60 + buttonSpace,width: viewPageWidth, height: viewHeight));
+        singleStrandInfoView.isHidden = true;
+        singleStrandInfoView.insertSubview(processBlurEffect(bounds: singleStrandInfoView.bounds, cornerRadiusVal: buttonCornerRadius, light: true), at: 0);
+        
+        
+        let closeSingleStrandInfoRect = CGRect(x: viewPageWidth-(closeButtonWidth+5), y: 5, width: closeButtonWidth, height: closeButtonHeight);
+        closeSingleStrandInfoView = addButtonProperties(title: "Close", hidden: false, pos: closeSingleStrandInfoRect, cornerRadius: buttonCornerRadius, blurLight: true);
+        closeSingleStrandInfoView.addTarget(self, action: #selector(closeSingleStrandInfoViewWrap), for: .touchUpInside);
+        
+        let deleteButtonWidth = 70;
+        let deleteStrandButtonRect = CGRect(x: viewPageWidth/2-(deleteButtonWidth/2), y: viewHeight-(buttonHeight+5), width: deleteButtonWidth, height: buttonHeight);
+        
+        deleteStrandButton = addButtonProperties(title: "Delete", hidden: false, pos: deleteStrandButtonRect, cornerRadius: buttonCornerRadius, blurLight: true);
+        deleteStrandButton.addTarget(self, action: #selector(deleteStrandWrap), for: .touchUpInside);
+
+    
+        let strandIcon = UIImage(named: strandIconDest);
+        let strandIconView = UIImageView(image: strandIcon!);
+        strandIconView.frame = CGRect(x: (viewPageWidth/2)-(singleStrandIconSize.width/2), y:  20, width: singleStrandIconSize.width, height: singleStrandIconSize.height);
+        
+        singleStrandFcommentTitle = UILabel(frame: CGRect(x: 10, y: singleStrandIconSize.height+5, width: viewPageWidth-20, height: 100));
+        singleStrandFcommentTitle.font = UIFont(name: mainTypeFace, size: 15);
+        singleStrandFcommentTitle.lineBreakMode = NSLineBreakMode.byWordWrapping;
+        singleStrandFcommentTitle.textAlignment = .center;
+        singleStrandFcommentTitle.numberOfLines = 3;
+        
+        
+        singleStrandInfoView.addSubview(singleStrandFcommentTitle);
+        singleStrandInfoView.addSubview(closeSingleStrandInfoView);
+        singleStrandInfoView.addSubview(deleteStrandButton);
+        singleStrandInfoView.addSubview(strandIconView);
+        
+        self.view.addSubview(singleStrandInfoView);
+        
+    }
+    
+
+    
     func renderUserStrandsView(){
         let viewHeight = 370;
         userStrandListView = UIView(frame: CGRect(x:Int(screenSize.width/2)-viewPageWidth/2,y: 60 + buttonSpace,width: viewPageWidth, height: viewHeight));
@@ -361,8 +485,8 @@ class UserInterface1{
         userScrollStrandListView.contentSize = CGSize(width: CGFloat(viewPageWidth), height: CGFloat(viewHeight));
         userStrandListView.insertSubview(processBlurEffect(bounds: userStrandListView.bounds, cornerRadiusVal: buttonCornerRadius, light: true), at: 0);
         
-        let closeButtonWidth = 40;
-        let closeUserStrandViewRect = CGRect(x: viewPageWidth-(closeButtonWidth+5), y: 5, width: closeButtonWidth, height: 20);
+
+        let closeUserStrandViewRect = CGRect(x: viewPageWidth-(closeButtonWidth+5), y: 5, width: closeButtonWidth, height: closeButtonHeight);
         closeUserStrandView = addButtonProperties(title: "Close", hidden: false, pos: closeUserStrandViewRect, cornerRadius: buttonCornerRadius, blurLight: true);
         closeUserStrandView.addTarget(self, action: #selector(hideAnyViews), for: .touchUpInside);
 
@@ -371,46 +495,6 @@ class UserInterface1{
         self.view.addSubview(userStrandListView);
     }
     
-    func addUserStrandLabel(text: String, areaName: String){
-        let strandTextLabel: UILabel  = UILabel(frame: CGRect(x: 25, y: userStrandLabelYPos+10, width: 250, height: userStrandLabelHeight));
-        let strandAreaLabel: UILabel  = UILabel(frame: CGRect(x: 25, y: userStrandLabelYPos+userStrandLabelHeight+10, width: 250, height: userStrandLabelHeight));
-        
-        let strandIconDest = "strand_icon.png";
-        let strandIcon = UIImage(named: strandIconDest);
-        let strandIconView = UIImageView(image: strandIcon!);
-        strandIconView.frame = CGRect(x: 0, y:  userStrandLabelYPos+12, width: 20, height: 30);
-        
-        strandTextLabel.text = text;
-        strandAreaLabel.text = "in " + areaName;
-        strandTextLabel.font = UIFont(name: mainTypeFace, size: 17);
-        strandAreaLabel.font = UIFont(name: mainTypeFace+"-Bold", size: 13);
-        userScrollStrandListView.addSubview(strandTextLabel);
-        userScrollStrandListView.addSubview(strandAreaLabel);
-        userScrollStrandListView.addSubview(strandIconView);
-    }
-    
-    func populateUserStrands(strands: JSON, firstComments: JSON){
-        for subview in userScrollStrandListView.subviews{
-            subview.removeFromSuperview();
-        }
-        userStrandLabelYPos = 5;
-        let labelHeight = 2*userStrandLabelHeight+10;
-        userScrollStrandListView.contentSize = CGSize(width: CGFloat(viewPageWidth), height: CGFloat(5+(strands.count*labelHeight)));
-        var count = 0;
-        for strand in strands{
-            let coordLocation = CLLocation(latitude: strands[count]["s_coord_lat"].double!, longitude: strands[count]["s_coord_lon"].double!);
-            CLGeocoder().reverseGeocodeLocation(coordLocation, completionHandler: {(placemarks,err) in
-                var areaName = "";
-                if((placemarks?.count)!>0){
-                    let placemark = (placemarks?[0])! as CLPlacemark;
-                    areaName = placemark.thoroughfare! + ", " + placemark.locality!;
-                }
-                self.addUserStrandLabel(text: firstComments[count]["c_text"].rawString()!, areaName: areaName);
-                self.userStrandLabelYPos += 2*self.userStrandLabelHeight + 10;
-                count += 1;
-            });
-        }
-    }
     
     func renderProfileView(){
         let viewHeight = 370;
@@ -418,8 +502,7 @@ class UserInterface1{
         userProfileView.isHidden = true;
         userProfileView.insertSubview(processBlurEffect(bounds: userProfileView.bounds, cornerRadiusVal: buttonCornerRadius, light: true), at: 0);
         
-        let closeButtonWidth = 40;
-        let closeUserProfileViewRect = CGRect(x: viewPageWidth-(closeButtonWidth+5), y: 5, width: closeButtonWidth, height: 20);
+        let closeUserProfileViewRect = CGRect(x: viewPageWidth-(closeButtonWidth+5), y: 5, width: closeButtonWidth, height: closeButtonHeight);
         closeUserProfileView = addButtonProperties(title: "Close", hidden: false, pos: closeUserProfileViewRect, cornerRadius: buttonCornerRadius, blurLight: true);
         closeUserProfileView.addTarget(self, action: #selector(hideAnyViews), for: .touchUpInside);
         
@@ -571,7 +654,9 @@ class UserInterface1{
     
     //MARK: Update label contents
     func updateInfoLabel(newText: String, show: Bool, hideAfter: Int){
+
         infoLabel.setTitle(newText, for: UIControlState());
+        
         if(show == false){
             infoLabel.isHidden = true;
         }else{
@@ -602,6 +687,7 @@ class UserInterface1{
         renderPostCommentForm();
         renderProfileView();
         renderUserStrandsView();
+        renderSingleStrandInfoView();
     }
     
 }
