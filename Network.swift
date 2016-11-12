@@ -18,16 +18,31 @@ import Starscream
 import CoreLocation
 import SwiftyJSON
 
+@objc protocol NetworkResponseDelegate {
+    
+    @objc optional func regionDataResponse(responseStr: String);
+    @objc optional func userLoggedinResponse(responseStr: String);
+    @objc optional func addedStrandResponse(responseStr: String);
+    @objc optional func userStrandsResponse(responseStr: String);
+    @objc optional func deletedStrandResponse(responseStr: String);
+    @objc optional func strandCommentsResponse(responseStr: String);
+    @objc optional func postedCommentResponse(responseStr: String);
+    @objc optional func updatedUserDataResponse(responseStr: String);
+    
+}
+
+
+//MARK: general socket functionality, and response function routing
 class NetworkSocketHandler{
     
     let socket = WebSocket(url: URL(string: "ws://casparwylie.me:3000/")!);
-    
-    //MARK: Initial server connection
+    var networkResponseDelegate: NetworkResponseDelegate?;
     func connectWebSocket() -> WebSocket{
         socket.connect();
         socket.onConnect = {
             print("Connected to WebSocket");
         }
+        setResponseRouteHandler();
         
         return socket;
     }
@@ -37,170 +52,116 @@ class NetworkSocketHandler{
         let responseJSON = JSON(data: responseData!);
         return responseJSON;
     }
-}
-
-class UserNetwork{
     
-    func loginUserRequest(socket: WebSocket, username: String, password: String, onLoginResponse: @escaping (Int, String, String, String)->()){
+    func sendRelevantJsonRequest(socket: WebSocket, requestName: String, relevantData: [String: String]){
         
-        let requestJSONname = JSON("loginUser");
-        let requestJSONauthData = JSON(["username": username, "password": password]);
-        let requestJSON = JSON(["request": requestJSONname, "authData": requestJSONauthData]);
-        
-        let responseIdent = "loginResponse";
-        socket.write(string: requestJSON.rawString()!);
-        socket.onText = { (responseData: String) in
-            let responseJSON = NetworkSocketHandler().processResponseAsJSON(responseData: responseData);
-            if(String(describing: responseJSON["response"]) == responseIdent){
-                var userID = 0;
-                var username = "";
-                var fullname =  "";
-                var email =  "";
-                if(responseJSON["success"].rawString()! == "true"){
-                    userID = Int(responseJSON["result"]["u_id"].rawString()!)!;
-                    username = responseJSON["result"]["u_uname"].rawString()!;
-                    fullname = responseJSON["result"]["u_fullname"].rawString()!;
-                    email = responseJSON["result"]["u_email"].rawString()!;
-                }
-                onLoginResponse(userID, fullname, email, username);
-            }
+        var relevantDataAsJson: [String: JSON] = [:];
+        for element in relevantData{
+            relevantDataAsJson[element.key] =  JSON(element.value);
         }
+        let finalRelevantDataAsJson = JSON(relevantDataAsJson);
+        let finalJsonRequestObject = JSON(["request": JSON(requestName), "requestData": finalRelevantDataAsJson]);
+        socket.write(string: finalJsonRequestObject.rawString()!);
     }
+
     
-    func signUpUserRequest(socket: WebSocket, username: String, password: String, fullname: String, email: String, onSignUpResponse: @escaping (Bool, String)->()){
+    func setResponseRouteHandler(){
+        socket.onText = { (responseString: String) in
+            let responseJSON = self.processResponseAsJSON(responseData: responseString);
+            switch(responseJSON["response"].string!){
+                case "regionData":
+                    self.networkResponseDelegate?.regionDataResponse!(responseStr: responseString);
+                case "userLoggedin":
+                    self.networkResponseDelegate?.userLoggedinResponse!(responseStr: responseString);
+                case "addedStrand":
+                    self.networkResponseDelegate?.addedStrandResponse!(responseStr: responseString);
+                case "userStrands":
+                    self.networkResponseDelegate?.userStrandsResponse!(responseStr: responseString);
+                case "deletedStrand":
+                    self.networkResponseDelegate?.deletedStrandResponse!(responseStr: responseString);
+                case "strandComments":
+                    self.networkResponseDelegate?.strandCommentsResponse!(responseStr: responseString);
+                case "postedComment":
+                    self.networkResponseDelegate?.postedCommentResponse!(responseStr: responseString);
+                case "updatedUserData":
+                    self.networkResponseDelegate?.updatedUserDataResponse!(responseStr: responseString);
+                default:
+                    print("failed");
+
         
-        let requestJSONname = JSON("signUpUser");
-        let requestJSONuserData = JSON(["username":username, "password": password, "email": email, "fullname": fullname]);
-        
-        let requestJSON = JSON(["request":requestJSONname, "userData": requestJSONuserData]);
-        
-        let responseIdent = "signUpResponse";
-        socket.write(string: requestJSON.rawString()!);
-        socket.onText = { (responseData: String) in
-            let responseJSON = NetworkSocketHandler().processResponseAsJSON(responseData: responseData);
-            if(String(describing: responseJSON["response"]) == responseIdent){
-                var success = true;
-                if(responseJSON["success"] == "false"){
-                    success = false;
-                }
-                onSignUpResponse(success, responseJSON["errorMsg"].rawString()!);
             }
         }
     }
     
 }
 
-class StrandNetwork{
+//MARK: all network request data organisers
+class NetworkRequestHandler{
+    
+    func loginUserRequest(socket: WebSocket, username: String, password: String){
+        let organisedRelevantData = ["username": username, "password": password];
+        NetworkSocketHandler().sendRelevantJsonRequest(socket: socket,requestName: "loginUserRequest", relevantData: organisedRelevantData);
 
-    //MARK: Recurring request on new strand coord data
-    func getRegionData(socket: WebSocket, currLocation: CLLocation,
-                       onReceiveData: @escaping ([CLLocation],JSON)->()){
+    }
+    
+    func updateUserDataRequest(socket: WebSocket, username: String, password: String, fullname: String, email: String, userID: Int){
         
-        //setup request
-        var coordsAsCLLocation: [CLLocation] = [];
+        let updateType = (userID > 0 ? "userUpdate" : "userSignUp");
+        let organisedRelevantData = ["username":username, "password": password, "email": email, "fullname": fullname, "userID": String(userID), "updateType" : updateType];
+        NetworkSocketHandler().sendRelevantJsonRequest(socket: socket,requestName: "updateUserDataRequest", relevantData: organisedRelevantData);
+        
+    }
+
+    func getRegionData(socket: WebSocket, currLocation: CLLocation){
+        
         let currentLat = currLocation.coordinate.latitude;
         let currentLon = currLocation.coordinate.longitude;
-        let responseIdent = "regionData";
-        let responseStrandDataKey = "regionStrandData";
-        let responseStrandCommentKey = "strandComments";
         
-        
-        let requestJSONname = JSON("getRegionData");
-        let requestJSONcurrentLocation = JSON(["longitude": String(currentLon), "latitude": String(currentLat)]);
-        let requestJSON = JSON(["request": requestJSONname, "currentLocation": requestJSONcurrentLocation]);
-        
-        socket.write(string: requestJSON.rawString()!);
-        //receive response
-        socket.onText = { (responseData: String) in
-            
-            let responseJSON = NetworkSocketHandler().processResponseAsJSON(responseData: responseData);
-            
-            //format and organise response
-            if(String(describing: responseJSON["response"]) == responseIdent && responseJSON[responseStrandDataKey].count != 0){
-                
-                for var coordRowCount in 0...responseJSON[responseStrandDataKey].count-1{
-                    let rowLatitude = Double(responseJSON[responseStrandDataKey][coordRowCount]["s_coord_lat"].rawString()!);
-                    let rowLongitude = Double(responseJSON[responseStrandDataKey][coordRowCount]["s_coord_lon"].rawString()!);
-                    let rowAsCLLocation = CLLocation(latitude: CLLocationDegrees(rowLatitude!), longitude: CLLocationDegrees(rowLongitude!));
-                    coordsAsCLLocation.append(rowAsCLLocation);
-                }
-                
-            }
-            
-            //send response data to renderer
-            onReceiveData(coordsAsCLLocation, responseJSON[responseStrandCommentKey]);
-        }
-        
+       let organisedRelevantData = ["longitude": String(currentLon), "latitude": String(currentLat)];
+        NetworkSocketHandler().sendRelevantJsonRequest(socket: socket,requestName: "regionDataRequest", relevantData: organisedRelevantData);
+
     }
     
-    //MARK: Add strand request to network (save in database)
-    func addStrand(socket: WebSocket, strandLocation: CLLocation,strandDisplayInfo: (comment: String, author: String, userID: Int),onSuccess: @escaping (Bool)->()){
+    func addStrand(socket: WebSocket, strandLocation: CLLocation,strandDisplayInfo: (comment: String, author: String, userID: Int, areaName: String)){
         
-        let responseIdent = "addedStrand";
         let strandLat = strandLocation.coordinate.latitude;
         let strandLon = strandLocation.coordinate.longitude;
         
         
-        let requestJSONname = JSON("addStrandRequest");
-        let requestJSONstrandLocation = JSON(["longitude":String(strandLon), "latitude": String(strandLat)]);
+       let organisedRelevantData = ["longitude": String(strandLon),
+                                     "latitude": String(strandLat),
+                                     "postText": strandDisplayInfo.comment,
+                                     "author": strandDisplayInfo.author,
+                                     "userID": String(strandDisplayInfo.userID),
+                                     "areaName": strandDisplayInfo.areaName];
         
-        
-        
-        
-        CLGeocoder().reverseGeocodeLocation(strandLocation, completionHandler: {(placemarks,err) in
-            var areaName = "N/A";
-            if((placemarks?.count)!>0){
-                let placemark = (placemarks?[0])! as CLPlacemark;
-                areaName = placemark.thoroughfare! + ", " + placemark.locality!;
-            }
-            let requestJSONstrandMedia = JSON(["postText": strandDisplayInfo.comment, "author": strandDisplayInfo.author, "userID": strandDisplayInfo.userID, "areaName": areaName]);
-            let requestJSON: JSON = JSON(["request":requestJSONname, "strandLocation":requestJSONstrandLocation, "strandMedia":requestJSONstrandMedia]);
-            socket.write(string: requestJSON.rawString()!);
-    
-        });
-        
-        
-        socket.onText = { (responseData: String) in
-            let responseJSON = NetworkSocketHandler().processResponseAsJSON(responseData: responseData);
-             if(String(describing: responseJSON["response"]) == responseIdent){
-                let success: Bool = (responseJSON["success"]=="true" ? true: false);
-                onSuccess(success);
-            }
-        }
+        NetworkSocketHandler().sendRelevantJsonRequest(socket: socket,requestName: "addStrandRequest", relevantData: organisedRelevantData);
     }
     
-    func getUserStrands(socket: WebSocket,userID: Int, onReceive: @escaping (JSON, JSON)->()){
+    func getUserStrands(socket: WebSocket,userID: Int){
         
-        let responseIdent = "userStrands";
+        let organisedRelevantData = ["userID": String(userID)];
+        NetworkSocketHandler().sendRelevantJsonRequest(socket: socket,requestName: "userStrandsRequest", relevantData: organisedRelevantData);
+    }
+    
+    func deleteStrand(socket: WebSocket,strandID: Int){
         
-        let requestJSONname = JSON("getUserStrands");
-        let requestJSONuserID = JSON(userID);
-        let requestJSON = JSON(["request": requestJSONname, "userID": requestJSONuserID]);
+        let organisedRelevantData = ["strandID": String(strandID)];
+        NetworkSocketHandler().sendRelevantJsonRequest(socket: socket,requestName: "deleteStrandRequest", relevantData: organisedRelevantData);
 
-        socket.write(string: requestJSON.rawString()!);
-        socket.onText = { (responseData: String) in
-            let responseJSON = NetworkSocketHandler().processResponseAsJSON(responseData: responseData);
-            if(String(describing: responseJSON["response"]) == responseIdent){
-                onReceive(responseJSON["strands"], responseJSON["fComments"]);
-            }
-        }
     }
     
-    func deleteStrand(socket: WebSocket,strandID: Int, onResponse: @escaping (Bool)->()){
-        
-        let responseIdent = "deletedStrands";
-        
-        let requestJSONname = JSON("deleteStrandRequest");
-        let requestJSONstrandID = JSON(strandID);
-        let requestJSON = JSON(["request": requestJSONname, "strandID": requestJSONstrandID]);
-        
-        socket.write(string: requestJSON.rawString()!);
-        socket.onText = { (responseData: String) in
-            let responseJSON = NetworkSocketHandler().processResponseAsJSON(responseData: responseData);
-            if(String(describing: responseJSON["response"]) == responseIdent){
-                let success: Bool = (responseJSON["success"]=="true" ? true: false);
-                onResponse(success);
-            }
-        }
+    func getStrandComments(socket: WebSocket, strandID: Int){
+
+        let organisedRelevantData = ["strandID": String(strandID)];
+        NetworkSocketHandler().sendRelevantJsonRequest(socket: socket,requestName: "strandCommentsRequest", relevantData: organisedRelevantData);
     }
+    
+    func postComment(socket: WebSocket, strandID: Int, username: String, commentText: String){
+        
+        let organisedRelevantData = ["strandID": String(strandID), "username": username, "postText": commentText];
+        NetworkSocketHandler().sendRelevantJsonRequest(socket: socket,requestName: "postStrandCommentRequest", relevantData: organisedRelevantData);
+        
+    }
+    
 }

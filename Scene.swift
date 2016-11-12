@@ -125,21 +125,18 @@ class Scene{
         return singNode;
     }
     
-    func renderSingleStrand(renderID: Int, mapPoint: MKMapPoint, currMapPoint: MKMapPoint, strandDisplayInfo: (String, String), render: Bool, tempStrand: Bool, addSceneManual: Bool){
+    func renderSingleStrand(renderID: Int, mapPoint: MKMapPoint, currMapPoint: MKMapPoint, strandDisplayInfo: (String, String), render: Bool, tempStrand: Bool){
         
         var strandCoord = (x: mapPoint.x - currMapPoint.x, y: mapPoint.y - currMapPoint.y);
         strandCoord = rotateAroundPoint(pointXY: strandCoord, angle: -90);
-        
         if(render==true){
             //initiate strands
-            
+            removeTempStrand();
             if(tempStrand == false){
                 let strand = DAEtoSCNNodeWithText(filepath: "strandpost.dae", strandDisplayInfo: strandDisplayInfo);
                 strand.position = SCNVector3(x: Float(strandCoord.x), y: 0, z:  Float(strandCoord.y));
                 strands.append(strand);
-                if(addSceneManual == true){
-                    self.scene.rootNode.addChildNode(strands.last!);
-                }
+                self.scene.rootNode.addChildNode(strands.last!);
             }else{
                 tempStrandNode = DAEtoSCNNodeWithText(filepath: "strandpost.dae", strandDisplayInfo: strandDisplayInfo);
                 tempStrandNode.position = SCNVector3(x: Float(strandCoord.x), y: 0, z:  Float(strandCoord.y));
@@ -150,6 +147,7 @@ class Scene{
             //update strand position
             let newPos = SCNVector3(x: Float(strandCoord.x), y: 0.0, z:  Float(strandCoord.y));
             if(tempStrand == false){
+                //print(strands);
                 let moveToAction = SCNAction.move(to: newPos, duration: 1);
                 strands[renderID].runAction(moveToAction);
             }else{
@@ -166,30 +164,35 @@ class Scene{
     
     //MARK: render or update strand within 3D atmosphere
     func renderStrands(mapPoints: [MKMapPoint], currMapPoint: MKMapPoint,
-                       render: Bool, currentHeading: CLHeading, toHide: String, comments: JSON,addSceneManual: Bool){
+                       render: Bool, currentHeading: CLHeading, toHide: String, comments: JSON, tempStrandMapPoint: MKMapPoint){
         
         let toHideAsArr = toHide.components(separatedBy: ",");
         
         //remove previous area / region data
         if(render==true){
             if (strands.count != 0) {
-                for var oldStrandID in 0...strands.count-1{
+                for oldStrandID in 0...strands.count-1{
                     strands[oldStrandID].removeFromParentNode();
                 }
                 strands = [];
             }
         }
         
+        if(tempStrandMapPoint.x != 0.0){
+            let tempStrandDisplayInfo = (comment: " ", author: " ");
+            renderSingleStrand(renderID: -1,mapPoint: tempStrandMapPoint, currMapPoint: currMapPoint, strandDisplayInfo: tempStrandDisplayInfo, render: render, tempStrand: true);
+        }
+        
         //render or move new strands
         var i = 0;
         for mPoint in mapPoints{
-            let strandDisplayInfo = (comment: comments[i][0]["c_text"].rawString()!, author: comments[i][0]["c_u_uname"].rawString()!);
+            let strandDisplayInfo = (comment: comments[i]["c_text"].rawString()!, author: comments[i]["c_u_uname"].rawString()!);
             
-            renderSingleStrand(renderID: i,mapPoint: mPoint, currMapPoint: currMapPoint, strandDisplayInfo: strandDisplayInfo, render: render, tempStrand: false,addSceneManual: addSceneManual);
+            renderSingleStrand(renderID: i,mapPoint: mPoint, currMapPoint: currMapPoint, strandDisplayInfo: strandDisplayInfo, render: render, tempStrand: false);
             //hide non-street visible strands
-            for var hideID in toHideAsArr{
+            for hideID in toHideAsArr{
                 if (hideID == String(i)){
-                    //strands[i].isHidden = true;
+                    strands[i].isHidden = true;
                     break;
                 }else{
                     strands[i].isHidden = false;
@@ -216,15 +219,12 @@ class Scene{
 
 
     //MARK: Add all nodes to scene
-    func runScene(){
+    func renderSceneEssentials(){
         renderLight();
         renderCamera();
 
         scene.rootNode.addChildNode(lightNode);
         scene.rootNode.addChildNode(cameraNode);
-        for strand in strands{
-            scene.rootNode.addChildNode(strand);
-        }
     }
 
 }

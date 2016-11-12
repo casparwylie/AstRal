@@ -75,7 +75,7 @@ class Map: NSObject, MKMapViewDelegate{
     }
     
     //MARK: update pins that represent strand
-    
+    var pcount = 0;
     func updateSinglePin(coord: CLLocation, temp: Bool){
         let CLLCoordType = CLLocationCoordinate2D(latitude: coord.coordinate.latitude,
                                                   longitude: coord.coordinate.longitude);
@@ -89,6 +89,8 @@ class Map: NSObject, MKMapViewDelegate{
             mapView.addAnnotation(tempPin);
         }else{
             let pin = MKPointAnnotation();
+            pin.title = String(pcount);
+            pcount += 1;
             pin.coordinate = CLLCoordType;
             mapView.addAnnotation(pin);
         }

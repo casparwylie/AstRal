@@ -18,7 +18,8 @@
 
 @interface OpenCVWrapper : NSObject
 
-+(NSString*) strandsToHide: (double[][2])pxVals image:(UIImage*)UIMap currPoint:(double[2])currPointPX pxLength:(int) pxLength;
-//string strandsToHide(int pxVals[][2], UIImage* UIMap, int currPoint[2]);
++(NSString*) buildingDetect: (double[][2])pxVals image:(UIImage*)UIMap currPoint:(double[2])currPointPX pxLength:(int) pxLength forTapLimit:(bool)forTapLimit;
+
+//+(NSString*) limitNewStrandDist: (double[2])currPoint image:(UIImage*)UIMap desPoint:(double[2])desPoint;
 
 @end

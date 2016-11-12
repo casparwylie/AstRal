@@ -25,10 +25,13 @@ import CoreLocation
     @objc optional func renderTempStrandFromUI(tapX: Int, tapY: Int);
     @objc optional func cancelNewStrand();
     @objc optional func loginRequest(username: String, password: String);
-    @objc optional func signUpRequest(username: String, password: String, fullname: String, email: String);
+    @objc optional func updateUserDataRequest(username: String, password: String, fullname: String, email: String);
     @objc optional func logoutUser();
     @objc optional func requestUserStrands();
     @objc optional func deleteStrandRequest(realID: Int);
+    @objc optional func chooseStrandComments(tapX: Int, tapY: Int);
+    @objc optional func postNewComment(commentText: String);
+    
 }
 
 class UserInterface1{
@@ -50,29 +53,38 @@ class UserInterface1{
     var closeUserStrandView: UIButton!;
     var closeUserProfileView: UIButton!;
     var closeSingleStrandInfoView: UIButton!;
+    var closeStrandCommentsView: UIButton!;
     var deleteStrandButton: UIButton!;
+    var newCommentButton: UIButton!;
     
     //UI Text Fields
     var usernameLoginField: UITextField!;
     var passwordLoginField: UITextField!;
     var commentTextfield: UITextField!;
-    var signUpFields: (username: UITextField?,password: UITextField?,fullname: UITextField?,email: UITextField?);
+    var signUpFields: (username: UITextField?,
+                    password: UITextField?,
+                    fullname: UITextField?,
+                    email: UITextField?);
+    var commentExistingStrandTextfield: UITextField!;
     
     //UI Views
     var loginForm: UIView!;
     var commentForm: UIView!;
     var signUpForm: UIView!;
     var userStrandListView: UIView!;
+    var strandCommentsView: UIView!;
     var userProfileView: UIView!;
     var singleStrandInfoView: UIView!;
+    var userScrollStrandListView: UIScrollView!;
+    var strandCommentsListScrollView: UIScrollView!;
     
     //UI Labels
     var singleStrandFcommentTitle: UILabel!;
     
     //General Presets
+    var loggedinUserData = (id: 0, username: "Unknown", fullname: "Unknown", email: "Unknown", password: "");
     var actionDelegate: UIActionDelegate?;
     var tapToPost = false;
-    var userScrollStrandListView: UIScrollView!;
     var view: UIView!;
     var setTapPointForPost = (x: 0, y: 0);
     var mapShowing = false;
@@ -80,6 +92,7 @@ class UserInterface1{
     var mainMenuShowing = false;
     var vertMenuShowing = false;
     var userStrandLabelYPos = 5;
+    var strandCommentListLabelYPos = 5;
     var tagsForBlur = 100;
     let strandIconDest = "strand_icon.png";
     var posStrandToDeleteRealID = 0;
@@ -88,6 +101,7 @@ class UserInterface1{
     var currBlurState = "light";
     var screenSize: CGRect = UIScreen.main.bounds;
     var singleStrandTapRecs: [UITapGestureRecognizer] = [];
+    var intentToSignUp = true;
     
     //MARK: UI constants
     let mainTypeFace = "Futura";
@@ -102,8 +116,9 @@ class UserInterface1{
     let formWidth = 250;
     let closeButtonWidth = 40;
     let closeButtonHeight = 20;
-    let defaultFormY = 150;
+    let defaultFormY = 60;
     let buttonHeight = 40;
+    let commentTextLabelHeight = 20;
     let buttonCornerRadius = CGFloat(3.0);
     let generalButtonWidth = 40;
     let textFieldSize = (width: 190, height: 40);
@@ -141,6 +156,8 @@ class UserInterface1{
             self.tapToPost = true;
             
         case "Sign Up":
+            intentToSignUp = true;
+            signUpToProfileUpdateTransformForm(asProfile: false);
             hideAnyViews();
             signUpForm.isHidden = false;
             
@@ -156,11 +173,14 @@ class UserInterface1{
         case "Profile":
             toggleMenu(vert: true);
             hideAnyViews();
-            userProfileView.isHidden = false;
+            intentToSignUp = false;
+            signUpToProfileUpdateTransformForm(asProfile: true);
+            signUpForm.isHidden = false;
         
         case "Logout":
             toggleMenu(vert: true);
             renderMenu(loggedin: false);
+            hideAnyViews();
             actionDelegate?.logoutUser!();
             
         default:
@@ -194,6 +214,7 @@ class UserInterface1{
         commentForm.isHidden = true;
         signUpForm.isHidden = true;
         userStrandListView.isHidden = true;
+        strandCommentsView.isHidden = true;
         singleStrandInfoView.isHidden = true;
         userProfileView.isHidden = true;
         self.view.endEditing(true);
@@ -205,10 +226,12 @@ class UserInterface1{
     
     @objc func wrapTapped(touch: UITapGestureRecognizer){
         let tapPoint = touch.location(in: self.view);
-        if(self.tapToPost == true && mapShowing == false){
-            actionDelegate?.renderTempStrandFromUI!(tapX: Int(tapPoint.x), tapY: Int(tapPoint.y));
-        }else{
-            //get strandinfo
+        if(mapShowing == false){
+            if(self.tapToPost == true ){
+                actionDelegate?.renderTempStrandFromUI!(tapX: Int(tapPoint.x), tapY: Int(tapPoint.y));
+            }else{
+                actionDelegate?.chooseStrandComments!(tapX: Int(tapPoint.x), tapY: Int(tapPoint.y));
+            }
         }
     }
     
@@ -222,8 +245,22 @@ class UserInterface1{
     
     @objc func signUpSubmitWrapper(sender: UIButton!){
         self.view.endEditing(true);
-        actionDelegate?.signUpRequest!(username: (signUpFields.username?.text)!, password: (signUpFields.password?.text)!, fullname: (signUpFields.fullname?.text)!, email: (signUpFields.email?.text)!);
-
+        actionDelegate?.updateUserDataRequest!(username: (signUpFields.username?.text)!, password: (signUpFields.password?.text)!, fullname: (signUpFields.fullname?.text)!, email: (signUpFields.email?.text)!);
+    }
+    
+    func signUpToProfileUpdateTransformForm(asProfile: Bool){
+        if(asProfile == true){
+            signUpFields.username?.text = loggedinUserData.username;
+            signUpFields.email?.text = loggedinUserData.email;
+            signUpFields.fullname?.text = loggedinUserData.fullname;
+            signUpFields.password?.text = loggedinUserData.password;
+            signUpSubmitButton.setTitle("Update", for: UIControlState());
+        }else{
+            signUpFields.username?.text = "Username..";
+            signUpFields.email?.text = "Email...";
+            signUpFields.fullname?.text = "Fullname...";
+            signUpSubmitButton.setTitle("Sign Up", for: UIControlState());
+        }
     }
 
     
@@ -250,6 +287,10 @@ class UserInterface1{
         self.commentForm.isHidden = false;
     }
     
+    @objc func newCommentStrand(){
+        actionDelegate?.postNewComment!(commentText: commentExistingStrandTextfield.text!);
+    }
+    
     @objc func postStrand(){
         cancelTap();
         actionDelegate?.addStrandReady!(comment: commentTextfield.text!);
@@ -265,11 +306,11 @@ class UserInterface1{
         let strandTextLabel: UILabel  = UILabel(frame: CGRect(x: 25, y: userStrandLabelYPos+10, width: 250, height: userStrandLabelHeight));
         let strandAreaLabel: UILabel  = UILabel(frame: CGRect(x: 25, y: userStrandLabelYPos+userStrandLabelHeight+10, width: 250, height: userStrandLabelHeight));
         
-        
         let strandIcon = UIImage(named: strandIconDest);
         let strandIconView = UIImageView(image: strandIcon!);
         strandIconView.tag = localID;
         strandIconView.frame = CGRect(x: 0, y:  userStrandLabelYPos+12, width: 20, height: 30);
+        
         strandTextLabel.text = text;
         strandAreaLabel.text = "in " + areaName;
         
@@ -286,14 +327,10 @@ class UserInterface1{
     }
     
     @objc func showSingleStrandInfo(sender: UITapGestureRecognizer){
-        
         let strandInfoLocalID = sender.view?.tag;
         posStrandToDeleteRealID = userStrandsJSON[strandInfoLocalID!]["s_id"].int!;
-
         let relTitleText = userStrandFirstCommentsJSON[strandInfoLocalID!]["c_text"].rawString()!;
-        
         singleStrandFcommentTitle.text = relTitleText;
-
         singleStrandInfoView.isHidden = false;
     }
     
@@ -314,12 +351,70 @@ class UserInterface1{
             count += 1;
         }
     }
+    
+    func getHeightForField(text: String, font: UIFont, width: CGFloat) ->CGFloat{
+        let tempLabel = UILabel(frame: CGRect(x:0,y:0,width:width,height:CGFloat.greatestFiniteMagnitude));
+        tempLabel.numberOfLines = 0;
+        tempLabel.text = text;
+        tempLabel.font = font;
+        tempLabel.sizeToFit();
+        tempLabel.lineBreakMode = NSLineBreakMode.byWordWrapping;
+        return tempLabel.frame.height;
+    }
+    
+    var lastCommentHeight = 0;
+    var commentInfoHeight = 20;
+    func addStrandCommentLabel(text: String, infoString: String){
+        
+        let labelWidth = viewPageWidth-20;
+        let labelTextHeight =  getHeightForField(text: text, font: mainFont, width: CGFloat(labelWidth)) + 10;
+        lastCommentHeight = Int(labelTextHeight);
+        let commentTextLabel: UILabel  = UILabel(frame: CGRect(x: 5, y: strandCommentListLabelYPos+10, width: labelWidth, height: Int(labelTextHeight)));
+        
+        commentTextLabel.text = text;
+        commentTextLabel.lineBreakMode = NSLineBreakMode.byWordWrapping;
+        commentTextLabel.numberOfLines = Int(labelTextHeight/20)+1;
+        commentTextLabel.font = mainFont;
+        
+        let commentInfoLabel: UILabel  = UILabel(frame: CGRect(x: 5, y: strandCommentListLabelYPos+Int(labelTextHeight), width: labelWidth, height: commentInfoHeight));
+        
+    
+        commentInfoLabel.text = infoString;
+
+
+        commentInfoLabel.font = UIFont(name: mainTypeFace+"-Bold", size: 11);
+        
+        strandCommentsListScrollView.addSubview(commentTextLabel);
+        strandCommentsListScrollView.addSubview(commentInfoLabel);
+    }
+    
+    func populateStrandCommentsView(strandComments: JSON){
+        strandCommentsView.isHidden = false;
+        lastCommentHeight = 0;
+        for subview in strandCommentsListScrollView.subviews{
+            subview.removeFromSuperview();
+        }
+        strandCommentsListScrollView.contentSize = CGSize(width: CGFloat(viewPageWidth), height: CGFloat(800));
+        strandCommentListLabelYPos = 5;
+        
+        var count = 0;
+        var nextYPosCalc = 0;
+        for _ in strandComments{
+            let commentText = strandComments[count]["c_text"].rawString()!;
+            let infoString = "By " + strandComments[count]["c_u_uname"].rawString()! + ", at " + strandComments[count]["c_time"].rawString()!;
+            addStrandCommentLabel(text: commentText, infoString: infoString);
+            nextYPosCalc = lastCommentHeight + commentInfoHeight;
+            strandCommentListLabelYPos += nextYPosCalc;
+            count += 1;
+        }
+        strandCommentsListScrollView.contentSize = CGSize(width: CGFloat(viewPageWidth), height: CGFloat(5+strandCommentListLabelYPos+nextYPosCalc));
+    }
 
     
     //MARK: render UI components
     func renderPostCommentForm(){
         let formHeight = 100;
-        commentForm = UIView(frame: CGRect(x:Int(screenSize.width/2)-formWidth/2,y: defaultFormY + buttonSpace,width: formWidth, height: formHeight));
+        commentForm = UIView(frame: CGRect(x:Int(screenSize.width/2)-formWidth/2,y: defaultFormY + buttonHeight + buttonSpace,width: formWidth, height: formHeight));
         commentForm.isHidden = true;
         commentForm.insertSubview(processBlurEffect(bounds: commentForm.bounds, cornerRadiusVal: buttonCornerRadius, light: true), at: 0);
         
@@ -364,10 +459,10 @@ class UserInterface1{
     
     func renderLoginForm(){
         let formHeight = 176;
-        let buttonWidthLogin =  120;
-        let textWidthLogin =  240;
+        let buttonWidthLogin =  viewPageWidth/2 - 10;
+        let textWidthLogin =  viewPageWidth-10;
         
-        loginForm = UIView(frame: CGRect(x:Int(screenSize.width/2)-formWidth/2,y: defaultFormY + buttonSpace,width: formWidth, height: formHeight));
+        loginForm = UIView(frame: CGRect(x:Int(screenSize.width/2)-viewPageWidth/2,y: defaultFormY + buttonSpace,width: viewPageWidth, height: formHeight));
         loginForm.isHidden = true;
         loginForm.insertSubview(processBlurEffect(bounds: loginForm.bounds, cornerRadiusVal: buttonCornerRadius, light: true), at: 0);
         
@@ -384,7 +479,7 @@ class UserInterface1{
         loginSubmitButton = addButtonProperties(title: "Login", hidden: false, pos: loginSubmitButtonRect, cornerRadius: buttonCornerRadius, blurLight: true);
         loginSubmitButton.addTarget(self, action: #selector(loginSubmitWrapper), for: .touchUpInside);
         
-        let cancelLoginButtonRect = CGRect(x: 125, y: 130, width: buttonWidthLogin, height: textFieldSize.height);
+        let cancelLoginButtonRect = CGRect(x: viewPageWidth-(buttonWidthLogin+5), y: 130, width: buttonWidthLogin, height: textFieldSize.height);
         cancelLoginButton = addButtonProperties(title: "Cancel", hidden: false, pos: cancelLoginButtonRect, cornerRadius: buttonCornerRadius, blurLight: true);
         cancelLoginButton.addTarget(self, action: #selector(hideAnyViews), for: .touchUpInside);
         
@@ -399,10 +494,10 @@ class UserInterface1{
     func renderSignUpForm(){
         toggleMenu(vert: true);
         let formHeight = 271;
-        let buttonWidthSignUp =  120;
-        let textWidthSignUp =  240;
+        let buttonWidthSignUp = viewPageWidth/2 - 10;
+        let textWidthSignUp =  viewPageWidth - 10;
         
-        signUpForm = UIView(frame: CGRect(x:Int(screenSize.width/2)-formWidth/2,y: defaultFormY + buttonSpace,width: formWidth, height: formHeight));
+        signUpForm = UIView(frame: CGRect(x:Int(screenSize.width/2)-viewPageWidth/2,y: defaultFormY + buttonSpace,width: viewPageWidth, height: formHeight));
         signUpForm.isHidden = true;
         signUpForm.insertSubview(processBlurEffect(bounds: signUpForm.bounds, cornerRadiusVal: buttonCornerRadius, light: true), at: 0);
         
@@ -423,7 +518,7 @@ class UserInterface1{
         signUpSubmitButton = addButtonProperties(title: "Sign Up", hidden: false, pos: signUpSubmitButtonRect, cornerRadius: buttonCornerRadius, blurLight: true);
         signUpSubmitButton.addTarget(self, action: #selector(signUpSubmitWrapper), for: .touchUpInside);
         
-        let cancelSignUpButtonRect = CGRect(x: 125, y: 225, width: buttonWidthSignUp, height: textFieldSize.height);
+        let cancelSignUpButtonRect = CGRect(x: viewPageWidth-(buttonWidthSignUp+5), y: 225, width: buttonWidthSignUp, height: textFieldSize.height);
         cancelSignUpButton = addButtonProperties(title: "Cancel", hidden: false, pos: cancelSignUpButtonRect, cornerRadius: buttonCornerRadius, blurLight: true);
         cancelSignUpButton.addTarget(self, action: #selector(hideAnyViews), for: .touchUpInside);
         
@@ -439,7 +534,7 @@ class UserInterface1{
     
     func renderSingleStrandInfoView(){
         let viewHeight = 250;
-        singleStrandInfoView = UIView(frame: CGRect(x:Int(screenSize.width/2)-viewPageWidth/2,y: 60 + buttonSpace,width: viewPageWidth, height: viewHeight));
+        singleStrandInfoView = UIView(frame: CGRect(x:Int(screenSize.width/2)-viewPageWidth/2,y: defaultFormY + buttonSpace,width: viewPageWidth, height: viewHeight));
         singleStrandInfoView.isHidden = true;
         singleStrandInfoView.insertSubview(processBlurEffect(bounds: singleStrandInfoView.bounds, cornerRadiusVal: buttonCornerRadius, light: true), at: 0);
         
@@ -475,11 +570,39 @@ class UserInterface1{
         
     }
     
+    func renderStrandCommentsView(){
+        let viewHeight = 300;
+        strandCommentsView = UIView(frame: CGRect(x:Int(screenSize.width/2)-viewPageWidth/2,y: defaultFormY + buttonSpace,width: viewPageWidth, height: viewHeight));
+        strandCommentsView.isHidden = true;
+        strandCommentsView.insertSubview(processBlurEffect(bounds: strandCommentsView.bounds, cornerRadiusVal: buttonCornerRadius, light: true), at: 0);
+        
+        strandCommentsListScrollView = UIScrollView(frame: CGRect(x:5,y: closeButtonHeight+15+textFieldSize.height,width: viewPageWidth, height: viewHeight-(closeButtonHeight+15+textFieldSize.height)));
+
+        let closestrandCommentsViewRect = CGRect(x: viewPageWidth-(closeButtonWidth+5), y: 5, width: closeButtonWidth, height: closeButtonHeight);
+        closeStrandCommentsView = addButtonProperties(title: "Close", hidden: false, pos: closestrandCommentsViewRect, cornerRadius: buttonCornerRadius, blurLight: true);
+        closeStrandCommentsView.addTarget(self, action: #selector(hideAnyViews), for: .touchUpInside);
+        
+        let commentExistingStrandTFWidth = viewPageWidth-55;
+        commentExistingStrandTextfield = addTextFieldProperties(pos: CGRect(x: 5, y: closeButtonHeight+10, width: commentExistingStrandTFWidth, height: textFieldSize.height));
+        commentExistingStrandTextfield.text = "Enter Comment...";
+        
+        let newCommentButtonRect = CGRect(x: 10+commentExistingStrandTFWidth, y: closeButtonHeight+10, width: 40, height: 40);
+        newCommentButton = addButtonProperties(title: "Post", hidden: false, pos: newCommentButtonRect, cornerRadius: buttonCornerRadius, blurLight: true);
+        newCommentButton.addTarget(self, action: #selector(newCommentStrand), for: .touchUpInside);
+        
+        strandCommentsView.addSubview(newCommentButton);
+        strandCommentsView.addSubview(commentExistingStrandTextfield);
+        strandCommentsView.addSubview(closeStrandCommentsView);
+        strandCommentsView.addSubview(strandCommentsListScrollView);
+        self.view.addSubview(strandCommentsView);
+        
+    }
+    
 
     
     func renderUserStrandsView(){
         let viewHeight = 370;
-        userStrandListView = UIView(frame: CGRect(x:Int(screenSize.width/2)-viewPageWidth/2,y: 60 + buttonSpace,width: viewPageWidth, height: viewHeight));
+        userStrandListView = UIView(frame: CGRect(x:Int(screenSize.width/2)-viewPageWidth/2,y: defaultFormY + buttonSpace,width: viewPageWidth, height: viewHeight));
         userStrandListView.isHidden = true;
         userScrollStrandListView = UIScrollView(frame: CGRect(x:5,y: 25,width: viewPageWidth, height: viewHeight-30));
         userScrollStrandListView.contentSize = CGSize(width: CGFloat(viewPageWidth), height: CGFloat(viewHeight));
@@ -498,7 +621,7 @@ class UserInterface1{
     
     func renderProfileView(){
         let viewHeight = 370;
-        userProfileView = UIView(frame: CGRect(x:Int(screenSize.width/2)-viewPageWidth/2,y: 60 + buttonSpace,width: viewPageWidth, height: viewHeight));
+        userProfileView = UIView(frame: CGRect(x:Int(screenSize.width/2)-viewPageWidth/2,y: defaultFormY + buttonSpace,width: viewPageWidth, height: viewHeight));
         userProfileView.isHidden = true;
         userProfileView.insertSubview(processBlurEffect(bounds: userProfileView.bounds, cornerRadiusVal: buttonCornerRadius, light: true), at: 0);
         
@@ -673,7 +796,6 @@ class UserInterface1{
     //MARK: Render all items
     func renderAll(view: UIView){
         self.view = view;
-        
         mainFont = UIFont(name: mainTypeFace, size: 12);
         textFieldFont = UIFont(name: mainTypeFace, size: 15);
         viewPageWidth = Int(screenSize.width)-10;
@@ -684,6 +806,7 @@ class UserInterface1{
         addStrandTapRecognizer();
         renderLoginForm();
         renderSignUpForm();
+        renderStrandCommentsView();
         renderPostCommentForm();
         renderProfileView();
         renderUserStrandsView();
