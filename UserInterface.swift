@@ -226,9 +226,11 @@ class UserInterface1{
     
     @objc func wrapTapped(touch: UITapGestureRecognizer){
         let tapPoint = touch.location(in: self.view);
+        
         if(mapShowing == false){
             if(self.tapToPost == true ){
                 actionDelegate?.renderTempStrandFromUI!(tapX: Int(tapPoint.x), tapY: Int(tapPoint.y));
+                updateInfoLabel(newText: "Tap somewhere else or 'Done'", show: true, hideAfter: 0);
             }else{
                 actionDelegate?.chooseStrandComments!(tapX: Int(tapPoint.x), tapY: Int(tapPoint.y));
             }

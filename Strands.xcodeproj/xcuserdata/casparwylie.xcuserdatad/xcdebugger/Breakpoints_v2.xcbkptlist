@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Scene.swift"
-            timestampString = "500061097.945873"
+            timestampString = "501960668.020464"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "89"
-            endingLineNumber = "89"
+            startingLineNumber = "90"
+            endingLineNumber = "90"
             landmarkName = "DAEtoSCNNodeWithText(filepath:strandDisplayInfo:)"
             landmarkType = "7">
          </BreakpointContent>

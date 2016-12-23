@@ -62,8 +62,7 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
         let pxVals = self.map.collectPXfromMapPoints(mapPoints: mapPoints, currMapPoint: currMapPoint);
         var currPointPX = pxVals.currPointPX;
         var strandValsPX = pxVals.strandValsPX;
-        
-        //print("is new render: ", newRender);
+    
         
         self.map.getMapAsIMG(completion: {(image) in
             
@@ -114,7 +113,7 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
         var realStrandIDs: [Int] = [];
         let responseStrandDataKey = "regionStrandData";
         let strandFirstCommentsKey = "fComments";
-    
+        
         if(responseJSON[responseStrandDataKey].count != 0){
             
             for coordRowCount in 0...responseJSON[responseStrandDataKey].count-1{
@@ -126,7 +125,6 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
             }
             
         }
-        
         self.mapPoints = self.map.getCoordsAsMapPoints(coords: coordsAsCLLocation);
         self.map.updatePins(coords: coordsAsCLLocation);
         self.coordPoints = coordsAsCLLocation;
@@ -202,7 +200,7 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
         
         self.addTempFirst = true;
         tempStrandMapPoint = MKMapPoint();
-
+        self.scene.removeTempStrand();
         CLGeocoder().reverseGeocodeLocation(self.latestDesiredStrandLocation, completionHandler: {(placemarks,err) in
             var areaName = "N/A";
             if((placemarks?.count)!>0){
@@ -303,28 +301,23 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
     
     //MARK: Retrieve strand comments request and response middleware process
     func getStrandComments(strandID: Int){
-        networkRequest.getStrandComments(socket: self.networkWebSocket, strandID: realStrandIDs[possID]);
+        networkRequest.getStrandComments(socket: self.networkWebSocket, strandID: realStrandIDs[strandID]);
     }
-    
-    var possID = -1;
+    var viewingStrandID = -1;
     func chooseStrandComments(tapX: Int, tapY: Int){
-        
-        let tappedAsBearing = self.location.getBearingFromHorizontalTap(tapX: Double(tapX));
-
-        var lowestTol = 1000;
-        possID =  -1;
-        var localStrandID = 0;
-        for sData in strandDistAndBearingsFromUser{
-            var  diff = Int(tappedAsBearing) - sData.bearing;
-            diff = (diff < 0 ? diff * -1 : diff);
-            if(lowestTol > diff){
-                possID = localStrandID;
-                lowestTol = diff;
-            }
-            localStrandID  += 1;
+        let locationOfTap = CGPoint(x: tapX, y: tapY);
+        var strandTapID = -1;
+        let possStrandsFound = scene.sceneView.hitTest(locationOfTap, options: nil);
+        if let tappedStrand = possStrandsFound.first?.node.parent?.parent{
+            print(tappedStrand.name!)
+            let startIndex = tappedStrand.name?.index((tappedStrand.name?.startIndex)!, offsetBy: 2);
+            strandTapID = Int((tappedStrand.name?.substring(from: startIndex!))!)!;
+            viewingStrandID = strandTapID;
+            
         }
-        if(lowestTol < 10){
-            getStrandComments(strandID: possID);
+        if(strandTapID != nil && strandTapID != -1){
+            getStrandComments(strandID: strandTapID);
+            strandTapID = -1;
         }
     }
     func strandCommentsResponse(responseStr: String) {
@@ -334,15 +327,16 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
     
     //MARK: Post new strand comment request and response middleware process
     func postNewComment(commentText: String) {
-        if(possID != -1){
-            networkRequest.postComment(socket: self.networkWebSocket, strandID: realStrandIDs[possID], username: loggedinUserData.username, commentText: commentText);
+        if(viewingStrandID
+            != -1){
+            networkRequest.postComment(socket: self.networkWebSocket, strandID: realStrandIDs[viewingStrandID], username: loggedinUserData.username, commentText: commentText);
         }
     }
     
     func postedCommentResponse(responseStr: String) {
         let responseJSON = networkSocket.processResponseAsJSON(responseData: responseStr);
         self.userInterface.updateInfoLabel(newText: "Successfully Posted!", show: true, hideAfter: 2);
-        self.getStrandComments(strandID: self.possID);
+        self.getStrandComments(strandID: self.viewingStrandID);
     }
 
     

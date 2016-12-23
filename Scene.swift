@@ -26,12 +26,13 @@ class Scene{
     let scene = SCNScene();
     var tempStrandNode: SCNNode!;
     var strands: [SCNNode] = [];
+    var sceneView: SCNView!;
     
     //MARK: Add scene view to view
     func renderSceneLayer(frameView: UIView) -> Void{
         
         let frameRect = frameView.frame;
-        let sceneView = SCNView(frame: frameRect);
+        sceneView = SCNView(frame: frameRect);
         sceneView.backgroundColor = UIColor(white: 1, alpha: 0.0);
         frameView.addSubview(sceneView);
         
@@ -131,14 +132,15 @@ class Scene{
         strandCoord = rotateAroundPoint(pointXY: strandCoord, angle: -90);
         if(render==true){
             //initiate strands
-            removeTempStrand();
             if(tempStrand == false){
                 let strand = DAEtoSCNNodeWithText(filepath: "strandpost.dae", strandDisplayInfo: strandDisplayInfo);
+                strand.name = "s_" + String(renderID);
                 strand.position = SCNVector3(x: Float(strandCoord.x), y: 0, z:  Float(strandCoord.y));
                 strands.append(strand);
                 self.scene.rootNode.addChildNode(strands.last!);
             }else{
                 tempStrandNode = DAEtoSCNNodeWithText(filepath: "strandpost.dae", strandDisplayInfo: strandDisplayInfo);
+                tempStrandNode.name = "s_" + String(renderID);
                 tempStrandNode.position = SCNVector3(x: Float(strandCoord.x), y: 0, z:  Float(strandCoord.y));
                 self.scene.rootNode.addChildNode(tempStrandNode);
             }
@@ -192,7 +194,7 @@ class Scene{
             //hide non-street visible strands
             for hideID in toHideAsArr{
                 if (hideID == String(i)){
-                    strands[i].isHidden = true;
+                   // strands[i].isHidden = true;
                     break;
                 }else{
                     strands[i].isHidden = false;
