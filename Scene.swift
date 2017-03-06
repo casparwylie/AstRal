@@ -106,7 +106,7 @@ class Scene{
         
         //build DAE scene as node by each component
         for childNode in singNodeArray {
-            
+            /*
             let textNodeFront = SCNNode(geometry: textRenderFront);
             let textNodeBack = SCNNode(geometry: textRenderBack);
             
@@ -119,7 +119,7 @@ class Scene{
             textNodeBack.eulerAngles = SCNVector3(x: 0, y: -1.5708, z: 0);
             
             singNode.addChildNode(textNodeFront);
-            singNode.addChildNode(textNodeBack);
+            singNode.addChildNode(textNodeBack);*/
             singNode.addChildNode(childNode as SCNNode);
             
         }
@@ -130,6 +130,7 @@ class Scene{
         
         var strandCoord = (x: mapPoint.x - currMapPoint.x, y: mapPoint.y - currMapPoint.y);
         strandCoord = rotateAroundPoint(pointXY: strandCoord, angle: -90);
+        
         if(render==true){
             //initiate strands
             if(tempStrand == false){
@@ -156,14 +157,11 @@ class Scene{
                 tempStrandNode.position = newPos;
             }
         }
-
-        
     }
     
     func removeTempStrand(){
         tempStrandNode?.removeFromParentNode();
     }
-    
     //MARK: render or update strand within 3D atmosphere
     func renderStrands(mapPoints: [MKMapPoint], currMapPoint: MKMapPoint,
                        render: Bool, currentHeading: CLHeading, toHide: String, comments: JSON, tempStrandMapPoint: MKMapPoint){
@@ -179,12 +177,11 @@ class Scene{
                 strands = [];
             }
         }
-        
         if(tempStrandMapPoint.x != 0.0){
             let tempStrandDisplayInfo = (comment: " ", author: " ");
-            renderSingleStrand(renderID: -1,mapPoint: tempStrandMapPoint, currMapPoint: currMapPoint, strandDisplayInfo: tempStrandDisplayInfo, render: render, tempStrand: true);
+            renderSingleStrand(renderID: -1,mapPoint: tempStrandMapPoint, currMapPoint: currMapPoint, strandDisplayInfo: tempStrandDisplayInfo, render: false, tempStrand: true);
         }
-        
+
         //render or move new strands
         var i = 0;
         for mPoint in mapPoints{
@@ -194,7 +191,7 @@ class Scene{
             //hide non-street visible strands
             for hideID in toHideAsArr{
                 if (hideID == String(i)){
-                   // strands[i].isHidden = true;
+                    strands[i].isHidden = true;
                     break;
                 }else{
                     strands[i].isHidden = false;
@@ -203,7 +200,6 @@ class Scene{
             i += 1;
         }
     }
-    
     //MARK: gyro to scene camera mapping, on new gyro/motion data (delegated call from ViewController)
     func rotateCamera(gyroData: CMAttitude){
         
@@ -218,7 +214,6 @@ class Scene{
 
        cameraNode.eulerAngles = SCNVector3(x: Float(attitudePitch - 1.5708),y: Float(attitudeYaw),z: Float(-attitudeRoll));
     }
-
 
     //MARK: Add all nodes to scene
     func renderSceneEssentials(){

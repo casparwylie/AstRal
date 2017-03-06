@@ -36,6 +36,7 @@ import SwiftyJSON
 class NetworkSocketHandler{
     
     let socket = WebSocket(url: URL(string: "ws://casparwylie.me:3000/")!);
+    var ui: UserInterface1!;
     var networkResponseDelegate: NetworkResponseDelegate?;
     func connectWebSocket() -> WebSocket{
         socket.connect();
