@@ -29,7 +29,7 @@ class Scene{
     var sceneView: SCNView!;
     
     //MARK: Add scene view to view
-    func renderSceneLayer(frameView: UIView) -> Void{
+    func renderSceneLayer(_ frameView: UIView) -> Void{
         
         let frameRect = frameView.frame;
         sceneView = SCNView(frame: frameRect);
@@ -40,7 +40,7 @@ class Scene{
     }
     
     //MARK: values are approximate within tolerance bound
-    func isApprox(value1: CGFloat, value2: CGFloat, tol: CGFloat) -> Bool{
+    func isApprox(_ value1: CGFloat, value2: CGFloat, tol: CGFloat) -> Bool{
         if( ((value1 - tol) <= value2) && ((value1 + tol) >= value2 ) ){
             return true;
         }else{
@@ -56,7 +56,7 @@ class Scene{
         lightNode.position = SCNVector3(x: 1.5, y: 1.5, z: 1.5);
     }
     
-    func toDegrees(rad: Double) -> Double{
+    func toDegrees(_ rad: Double) -> Double{
         return rad*57.2958;
     }
     
@@ -70,14 +70,14 @@ class Scene{
     }
     
     //MARK: rotate virtual 3D atmosphere around current coordinates
-    func rotateAroundPoint(pointXY: (x: Double,y: Double),angle: Double) -> (x: Double, y: Double){
+    func rotateAroundPoint(_ pointXY: (x: Double,y: Double),angle: Double) -> (x: Double, y: Double){
         let angle = angle * 0.0174533;
         let pX = (pointXY.x * cos(angle)) + (pointXY.y * sin(angle));
         let pY = -(pointXY.x * sin(angle)) + (pointXY.y * cos(angle));
         return (x: pX, y: pY);
     }
     
-    func DAEtoSCNNodeWithText(filepath:String, strandDisplayInfo: (comment: String, author: String)) -> SCNNode {
+    func DAEtoSCNNodeWithText(_ filepath:String, strandDisplayInfo: (comment: String, author: String)) -> SCNNode {
         
         //setup text nodes
         let singNode = SCNNode();
@@ -126,20 +126,20 @@ class Scene{
         return singNode;
     }
     
-    func renderSingleStrand(renderID: Int, mapPoint: MKMapPoint, currMapPoint: MKMapPoint, strandDisplayInfo: (String, String), render: Bool, tempStrand: Bool){
+    func renderSingleStrand(_ renderID: Int, mapPoint: MKMapPoint, currMapPoint: MKMapPoint, strandDisplayInfo: (String, String), render: Bool, tempStrand: Bool){
         
         var strandCoord = (x: mapPoint.x - currMapPoint.x, y: mapPoint.y - currMapPoint.y);
-        strandCoord = rotateAroundPoint(pointXY: strandCoord, angle: -90);
+        strandCoord = rotateAroundPoint(strandCoord, angle: -90);
         if(render==true){
             //initiate strands
             if(tempStrand == false){
-                let strand = DAEtoSCNNodeWithText(filepath: "strandpost.dae", strandDisplayInfo: strandDisplayInfo);
+                let strand = DAEtoSCNNodeWithText("strandpost.dae", strandDisplayInfo: strandDisplayInfo);
                 strand.name = "s_" + String(renderID);
                 strand.position = SCNVector3(x: Float(strandCoord.x), y: 0, z:  Float(strandCoord.y));
                 strands.append(strand);
                 self.scene.rootNode.addChildNode(strands.last!);
             }else{
-                tempStrandNode = DAEtoSCNNodeWithText(filepath: "strandpost.dae", strandDisplayInfo: strandDisplayInfo);
+                tempStrandNode = DAEtoSCNNodeWithText("strandpost.dae", strandDisplayInfo: strandDisplayInfo);
                 tempStrandNode.name = "s_" + String(renderID);
                 tempStrandNode.position = SCNVector3(x: Float(strandCoord.x), y: 0, z:  Float(strandCoord.y));
                 self.scene.rootNode.addChildNode(tempStrandNode);
@@ -165,7 +165,7 @@ class Scene{
     }
     
     //MARK: render or update strand within 3D atmosphere
-    func renderStrands(mapPoints: [MKMapPoint], currMapPoint: MKMapPoint,
+    func renderStrands(_ mapPoints: [MKMapPoint], currMapPoint: MKMapPoint,
                        render: Bool, currentHeading: CLHeading, toHide: String, comments: JSON, tempStrandMapPoint: MKMapPoint){
         
         let toHideAsArr = toHide.components(separatedBy: ",");
@@ -182,7 +182,7 @@ class Scene{
         
         if(tempStrandMapPoint.x != 0.0){
             let tempStrandDisplayInfo = (comment: " ", author: " ");
-            renderSingleStrand(renderID: -1,mapPoint: tempStrandMapPoint, currMapPoint: currMapPoint, strandDisplayInfo: tempStrandDisplayInfo, render: render, tempStrand: true);
+            renderSingleStrand(-1,mapPoint: tempStrandMapPoint, currMapPoint: currMapPoint, strandDisplayInfo: tempStrandDisplayInfo, render: render, tempStrand: true);
         }
         
         //render or move new strands
@@ -205,7 +205,7 @@ class Scene{
     }
     
     //MARK: gyro to scene camera mapping, on new gyro/motion data (delegated call from ViewController)
-    func rotateCamera(gyroData: CMAttitude){
+    func rotateCamera(_ gyroData: CMAttitude){
         
         let qData: CMQuaternion = gyroData.quaternion;
         

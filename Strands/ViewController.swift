@@ -45,7 +45,7 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
     var strandDistAndBearingsFromUser: [(distance: Int, bearing: Int)] = [];
     
     
-    func toggleMap(isAddingStrand: Bool) {
+    func toggleMap(_ isAddingStrand: Bool) {
         map.tapMapToPost = isAddingStrand;
         if self.view.viewWithTag(3)?.isHidden == false && isAddingStrand == false {
             
@@ -57,7 +57,7 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
     }
     
     //MARK: network request and response middleware functionality
-    func renderRelStrands(newRender: Bool){
+    func renderRelStrands(_ newRender: Bool){
         
         let pxVals = self.map.collectPXfromMapPoints(mapPoints: mapPoints, currMapPoint: currMapPoint);
         var currPointPX = pxVals.currPointPX;
@@ -77,7 +77,7 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
    
     
     //MARK: region data updating requests and response middleware process
-    func regionDataUpdate(currentLocation: CLLocation, currentHeading: CLHeading){
+    func regionDataUpdate(_ currentLocation: CLLocation, currentHeading: CLHeading){
         
         self.currentLocation = currentLocation;
         self.currMapPoint = MKMapPointForCoordinate(currentLocation.coordinate);
@@ -101,13 +101,13 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
             self.networkRequest.getRegionData(socket: self.networkWebSocket, currLocation: currentLocation);
             
         }else if(self.scene.strands.count>0){
-            renderRelStrands(newRender: false);
+            renderRelStrands(false);
         }
         
     
     }
     
-    func regionDataResponse(responseStr: String) {
+    func regionDataResponse(_ responseStr: String) {
         let responseJSON = networkSocket.processResponseAsJSON(responseData: responseStr);
         var coordsAsCLLocation: [CLLocation] = [];
         var realStrandIDs: [Int] = [];
@@ -133,7 +133,7 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
         self.strandFirstComments = responseJSON[strandFirstCommentsKey];
         self.realStrandIDs = realStrandIDs;
         
-        self.renderRelStrands(newRender: true);
+        self.renderRelStrands(true);
         if(firstRender == true){
             firstRender = false;
         }
@@ -146,12 +146,12 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
     var addTempFirst = true;
     var phonePitch = 0;
     var latestDesiredStrandLocation: CLLocation!;
-    func renderTempStrandFromMap(mapTapCoord: CLLocationCoordinate2D){
+    func renderTempStrandFromMap(_ mapTapCoord: CLLocationCoordinate2D){
         let strandLocation = CLLocation(latitude: mapTapCoord.latitude, longitude: mapTapCoord.longitude);
-        addStrandTemp(strandLocation: strandLocation);
+        addStrandTemp(strandLocation);
     }
     
-    func renderTempStrandFromUI(tapX: Int, tapY: Int){
+    func renderTempStrandFromUI(_ tapX: Int, tapY: Int){
         var newStrandDistMetres: Double = 0.0;
         var bearingDegreesTap: Double = 0.0;
         newStrandDistMetres = self.location.getDistFromVerticalTap(tapX: Double(tapX), tapY: Double(tapY), phonePitch: Double(self.phonePitch));
@@ -177,11 +177,11 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
                 strandLocation = self.location.getPolarCoords(distance: Double(distLimitMetres), bearingDegrees: bearingDegreesTap);
             }
             
-            self.addStrandTemp(strandLocation: strandLocation);
+            self.addStrandTemp(strandLocation);
             
         });
     }
-    func addStrandTemp(strandLocation: CLLocation){
+    func addStrandTemp(_ strandLocation: CLLocation){
         
         self.latestDesiredStrandLocation = strandLocation;
         self.userInterface.showTapFinishedOptions();
@@ -196,7 +196,7 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
 
     }
     
-    func addStrandReady(comment: String){
+    func addStrandReady(_ comment: String){
         
         self.addTempFirst = true;
         tempStrandMapPoint = MKMapPoint();
@@ -214,7 +214,7 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
     }
     
     
-    func addedStrandResponse(responseStr: String) {
+    func addedStrandResponse(_ responseStr: String) {
         let responseJSON = networkSocket.processResponseAsJSON(responseData: responseStr);
         let success: Bool = (responseJSON["success"]=="true" ? true: false);
         var responseMessage = "Unknown Error. Please try again later.";
@@ -237,19 +237,19 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
         networkRequest.getUserStrands(socket: self.networkWebSocket, userID: self.loggedinUserData.id);
     }
     
-    func userStrandsResponse(responseStr: String) {
+    func userStrandsResponse(_ responseStr: String) {
         let responseJSON = networkSocket.processResponseAsJSON(responseData: responseStr);
         self.userInterface.populateUserStrands(strands: responseJSON["strands"], firstComments: responseJSON["fComments"]);
     }
     
     
     //MARK: new user sign up / profile edit request and response middleware process
-    func updateUserDataRequest(username: String, password: String, fullname: String, email: String) {
+    func updateUserDataRequest(_ username: String, password: String, fullname: String, email: String) {
         networkRequest.updateUserDataRequest(socket: self.networkWebSocket, username: username, password: password, fullname: fullname, email: email, userID: loggedinUserData.id);
     }
     
     
-    func updatedUserDataResponse(responseStr: String) {
+    func updatedUserDataResponse(_ responseStr: String) {
         let responseJSON = networkSocket.processResponseAsJSON(responseData: responseStr);
         let success: Bool = (responseJSON["success"]=="true" ? true: false);
         if(success==true){
@@ -267,11 +267,11 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
 
     
     //MARK: User login request and response middleware process
-    func loginRequest(username: String, password: String) {
+    func loginRequest(_ username: String, password: String) {
         networkRequest.loginUserRequest(socket: self.networkWebSocket, username: username, password: password);
     }
     
-    func userLoggedinResponse(responseStr: String) {
+    func userLoggedinResponse(_ responseStr: String) {
         let responseJSON = networkSocket.processResponseAsJSON(responseData: responseStr);
         var responseMessage = "Incorrect username or password.";
         if(responseJSON["success"].rawString()! == "true"){
@@ -300,11 +300,11 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
     
     
     //MARK: Retrieve strand comments request and response middleware process
-    func getStrandComments(strandID: Int){
+    func getStrandComments(_ strandID: Int){
         networkRequest.getStrandComments(socket: self.networkWebSocket, strandID: realStrandIDs[strandID]);
     }
     var viewingStrandID = -1;
-    func chooseStrandComments(tapX: Int, tapY: Int){
+    func chooseStrandComments(_ tapX: Int, tapY: Int){
         let locationOfTap = CGPoint(x: tapX, y: tapY);
         var strandTapID = -1;
         let possStrandsFound = scene.sceneView.hitTest(locationOfTap, options: nil);
@@ -316,37 +316,37 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
             
         }
         if(strandTapID != nil && strandTapID != -1){
-            getStrandComments(strandID: strandTapID);
+            getStrandComments(strandTapID);
             strandTapID = -1;
         }
     }
-    func strandCommentsResponse(responseStr: String) {
+    func strandCommentsResponse(_ responseStr: String) {
         let responseJSON = networkSocket.processResponseAsJSON(responseData: responseStr);
         self.userInterface.populateStrandCommentsView(strandComments: responseJSON["strandComments"]);
     }
     
     //MARK: Post new strand comment request and response middleware process
-    func postNewComment(commentText: String) {
+    func postNewComment(_ commentText: String) {
         if(viewingStrandID
             != -1){
             networkRequest.postComment(socket: self.networkWebSocket, strandID: realStrandIDs[viewingStrandID], username: loggedinUserData.username, commentText: commentText);
         }
     }
     
-    func postedCommentResponse(responseStr: String) {
+    func postedCommentResponse(_ responseStr: String) {
         let responseJSON = networkSocket.processResponseAsJSON(responseData: responseStr);
         self.userInterface.updateInfoLabel(newText: "Successfully Posted!", show: true, hideAfter: 2);
-        self.getStrandComments(strandID: self.viewingStrandID);
+        self.getStrandComments(self.viewingStrandID);
     }
 
     
     
     //MARK: Delete strand request and response middleware process
-    func deleteStrandRequest(realID: Int){
+    func deleteStrandRequest(_ realID: Int){
         networkRequest.deleteStrand(socket: self.networkWebSocket, strandID: realID);
     }
     
-    func deletedStrandResponse(responseStr: String) {
+    func deletedStrandResponse(_ responseStr: String) {
         let responseJSON = networkSocket.processResponseAsJSON(responseData: responseStr);
         let success: Bool = (responseJSON["success"]=="true" ? true: false);
         self.userInterface.updateInfoLabel(newText: "Successfully Deleted!", show: true, hideAfter: 2);

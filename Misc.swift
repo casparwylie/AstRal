@@ -12,7 +12,7 @@ import SwiftyJSON
 class Misc{
     
     //MARK: check values are in given range (Int or Float)
-    func isApprox(value1: Int,value2: Int, tol: Int) -> (is: Bool, realTol: Int){
+    func isApprox(_ value1: Int,value2: Int, tol: Int) -> (is: Bool, realTol: Int){
         if( ((value1 - tol) <= value2) && ((value1 + tol) >= value2 ) ){
             return (is: true, realTol: value1 - value2);
         }else{
@@ -20,7 +20,7 @@ class Misc{
         }
     }
     
-    func processResponseAsJSON(responseData: String) -> JSON{
+    func processResponseAsJSON(_ responseData: String) -> JSON{
         let responseData = responseData.data(using: String.Encoding.utf8,allowLossyConversion: false);
         let responseJSON = JSON(data: responseData!);
         return responseJSON;

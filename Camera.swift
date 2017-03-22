@@ -38,7 +38,7 @@ class Camera{
         return capDevice!;
     }
     
-    func startCameraFeed(capDevice: AVCaptureDevice, view: UIView) -> Bool {
+    func startCameraFeed(_ capDevice: AVCaptureDevice, view: UIView) -> Bool {
         
         //setup device data input, or error
         let getInput: AVCaptureDeviceInput?;

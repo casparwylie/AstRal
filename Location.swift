@@ -18,7 +18,7 @@ import CoreLocation
 
 //delegate design for viewController communication
 protocol LocationDelegate {
-    func regionDataUpdate(currentLocation: CLLocation, currentHeading: CLHeading);
+    func regionDataUpdate(_ currentLocation: CLLocation, currentHeading: CLHeading);
 }
 
 class Location: NSObject, CLLocationManagerDelegate{
@@ -51,7 +51,7 @@ class Location: NSObject, CLLocationManagerDelegate{
     }
     
     
-    func getPolarCoords(distance: Double, bearingDegrees: Double) ->CLLocation{
+    func getPolarCoords(_ distance: Double, bearingDegrees: Double) ->CLLocation{
         
         let earthRadius = 6371000.0;
         let bearingRadians = bearingDegrees * (M_PI / 180);
@@ -69,7 +69,7 @@ class Location: NSObject, CLLocationManagerDelegate{
         
     }
     
-    func getBearingFromTwoCoords(location1: CLLocation, location2: CLLocation) -> Int{
+    func getBearingFromTwoCoords(_ location1: CLLocation, location2: CLLocation) -> Int{
         
         let longitude1 = location1.coordinate.longitude * (M_PI / 180)
         let longitude2 = location2.coordinate.longitude * (M_PI / 180)
@@ -84,7 +84,7 @@ class Location: NSObject, CLLocationManagerDelegate{
         
     }
     
-    func getBearingFromTwo2dPoints(point1X: Double, point1Y: Double, point2X: Double, point2Y: Double) -> Int{
+    func getBearingFromTwo2dPoints(_ point1X: Double, point1Y: Double, point2X: Double, point2Y: Double) -> Int{
         
         var theta = atan2(point2X - point1X, point1Y - point2Y);
         if(theta < 0.0){
@@ -95,7 +95,7 @@ class Location: NSObject, CLLocationManagerDelegate{
         
     }
     
-    func getDistanceBetweenTwo2dPoints(point1X: Double, point1Y: Double, point2X: Double, point2Y: Double) -> Int{
+    func getDistanceBetweenTwo2dPoints(_ point1X: Double, point1Y: Double, point2X: Double, point2Y: Double) -> Int{
         let xLength = point1X - point2X;
         let yLength = point1Y - point2Y;
         
@@ -104,7 +104,7 @@ class Location: NSObject, CLLocationManagerDelegate{
         return distance;
     }
     
-    func getBearingFromHorizontalTap(tapX: Double) -> Double{
+    func getBearingFromHorizontalTap(_ tapX: Double) -> Double{
         let pxMidDiff = 160.0 - Double(tapX);
         let step = 320.0/54.0;
         let degDiff = pxMidDiff/step;
@@ -112,7 +112,7 @@ class Location: NSObject, CLLocationManagerDelegate{
         return bearingDegrees;
     }
     
-    func getDistFromVerticalTap(tapX: Double, tapY: Double, phonePitch: Double) -> Double{
+    func getDistFromVerticalTap(_ tapX: Double, tapY: Double, phonePitch: Double) -> Double{
         
         let hozPx: Double = 230;
         var yPos = tapY;
@@ -128,11 +128,11 @@ class Location: NSObject, CLLocationManagerDelegate{
         return distMetres;
     }
     
-    func collectStrandToUserData(point1X: Double, point1Y:  Double, point2X:  Double, point2Y: Double) -> (Int, Int){
+    func collectStrandToUserData(_ point1X: Double, point1Y:  Double, point2X:  Double, point2Y: Double) -> (Int, Int){
         
-        let lineBetweenBearing = getBearingFromTwo2dPoints(point1X: point1X, point1Y: point1Y, point2X: point2X, point2Y: point2Y);
+        let lineBetweenBearing = getBearingFromTwo2dPoints(point1X, point1Y: point1Y, point2X: point2X, point2Y: point2Y);
         
-        let distBetween = getDistanceBetweenTwo2dPoints(point1X: point1X, point1Y: point1Y, point2X: point2X, point2Y: point2Y);
+        let distBetween = getDistanceBetweenTwo2dPoints(point1X, point1Y: point1Y, point2X: point2X, point2Y: point2Y);
         
         let distAndBearing = (distance: distBetween, bearing: lineBetweenBearing);
         return distAndBearing;
@@ -150,7 +150,7 @@ class Location: NSObject, CLLocationManagerDelegate{
         
         if(currentHeading != nil){
             currentLocation = locations.last;
-            delegateLoc?.regionDataUpdate(currentLocation: currentLocation!, currentHeading: currentHeading!);
+            delegateLoc?.regionDataUpdate(currentLocation!, currentHeading: currentHeading!);
         }
         
     }

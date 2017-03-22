@@ -15,7 +15,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "90"
             endingLineNumber = "90"
-            landmarkName = "DAEtoSCNNodeWithText(filepath:strandDisplayInfo:)"
+            landmarkName = "DAEtoSCNNodeWithText(_:strandDisplayInfo:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

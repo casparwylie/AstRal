@@ -20,14 +20,14 @@ import SwiftyJSON
 
 @objc protocol NetworkResponseDelegate {
     
-    @objc optional func regionDataResponse(responseStr: String);
-    @objc optional func userLoggedinResponse(responseStr: String);
-    @objc optional func addedStrandResponse(responseStr: String);
-    @objc optional func userStrandsResponse(responseStr: String);
-    @objc optional func deletedStrandResponse(responseStr: String);
-    @objc optional func strandCommentsResponse(responseStr: String);
-    @objc optional func postedCommentResponse(responseStr: String);
-    @objc optional func updatedUserDataResponse(responseStr: String);
+    @objc optional func regionDataResponse(_ responseStr: String);
+    @objc optional func userLoggedinResponse(_ responseStr: String);
+    @objc optional func addedStrandResponse(_ responseStr: String);
+    @objc optional func userStrandsResponse(_ responseStr: String);
+    @objc optional func deletedStrandResponse(_ responseStr: String);
+    @objc optional func strandCommentsResponse(_ responseStr: String);
+    @objc optional func postedCommentResponse(_ responseStr: String);
+    @objc optional func updatedUserDataResponse(_ responseStr: String);
     
 }
 
@@ -47,13 +47,13 @@ class NetworkSocketHandler{
         return socket;
     }
     
-    func processResponseAsJSON(responseData: String) -> JSON{
+    func processResponseAsJSON(_ responseData: String) -> JSON{
         let responseData = responseData.data(using: String.Encoding.utf8,allowLossyConversion: false);
         let responseJSON = JSON(data: responseData!);
         return responseJSON;
     }
     
-    func sendRelevantJsonRequest(socket: WebSocket, requestName: String, relevantData: [String: String]){
+    func sendRelevantJsonRequest(_ socket: WebSocket, requestName: String, relevantData: [String: String]){
         
         var relevantDataAsJson: [String: JSON] = [:];
         for element in relevantData{
@@ -98,13 +98,13 @@ class NetworkSocketHandler{
 //MARK: all network request data organisers
 class NetworkRequestHandler{
     
-    func loginUserRequest(socket: WebSocket, username: String, password: String){
+    func loginUserRequest(_ socket: WebSocket, username: String, password: String){
         let organisedRelevantData = ["username": username, "password": password];
         NetworkSocketHandler().sendRelevantJsonRequest(socket: socket,requestName: "loginUserRequest", relevantData: organisedRelevantData);
 
     }
     
-    func updateUserDataRequest(socket: WebSocket, username: String, password: String, fullname: String, email: String, userID: Int){
+    func updateUserDataRequest(_ socket: WebSocket, username: String, password: String, fullname: String, email: String, userID: Int){
         
         let updateType = (userID > 0 ? "userUpdate" : "userSignUp");
         let organisedRelevantData = ["username":username, "password": password, "email": email, "fullname": fullname, "userID": String(userID), "updateType" : updateType];
@@ -112,7 +112,7 @@ class NetworkRequestHandler{
         
     }
 
-    func getRegionData(socket: WebSocket, currLocation: CLLocation){
+    func getRegionData(_ socket: WebSocket, currLocation: CLLocation){
         
         let currentLat = currLocation.coordinate.latitude;
         let currentLon = currLocation.coordinate.longitude;
@@ -122,7 +122,7 @@ class NetworkRequestHandler{
 
     }
     
-    func addStrand(socket: WebSocket, strandLocation: CLLocation,strandDisplayInfo: (comment: String, author: String, userID: Int, areaName: String)){
+    func addStrand(_ socket: WebSocket, strandLocation: CLLocation,strandDisplayInfo: (comment: String, author: String, userID: Int, areaName: String)){
         
         let strandLat = strandLocation.coordinate.latitude;
         let strandLon = strandLocation.coordinate.longitude;
@@ -138,26 +138,26 @@ class NetworkRequestHandler{
         NetworkSocketHandler().sendRelevantJsonRequest(socket: socket,requestName: "addStrandRequest", relevantData: organisedRelevantData);
     }
     
-    func getUserStrands(socket: WebSocket,userID: Int){
+    func getUserStrands(_ socket: WebSocket,userID: Int){
         
         let organisedRelevantData = ["userID": String(userID)];
         NetworkSocketHandler().sendRelevantJsonRequest(socket: socket,requestName: "userStrandsRequest", relevantData: organisedRelevantData);
     }
     
-    func deleteStrand(socket: WebSocket,strandID: Int){
+    func deleteStrand(_ socket: WebSocket,strandID: Int){
         
         let organisedRelevantData = ["strandID": String(strandID)];
         NetworkSocketHandler().sendRelevantJsonRequest(socket: socket,requestName: "deleteStrandRequest", relevantData: organisedRelevantData);
 
     }
     
-    func getStrandComments(socket: WebSocket, strandID: Int){
+    func getStrandComments(_ socket: WebSocket, strandID: Int){
 
         let organisedRelevantData = ["strandID": String(strandID)];
         NetworkSocketHandler().sendRelevantJsonRequest(socket: socket,requestName: "strandCommentsRequest", relevantData: organisedRelevantData);
     }
     
-    func postComment(socket: WebSocket, strandID: Int, username: String, commentText: String){
+    func postComment(_ socket: WebSocket, strandID: Int, username: String, commentText: String){
         
         let organisedRelevantData = ["strandID": String(strandID), "username": username, "postText": commentText];
         NetworkSocketHandler().sendRelevantJsonRequest(socket: socket,requestName: "postStrandCommentRequest", relevantData: organisedRelevantData);

@@ -10,6 +10,7 @@
 		74D0F5E9CB0A54F9F1333EC7 /* Pods_Strands.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA76AEA0DC651EA2EB870D49 /* Pods_Strands.framework */; };
 		B0476C6B1DA28CFE000FC661 /* Starscream in Frameworks */ = {isa = PBXBuildFile; fileRef = B0476BF81DA28BCD000FC661 /* Starscream */; settings = {ATTRIBUTES = (Required, ); }; };
 		B053ECD71D9D3ACC009DA4AB /* Network.swift in Sources */ = {isa = PBXBuildFile; fileRef = B053ECD61D9D3ACC009DA4AB /* Network.swift */; };
+		B069B17B1E0D4EC400873A2E /* opencv2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B069B17A1E0D4EC400873A2E /* opencv2.framework */; };
 		B0E355E01D995DBF0088EB10 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E355DF1D995DBF0088EB10 /* AppDelegate.swift */; };
 		B0E355E21D995DBF0088EB10 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E355E11D995DBF0088EB10 /* ViewController.swift */; };
 		B0E355E51D995DBF0088EB10 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B0E355E31D995DBF0088EB10 /* Main.storyboard */; };
@@ -26,7 +27,6 @@
 		B0E3561D1D995E110088EB10 /* UserInterface.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E356161D995E110088EB10 /* UserInterface.swift */; };
 		B0E356221D995E1E0088EB10 /* strandpost in Resources */ = {isa = PBXBuildFile; fileRef = B0E3561F1D995E1E0088EB10 /* strandpost */; };
 		B0E356231D995E1E0088EB10 /* strandpost.dae in Resources */ = {isa = PBXBuildFile; fileRef = B0E356201D995E1E0088EB10 /* strandpost.dae */; };
-		B0E356271D995F5C0088EB10 /* opencv2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0E356261D995F5C0088EB10 /* opencv2.framework */; };
 		B0FCBD691DCFB45800622352 /* strand_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = B0FCBD681DCFB45800622352 /* strand_icon.png */; };
 /* End PBXBuildFile section */
 
@@ -51,6 +51,7 @@
 		1579034A9FAC0DCDE078DF9A /* Pods-Strands.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Strands.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Strands/Pods-Strands.debug.xcconfig"; sourceTree = "<group>"; };
 		B0476BF81DA28BCD000FC661 /* Starscream */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Starscream; path = ../../startest/Starscream; sourceTree = "<group>"; };
 		B053ECD61D9D3ACC009DA4AB /* Network.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Network.swift; sourceTree = "<group>"; };
+		B069B17A1E0D4EC400873A2E /* opencv2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = opencv2.framework; sourceTree = "<group>"; };
 		B0E355DC1D995DBF0088EB10 /* Strands.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Strands.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B0E355DF1D995DBF0088EB10 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B0E355E11D995DBF0088EB10 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -75,7 +76,6 @@
 		B0E356161D995E110088EB10 /* UserInterface.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserInterface.swift; sourceTree = "<group>"; };
 		B0E3561F1D995E1E0088EB10 /* strandpost */ = {isa = PBXFileReference; lastKnownFileType = folder; path = strandpost; sourceTree = "<group>"; };
 		B0E356201D995E1E0088EB10 /* strandpost.dae */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml.dae; path = strandpost.dae; sourceTree = "<group>"; };
-		B0E356261D995F5C0088EB10 /* opencv2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = opencv2.framework; sourceTree = "<group>"; };
 		B0FCBD681DCFB45800622352 /* strand_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = strand_icon.png; sourceTree = "<group>"; };
 		D38F9152C59B50F78FC6CDFE /* Pods-Strands.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Strands.release.xcconfig"; path = "Pods/Target Support Files/Pods-Strands/Pods-Strands.release.xcconfig"; sourceTree = "<group>"; };
 		EA76AEA0DC651EA2EB870D49 /* Pods_Strands.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Strands.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -86,8 +86,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B069B17B1E0D4EC400873A2E /* opencv2.framework in Frameworks */,
 				B0476C6B1DA28CFE000FC661 /* Starscream in Frameworks */,
-				B0E356271D995F5C0088EB10 /* opencv2.framework in Frameworks */,
 				74D0F5E9CB0A54F9F1333EC7 /* Pods_Strands.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -130,8 +130,8 @@
 		B0E355D31D995DBF0088EB10 = {
 			isa = PBXGroup;
 			children = (
+				B069B17A1E0D4EC400873A2E /* opencv2.framework */,
 				B0FCBD681DCFB45800622352 /* strand_icon.png */,
-				B0E356261D995F5C0088EB10 /* opencv2.framework */,
 				B0E3561F1D995E1E0088EB10 /* strandpost */,
 				B0E356201D995E1E0088EB10 /* strandpost.dae */,
 				B0E3560D1D995DFA0088EB10 /* Components */,
@@ -268,24 +268,26 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0800;
-				LastUpgradeCheck = 0800;
+				LastUpgradeCheck = 0820;
 				ORGANIZATIONNAME = "Caspar Wylie";
 				TargetAttributes = {
 					B0E355DB1D995DBF0088EB10 = {
 						CreatedOnToolsVersion = 8.0;
 						DevelopmentTeam = 3WBLGY4N68;
-						LastSwiftMigration = 0800;
+						LastSwiftMigration = 0820;
 						ProvisioningStyle = Automatic;
 					};
 					B0E355EF1D995DBF0088EB10 = {
 						CreatedOnToolsVersion = 8.0;
 						DevelopmentTeam = 3WBLGY4N68;
+						LastSwiftMigration = 0820;
 						ProvisioningStyle = Automatic;
 						TestTargetID = B0E355DB1D995DBF0088EB10;
 					};
 					B0E355FA1D995DBF0088EB10 = {
 						CreatedOnToolsVersion = 8.0;
 						DevelopmentTeam = 3WBLGY4N68;
+						LastSwiftMigration = 0820;
 						ProvisioningStyle = Automatic;
 						TestTargetID = B0E355DB1D995DBF0088EB10;
 					};
@@ -369,7 +371,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		FB4251B5FC7CA7FA02CB6417 /* [CP] Copy Pods Resources */ = {
@@ -476,6 +478,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -526,6 +529,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -555,6 +559,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 1579034A9FAC0DCDE078DF9A /* Pods-Strands.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				DEVELOPMENT_TEAM = 3WBLGY4N68;
@@ -576,6 +581,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = D38F9152C59B50F78FC6CDFE /* Pods-Strands.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				DEVELOPMENT_TEAM = 3WBLGY4N68;

@@ -18,7 +18,7 @@ import Darwin
 
 
 @objc protocol mapActionDelegate {
-    @objc optional func renderTempStrandFromMap(mapTapCoord: CLLocationCoordinate2D);
+    @objc optional func renderTempStrandFromMap(_ mapTapCoord: CLLocationCoordinate2D);
 }
 
 class Map: NSObject, MKMapViewDelegate{
@@ -29,7 +29,7 @@ class Map: NSObject, MKMapViewDelegate{
     var tempPin: MKPointAnnotation!;
     
     //MARK: setup map
-    func renderMap(view: UIView){
+    func renderMap(_ view: UIView){
         mapView.frame = CGRect(x: 0, y: 0, width: view.frame.size.width, height: view.frame.size.height);
         mapView.mapType = MKMapType.standard;
         mapView.isZoomEnabled = false;
@@ -43,7 +43,7 @@ class Map: NSObject, MKMapViewDelegate{
     }
     
     //MARK: view region setting
-    func centerToLocationRegion(location: CLLocation) -> MKCoordinateRegion{
+    func centerToLocationRegion(_ location: CLLocation) -> MKCoordinateRegion{
         let radiusArea: Double = 80;
         let coordinateRegion = MKCoordinateRegionMakeWithDistance(location.coordinate,
                                                                   radiusArea * 2.0, radiusArea * 2.0);
@@ -58,11 +58,11 @@ class Map: NSObject, MKMapViewDelegate{
         
     }
     
-    @objc func wrapTappedMap(touch: UITapGestureRecognizer){
+    @objc func wrapTappedMap(_ touch: UITapGestureRecognizer){
         let tapPoint = touch.location(in: mapView);
         let tapCoords = mapView.convert(tapPoint, toCoordinateFrom: mapView);
         if(self.tapMapToPost == true){
-            mapActionDelegate?.renderTempStrandFromMap!(mapTapCoord: tapCoords);
+            mapActionDelegate?.renderTempStrandFromMap!(tapCoords);
         }else{
             //get strandinfo
         }
@@ -76,7 +76,7 @@ class Map: NSObject, MKMapViewDelegate{
     
     //MARK: update pins that represent strand
     var pcount = 0;
-    func updateSinglePin(coord: CLLocation, temp: Bool){
+    func updateSinglePin(_ coord: CLLocation, temp: Bool){
         let CLLCoordType = CLLocationCoordinate2D(latitude: coord.coordinate.latitude,
                                                   longitude: coord.coordinate.longitude);
         
@@ -96,15 +96,15 @@ class Map: NSObject, MKMapViewDelegate{
         }
     }
     
-    func updatePins(coords: [CLLocation]){
+    func updatePins(_ coords: [CLLocation]){
         mapView.removeAnnotations(mapView.annotations);
         for coord in coords{
-            updateSinglePin(coord: coord, temp: false);
+            updateSinglePin(coord, temp: false);
         }
     }
     
      //MARK: get map view snap shot for openCV wrapper
-    func getMapAsIMG( completion: @escaping (UIImage)->() ){
+    func getMapAsIMG( _ completion: @escaping (UIImage)->() ){
         var finalImage =  UIImage();
         let imageOptions = MKMapSnapshotOptions();
         imageOptions.region = mapView.region;
@@ -126,7 +126,7 @@ class Map: NSObject, MKMapViewDelegate{
     }
     
     //MARK: convert single map point to PX
-    func convertMapPointToPX(mapPoint: MKMapPoint) -> (Double,Double){
+    func convertMapPointToPX(_ mapPoint: MKMapPoint) -> (Double,Double){
         
         let mapRect: MKMapRect = mapView.visibleMapRect;
         let tlMapPoint: MKMapPoint = MKMapPointMake( MKMapRectGetMinX(mapRect), mapRect.origin.y);
@@ -143,15 +143,15 @@ class Map: NSObject, MKMapViewDelegate{
     
     
     //MARK: get all map points as px in preparation for openCV wrapper
-    func collectPXfromMapPoints(mapPoints: [MKMapPoint], currMapPoint: MKMapPoint)
+    func collectPXfromMapPoints(_ mapPoints: [MKMapPoint], currMapPoint: MKMapPoint)
         -> (strandValsPX: [(Double,Double)], currPointPX:[Double], pxLength: Int){
         
         var pixelsXY: [(Double,Double)] = [];
 
-        let resultsCurrPointXY_T = convertMapPointToPX(mapPoint: currMapPoint);
+        let resultsCurrPointXY_T = convertMapPointToPX(currMapPoint);
         let resultsCurrPointXY = [resultsCurrPointXY_T.0,resultsCurrPointXY_T.1];
         for mapPoint in mapPoints{
-            let resultsPX = convertMapPointToPX(mapPoint: mapPoint);
+            let resultsPX = convertMapPointToPX(mapPoint);
             pixelsXY.append(resultsPX);
         }
         
@@ -160,7 +160,7 @@ class Map: NSObject, MKMapViewDelegate{
     
     
     //MARK: convert coordinate data to 2D map points
-    func getCoordsAsMapPoints(coords: [CLLocation]) -> [MKMapPoint]{
+    func getCoordsAsMapPoints(_ coords: [CLLocation]) -> [MKMapPoint]{
         var mapPoints: [MKMapPoint] = [];
         for coord in coords{
             mapPoints.append(MKMapPointForCoordinate(coord.coordinate));
