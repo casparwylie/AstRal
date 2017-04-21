@@ -1,0 +1,15 @@
+PODS:
+  - Starscream (2.0.3)
+  - SwiftyJSON (3.1.4)
+
+DEPENDENCIES:
+  - Starscream (~> 2.0.0)
+  - SwiftyJSON
+
+SPEC CHECKSUMS:
+  Starscream: 3fdd5c277e57cca6b5c406d274e3f34a7c88f2ce
+  SwiftyJSON: c2842d878f95482ffceec5709abc3d05680c0220
+
+PODFILE CHECKSUM: cb56271fcc8edd5d6ad4437d73eda6f47fce6f1f
+
+COCOAPODS: 1.0.1
