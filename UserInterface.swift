@@ -1,6 +1,6 @@
 //
 //  UserInterface.swift
-//  Strands
+//  Focals
 //
 //  Created by Caspar Wylie on 06/08/2016.
 //  Copyright © 2016 Caspar Wylie. All rights reserved.
@@ -19,17 +19,17 @@ import CoreLocation
 
 //MARK: Delegate declaration of all UI actions
 @objc protocol UIActionDelegate {
-    @objc optional func toggleMap(_ isAddingStrand: Bool);
+    @objc optional func toggleMap(_ isAddingFocal: Bool);
     @objc optional func openLoginForm();
-    @objc optional func addStrandReady(_ comment: String);
-    @objc optional func renderTempStrandFromUI(_ tapX: Int, tapY: Int);
-    @objc optional func cancelNewStrand();
+    @objc optional func addFocalReady(_ comment: String);
+    @objc optional func renderTempFocalFromUI(_ tapX: Int, tapY: Int);
+    @objc optional func cancelNewFocal();
     @objc optional func loginRequest(_ username: String, password: String);
     @objc optional func updateUserDataRequest(_ username: String, password: String, fullname: String, email: String);
     @objc optional func logoutUser();
-    @objc optional func requestUserStrands();
-    @objc optional func deleteStrandRequest(_ realID: Int);
-    @objc optional func chooseStrandComments(_ tapX: Int, tapY: Int);
+    @objc optional func requestUserFocals();
+    @objc optional func deleteFocalRequest(_ realID: Int);
+    @objc optional func chooseFocalComments(_ tapX: Int, tapY: Int);
     @objc optional func postNewComment(_ commentText: String);
     
 }
@@ -45,16 +45,16 @@ class UserInterface1{
     var doneChoosingTapPosButton: UIButton!;
     var cancelChoosingButton: UIButton!;
     var toggleMenuButton: UIButton!;
-    var postStrandButton: UIButton!;
+    var postFocalButton: UIButton!;
     var loginSubmitButton: UIButton!;
     var cancelLoginButton: UIButton!;
     var signUpSubmitButton: UIButton!;
     var cancelSignUpButton: UIButton!;
-    var closeUserStrandView: UIButton!;
+    var closeUserFocalView: UIButton!;
     var closeUserProfileView: UIButton!;
-    var closeSingleStrandInfoView: UIButton!;
-    var closeStrandCommentsView: UIButton!;
-    var deleteStrandButton: UIButton!;
+    var closeSingleFocalInfoView: UIButton!;
+    var closeFocalCommentsView: UIButton!;
+    var deleteFocalButton: UIButton!;
     var newCommentButton: UIButton!;
     
     //UI Text Fields
@@ -65,21 +65,21 @@ class UserInterface1{
                     password: UITextField?,
                     fullname: UITextField?,
                     email: UITextField?);
-    var commentExistingStrandTextfield: UITextField!;
+    var commentExistingFocalTextfield: UITextField!;
     
     //UI Views
     var loginForm: UIView!;
     var commentForm: UIView!;
     var signUpForm: UIView!;
-    var userStrandListView: UIView!;
-    var strandCommentsView: UIView!;
+    var userFocalListView: UIView!;
+    var focalCommentsView: UIView!;
     var userProfileView: UIView!;
-    var singleStrandInfoView: UIView!;
-    var userScrollStrandListView: UIScrollView!;
-    var strandCommentsListScrollView: UIScrollView!;
+    var singleFocalInfoView: UIView!;
+    var userScrollFocalListView: UIScrollView!;
+    var focalCommentsListScrollView: UIScrollView!;
     
     //UI Labels
-    var singleStrandFcommentTitle: UILabel!;
+    var singleFocalFcommentTitle: UILabel!;
     
     //General Presets
     var loggedinUserData = (id: 0, username: "Unknown", fullname: "Unknown", email: "Unknown", password: "");
@@ -88,19 +88,19 @@ class UserInterface1{
     var view: UIView!;
     var setTapPointForPost = (x: 0, y: 0);
     var mapShowing = false;
-    var vertList = ["My Strands", "Profile", "Logout"];
+    var vertList = ["My Focals", "Profile", "Logout"];
     var mainMenuShowing = false;
     var vertMenuShowing = false;
-    var userStrandLabelYPos = 5;
-    var strandCommentListLabelYPos = 5;
+    var userFocalLabelYPos = 5;
+    var focalCommentListLabelYPos = 5;
     var tagsForBlur = 100;
-    let strandIconDest = "strand_icon.png";
-    var posStrandToDeleteRealID = 0;
-    var userStrandsJSON: JSON!;
-    var userStrandFirstCommentsJSON: JSON!;
+    let focalIconDest = "focal_icon.png";
+    var posFocalToDeleteRealID = 0;
+    var userFocalsJSON: JSON!;
+    var userFocalFirstCommentsJSON: JSON!;
     var currBlurState = "light";
     var screenSize: CGRect = UIScreen.main.bounds;
-    var singleStrandTapRecs: [UITapGestureRecognizer] = [];
+    var singleFocalTapRecs: [UITapGestureRecognizer] = [];
     var intentToSignUp = true;
     
     //MARK: UI constants
@@ -111,8 +111,8 @@ class UserInterface1{
     let mainFontColor = UIColor.black;
     let infoLabelYPos = 20;
     let buttonSpace = 2;
-    let singleStrandIconSize = (width: 60, height: 95);
-    let userStrandLabelHeight = 18;
+    let singleFocalIconSize = (width: 60, height: 95);
+    let userFocalLabelHeight = 18;
     let formWidth = 250;
     let closeButtonWidth = 40;
     let closeButtonHeight = 20;
@@ -145,7 +145,7 @@ class UserInterface1{
             hideAnyViews();
             loginForm.isHidden = false;
             
-        case "Post Strand":
+        case "Post Focal":
             hideAnyViews();
             if(mapShowing==true){
                 actionDelegate?.toggleMap!(true);
@@ -164,11 +164,11 @@ class UserInterface1{
         case " Me ":
             toggleMenu(true);
             
-        case "My Strands":
+        case "My Focals":
             toggleMenu(true);
             hideAnyViews();
-            actionDelegate?.requestUserStrands!();
-            userStrandListView.isHidden = false;
+            actionDelegate?.requestUserFocals!();
+            userFocalListView.isHidden = false;
         
         case "Profile":
             toggleMenu(true);
@@ -213,15 +213,15 @@ class UserInterface1{
         loginForm.isHidden = true;
         commentForm.isHidden = true;
         signUpForm.isHidden = true;
-        userStrandListView.isHidden = true;
-        strandCommentsView.isHidden = true;
-        singleStrandInfoView.isHidden = true;
+        userFocalListView.isHidden = true;
+        focalCommentsView.isHidden = true;
+        singleFocalInfoView.isHidden = true;
         userProfileView.isHidden = true;
         self.view.endEditing(true);
     }
     
-    @objc func closeSingleStrandInfoViewWrap(){
-        singleStrandInfoView.isHidden = true;
+    @objc func closeSingleFocalInfoViewWrap(){
+        singleFocalInfoView.isHidden = true;
     }
     
     @objc func wrapTapped(_ touch: UITapGestureRecognizer){
@@ -229,10 +229,10 @@ class UserInterface1{
         
         if(mapShowing == false){
             if(self.tapToPost == true ){
-                actionDelegate?.renderTempStrandFromUI!(Int(tapPoint.x), tapY: Int(tapPoint.y));
+                actionDelegate?.renderTempFocalFromUI!(Int(tapPoint.x), tapY: Int(tapPoint.y));
                 updateInfoLabel("Tap somewhere else or 'Done'", show: true, hideAfter: 0);
             }else{
-                actionDelegate?.chooseStrandComments!(Int(tapPoint.x), tapY: Int(tapPoint.y));
+                actionDelegate?.chooseFocalComments!(Int(tapPoint.x), tapY: Int(tapPoint.y));
             }
         }
     }
@@ -278,78 +278,78 @@ class UserInterface1{
         self.tapToPost = false;
         cancelChoosingButton.isHidden = true;
         commentForm.isHidden = true;
-        actionDelegate?.cancelNewStrand!();
+        actionDelegate?.cancelNewFocal!();
         self.view.endEditing(true);
     }
     
-    @objc func newStrandComment(){
+    @objc func newFocalComment(){
         self.tapToPost = false;
         updateInfoLabel(" ", show: false, hideAfter: 0);
         doneChoosingTapPosButton.isHidden = true;
         self.commentForm.isHidden = false;
     }
     
-    @objc func newCommentStrand(){
-        actionDelegate?.postNewComment!(commentExistingStrandTextfield.text!);
+    @objc func newCommentFocal(){
+        actionDelegate?.postNewComment!(commentExistingFocalTextfield.text!);
     }
     
-    @objc func postStrand(){
+    @objc func postFocal(){
         cancelTap();
-        actionDelegate?.addStrandReady!(commentTextfield.text!);
+        actionDelegate?.addFocalReady!(commentTextfield.text!);
         self.view.endEditing(true);
     }
     
-    @objc func deleteStrandWrap(){
-        actionDelegate?.deleteStrandRequest!(posStrandToDeleteRealID);
+    @objc func deleteFocalWrap(){
+        actionDelegate?.deleteFocalRequest!(posFocalToDeleteRealID);
     }
     
-    func addUserStrandLabel(_ text: String, areaName: String, localID: Int){
+    func addUserFocalLabel(_ text: String, areaName: String, localID: Int){
         
-        let strandTextLabel: UILabel  = UILabel(frame: CGRect(x: 25, y: userStrandLabelYPos+10, width: 250, height: userStrandLabelHeight));
-        let strandAreaLabel: UILabel  = UILabel(frame: CGRect(x: 25, y: userStrandLabelYPos+userStrandLabelHeight+10, width: 250, height: userStrandLabelHeight));
+        let focalTextLabel: UILabel  = UILabel(frame: CGRect(x: 25, y: userFocalLabelYPos+10, width: 250, height: userFocalLabelHeight));
+        let focalAreaLabel: UILabel  = UILabel(frame: CGRect(x: 25, y: userFocalLabelYPos+userFocalLabelHeight+10, width: 250, height: userFocalLabelHeight));
         
-        let strandIcon = UIImage(named: strandIconDest);
-        let strandIconView = UIImageView(image: strandIcon!);
-        strandIconView.tag = localID;
-        strandIconView.frame = CGRect(x: 0, y:  userStrandLabelYPos+12, width: 20, height: 30);
+        let focalIcon = UIImage(named: focalIconDest);
+        let focalIconView = UIImageView(image: focalIcon!);
+        focalIconView.tag = localID;
+        focalIconView.frame = CGRect(x: 0, y:  userFocalLabelYPos+12, width: 20, height: 30);
         
-        strandTextLabel.text = text;
-        strandAreaLabel.text = "in " + areaName;
+        focalTextLabel.text = text;
+        focalAreaLabel.text = "in " + areaName;
         
-        let uiImageTap = UITapGestureRecognizer(target: self, action: #selector(showSingleStrandInfo));
-        strandIconView.isUserInteractionEnabled = true;
-        strandIconView.addGestureRecognizer(uiImageTap);
-        strandTextLabel.font = UIFont(name: mainTypeFace, size: 17);
-        strandAreaLabel.font = UIFont(name: mainTypeFace+"-Bold", size: 13);
+        let uiImageTap = UITapGestureRecognizer(target: self, action: #selector(showSingleFocalInfo));
+        focalIconView.isUserInteractionEnabled = true;
+        focalIconView.addGestureRecognizer(uiImageTap);
+        focalTextLabel.font = UIFont(name: mainTypeFace, size: 17);
+        focalAreaLabel.font = UIFont(name: mainTypeFace+"-Bold", size: 13);
         
-        userScrollStrandListView.addSubview(strandTextLabel);
-        userScrollStrandListView.addSubview(strandAreaLabel);
-        userScrollStrandListView.addSubview(strandIconView);
+        userScrollFocalListView.addSubview(focalTextLabel);
+        userScrollFocalListView.addSubview(focalAreaLabel);
+        userScrollFocalListView.addSubview(focalIconView);
         
     }
     
-    @objc func showSingleStrandInfo(_ sender: UITapGestureRecognizer){
-        let strandInfoLocalID = sender.view?.tag;
-        posStrandToDeleteRealID = userStrandsJSON[strandInfoLocalID!]["s_id"].int!;
-        let relTitleText = userStrandFirstCommentsJSON[strandInfoLocalID!]["c_text"].rawString()!;
-        singleStrandFcommentTitle.text = relTitleText;
-        singleStrandInfoView.isHidden = false;
+    @objc func showSingleFocalInfo(_ sender: UITapGestureRecognizer){
+        let focalInfoLocalID = sender.view?.tag;
+        posFocalToDeleteRealID = userFocalsJSON[focalInfoLocalID!]["s_id"].int!;
+        let relTitleText = userFocalFirstCommentsJSON[focalInfoLocalID!]["c_text"].rawString()!;
+        singleFocalFcommentTitle.text = relTitleText;
+        singleFocalInfoView.isHidden = false;
     }
     
-    func populateUserStrands(_ strands: JSON, firstComments: JSON){
-        userStrandsJSON = strands;
-        userStrandFirstCommentsJSON = firstComments;
-        for subview in userScrollStrandListView.subviews{
+    func populateUserFocals(_ focals: JSON, firstComments: JSON){
+        userFocalsJSON = focals;
+        userFocalFirstCommentsJSON = firstComments;
+        for subview in userScrollFocalListView.subviews{
             subview.removeFromSuperview();
         }
-        userStrandLabelYPos = 5;
-        let labelHeight = 2*userStrandLabelHeight+10;
-        userScrollStrandListView.contentSize = CGSize(width: CGFloat(viewPageWidth), height: CGFloat(5+(strands.count*labelHeight)));
+        userFocalLabelYPos = 5;
+        let labelHeight = 2*userFocalLabelHeight+10;
+        userScrollFocalListView.contentSize = CGSize(width: CGFloat(viewPageWidth), height: CGFloat(5+(focals.count*labelHeight)));
         var count = 0;
-        for strand in strands{
-            let areaName = strands[count]["s_area_name"].rawString()!;
-            self.addUserStrandLabel(text: firstComments[count]["c_text"].rawString()!, areaName: areaName, localID: count);
-            self.userStrandLabelYPos += 2*self.userStrandLabelHeight + 10;
+        for focal in focals{
+            let areaName = focals[count]["s_area_name"].rawString()!;
+            self.addUserFocalLabel(firstComments[count]["c_text"].rawString()!, areaName: areaName, localID: count);
+            self.userFocalLabelYPos += 2*self.userFocalLabelHeight + 10;
             count += 1;
         }
     }
@@ -366,19 +366,19 @@ class UserInterface1{
     
     var lastCommentHeight = 0;
     var commentInfoHeight = 20;
-    func addStrandCommentLabel(_ text: String, infoString: String){
+    func addFocalCommentLabel(_ text: String, infoString: String){
         
         let labelWidth = viewPageWidth-20;
         let labelTextHeight =  getHeightForField(text, font: mainFont, width: CGFloat(labelWidth)) + 10;
         lastCommentHeight = Int(labelTextHeight);
-        let commentTextLabel: UILabel  = UILabel(frame: CGRect(x: 5, y: strandCommentListLabelYPos+10, width: labelWidth, height: Int(labelTextHeight)));
+        let commentTextLabel: UILabel  = UILabel(frame: CGRect(x: 5, y: focalCommentListLabelYPos+10, width: labelWidth, height: Int(labelTextHeight)));
         
         commentTextLabel.text = text;
         commentTextLabel.lineBreakMode = NSLineBreakMode.byWordWrapping;
         commentTextLabel.numberOfLines = Int(labelTextHeight/20)+1;
         commentTextLabel.font = mainFont;
         
-        let commentInfoLabel: UILabel  = UILabel(frame: CGRect(x: 5, y: strandCommentListLabelYPos+Int(labelTextHeight), width: labelWidth, height: commentInfoHeight));
+        let commentInfoLabel: UILabel  = UILabel(frame: CGRect(x: 5, y: focalCommentListLabelYPos+Int(labelTextHeight), width: labelWidth, height: commentInfoHeight));
         
     
         commentInfoLabel.text = infoString;
@@ -386,30 +386,30 @@ class UserInterface1{
 
         commentInfoLabel.font = UIFont(name: mainTypeFace+"-Bold", size: 11);
         
-        strandCommentsListScrollView.addSubview(commentTextLabel);
-        strandCommentsListScrollView.addSubview(commentInfoLabel);
+        focalCommentsListScrollView.addSubview(commentTextLabel);
+        focalCommentsListScrollView.addSubview(commentInfoLabel);
     }
     
-    func populateStrandCommentsView(_ strandComments: JSON){
-        strandCommentsView.isHidden = false;
+    func populateFocalCommentsView(_ focalComments: JSON){
+        focalCommentsView.isHidden = false;
         lastCommentHeight = 0;
-        for subview in strandCommentsListScrollView.subviews{
+        for subview in focalCommentsListScrollView.subviews{
             subview.removeFromSuperview();
         }
-        strandCommentsListScrollView.contentSize = CGSize(width: CGFloat(viewPageWidth), height: CGFloat(800));
-        strandCommentListLabelYPos = 5;
+        focalCommentsListScrollView.contentSize = CGSize(width: CGFloat(viewPageWidth), height: CGFloat(800));
+        focalCommentListLabelYPos = 5;
         
         var count = 0;
         var nextYPosCalc = 0;
-        for _ in strandComments{
-            let commentText = strandComments[count]["c_text"].rawString()!;
-            let infoString = "By " + strandComments[count]["c_u_uname"].rawString()! + ", at " + strandComments[count]["c_time"].rawString()!;
-            addStrandCommentLabel(text: commentText, infoString: infoString);
+        for _ in focalComments{
+            let commentText = focalComments[count]["c_text"].rawString()!;
+            let infoString = "By " + focalComments[count]["c_u_uname"].rawString()! + ", at " + focalComments[count]["c_time"].rawString()!;
+            addFocalCommentLabel(commentText, infoString: infoString);
             nextYPosCalc = lastCommentHeight + commentInfoHeight;
-            strandCommentListLabelYPos += nextYPosCalc;
+            focalCommentListLabelYPos += nextYPosCalc;
             count += 1;
         }
-        strandCommentsListScrollView.contentSize = CGSize(width: CGFloat(viewPageWidth), height: CGFloat(5+strandCommentListLabelYPos+nextYPosCalc));
+        focalCommentsListScrollView.contentSize = CGSize(width: CGFloat(viewPageWidth), height: CGFloat(5+focalCommentListLabelYPos+nextYPosCalc));
     }
 
     
@@ -423,12 +423,12 @@ class UserInterface1{
         commentTextfield = addTextFieldProperties(CGRect(x: 5, y: 5, width: 240, height: textFieldSize.height));
         commentTextfield.text = "Enter Comment...";
         
-        let postStrandButtonRect = CGRect(x: 5, y: 5+textFieldSize.height+10, width: 100, height: 40);
-        postStrandButton = addButtonProperties("Post Strand", hidden: false, pos: postStrandButtonRect, cornerRadius: buttonCornerRadius, blurLight: true);
-        postStrandButton.addTarget(self, action: #selector(postStrand), for: .touchUpInside);
+        let postFocalButtonRect = CGRect(x: 5, y: 5+textFieldSize.height+10, width: 100, height: 40);
+        postFocalButton = addButtonProperties("Post Focal", hidden: false, pos: postFocalButtonRect, cornerRadius: buttonCornerRadius, blurLight: true);
+        postFocalButton.addTarget(self, action: #selector(postFocal), for: .touchUpInside);
         
         commentForm.addSubview(commentTextfield);
-        commentForm.addSubview(postStrandButton);
+        commentForm.addSubview(postFocalButton);
         self.view.addSubview(commentForm);
     }
     
@@ -534,90 +534,90 @@ class UserInterface1{
         self.view.addSubview(signUpForm);
     }
     
-    func renderSingleStrandInfoView(){
+    func renderSingleFocalInfoView(){
         let viewHeight = 250;
-        singleStrandInfoView = UIView(frame: CGRect(x:Int(screenSize.width/2)-viewPageWidth/2,y: defaultFormY + buttonSpace,width: viewPageWidth, height: viewHeight));
-        singleStrandInfoView.isHidden = true;
-        singleStrandInfoView.insertSubview(processBlurEffect(singleStrandInfoView.bounds, cornerRadiusVal: buttonCornerRadius, light: true), at: 0);
+        singleFocalInfoView = UIView(frame: CGRect(x:Int(screenSize.width/2)-viewPageWidth/2,y: defaultFormY + buttonSpace,width: viewPageWidth, height: viewHeight));
+        singleFocalInfoView.isHidden = true;
+        singleFocalInfoView.insertSubview(processBlurEffect(singleFocalInfoView.bounds, cornerRadiusVal: buttonCornerRadius, light: true), at: 0);
         
         
-        let closeSingleStrandInfoRect = CGRect(x: viewPageWidth-(closeButtonWidth+5), y: 5, width: closeButtonWidth, height: closeButtonHeight);
-        closeSingleStrandInfoView = addButtonProperties("Close", hidden: false, pos: closeSingleStrandInfoRect, cornerRadius: buttonCornerRadius, blurLight: true);
-        closeSingleStrandInfoView.addTarget(self, action: #selector(closeSingleStrandInfoViewWrap), for: .touchUpInside);
+        let closeSingleFocalInfoRect = CGRect(x: viewPageWidth-(closeButtonWidth+5), y: 5, width: closeButtonWidth, height: closeButtonHeight);
+        closeSingleFocalInfoView = addButtonProperties("Close", hidden: false, pos: closeSingleFocalInfoRect, cornerRadius: buttonCornerRadius, blurLight: true);
+        closeSingleFocalInfoView.addTarget(self, action: #selector(closeSingleFocalInfoViewWrap), for: .touchUpInside);
         
         let deleteButtonWidth = 70;
-        let deleteStrandButtonRect = CGRect(x: viewPageWidth/2-(deleteButtonWidth/2), y: viewHeight-(buttonHeight+5), width: deleteButtonWidth, height: buttonHeight);
+        let deleteFocalButtonRect = CGRect(x: viewPageWidth/2-(deleteButtonWidth/2), y: viewHeight-(buttonHeight+5), width: deleteButtonWidth, height: buttonHeight);
         
-        deleteStrandButton = addButtonProperties("Delete", hidden: false, pos: deleteStrandButtonRect, cornerRadius: buttonCornerRadius, blurLight: true);
-        deleteStrandButton.addTarget(self, action: #selector(deleteStrandWrap), for: .touchUpInside);
+        deleteFocalButton = addButtonProperties("Delete", hidden: false, pos: deleteFocalButtonRect, cornerRadius: buttonCornerRadius, blurLight: true);
+        deleteFocalButton.addTarget(self, action: #selector(deleteFocalWrap), for: .touchUpInside);
 
     
-        let strandIcon = UIImage(named: strandIconDest);
-        let strandIconView = UIImageView(image: strandIcon!);
-        strandIconView.frame = CGRect(x: (viewPageWidth/2)-(singleStrandIconSize.width/2), y:  20, width: singleStrandIconSize.width, height: singleStrandIconSize.height);
+        let focalIcon = UIImage(named: focalIconDest);
+        let focalIconView = UIImageView(image: focalIcon!);
+        focalIconView.frame = CGRect(x: (viewPageWidth/2)-(singleFocalIconSize.width/2), y:  20, width: singleFocalIconSize.width, height: singleFocalIconSize.height);
         
-        singleStrandFcommentTitle = UILabel(frame: CGRect(x: 10, y: singleStrandIconSize.height+5, width: viewPageWidth-20, height: 100));
-        singleStrandFcommentTitle.font = UIFont(name: mainTypeFace, size: 15);
-        singleStrandFcommentTitle.lineBreakMode = NSLineBreakMode.byWordWrapping;
-        singleStrandFcommentTitle.textAlignment = .center;
-        singleStrandFcommentTitle.numberOfLines = 3;
+        singleFocalFcommentTitle = UILabel(frame: CGRect(x: 10, y: singleFocalIconSize.height+5, width: viewPageWidth-20, height: 100));
+        singleFocalFcommentTitle.font = UIFont(name: mainTypeFace, size: 15);
+        singleFocalFcommentTitle.lineBreakMode = NSLineBreakMode.byWordWrapping;
+        singleFocalFcommentTitle.textAlignment = .center;
+        singleFocalFcommentTitle.numberOfLines = 3;
         
         
-        singleStrandInfoView.addSubview(singleStrandFcommentTitle);
-        singleStrandInfoView.addSubview(closeSingleStrandInfoView);
-        singleStrandInfoView.addSubview(deleteStrandButton);
-        singleStrandInfoView.addSubview(strandIconView);
+        singleFocalInfoView.addSubview(singleFocalFcommentTitle);
+        singleFocalInfoView.addSubview(closeSingleFocalInfoView);
+        singleFocalInfoView.addSubview(deleteFocalButton);
+        singleFocalInfoView.addSubview(focalIconView);
         
-        self.view.addSubview(singleStrandInfoView);
+        self.view.addSubview(singleFocalInfoView);
         
     }
     
-    func renderStrandCommentsView(){
+    func renderFocalCommentsView(){
         let viewHeight = 300;
-        strandCommentsView = UIView(frame: CGRect(x:Int(screenSize.width/2)-viewPageWidth/2,y: defaultFormY + buttonSpace,width: viewPageWidth, height: viewHeight));
-        strandCommentsView.isHidden = true;
-        strandCommentsView.insertSubview(processBlurEffect(strandCommentsView.bounds, cornerRadiusVal: buttonCornerRadius, light: true), at: 0);
+        focalCommentsView = UIView(frame: CGRect(x:Int(screenSize.width/2)-viewPageWidth/2,y: defaultFormY + buttonSpace,width: viewPageWidth, height: viewHeight));
+        focalCommentsView.isHidden = true;
+        focalCommentsView.insertSubview(processBlurEffect(focalCommentsView.bounds, cornerRadiusVal: buttonCornerRadius, light: true), at: 0);
         
-        strandCommentsListScrollView = UIScrollView(frame: CGRect(x:5,y: closeButtonHeight+15+textFieldSize.height,width: viewPageWidth, height: viewHeight-(closeButtonHeight+15+textFieldSize.height)));
+        focalCommentsListScrollView = UIScrollView(frame: CGRect(x:5,y: closeButtonHeight+15+textFieldSize.height,width: viewPageWidth, height: viewHeight-(closeButtonHeight+15+textFieldSize.height)));
 
-        let closestrandCommentsViewRect = CGRect(x: viewPageWidth-(closeButtonWidth+5), y: 5, width: closeButtonWidth, height: closeButtonHeight);
-        closeStrandCommentsView = addButtonProperties("Close", hidden: false, pos: closestrandCommentsViewRect, cornerRadius: buttonCornerRadius, blurLight: true);
-        closeStrandCommentsView.addTarget(self, action: #selector(hideAnyViews), for: .touchUpInside);
+        let closefocalCommentsViewRect = CGRect(x: viewPageWidth-(closeButtonWidth+5), y: 5, width: closeButtonWidth, height: closeButtonHeight);
+        closeFocalCommentsView = addButtonProperties("Close", hidden: false, pos: closefocalCommentsViewRect, cornerRadius: buttonCornerRadius, blurLight: true);
+        closeFocalCommentsView.addTarget(self, action: #selector(hideAnyViews), for: .touchUpInside);
         
-        let commentExistingStrandTFWidth = viewPageWidth-55;
-        commentExistingStrandTextfield = addTextFieldProperties(CGRect(x: 5, y: closeButtonHeight+10, width: commentExistingStrandTFWidth, height: textFieldSize.height));
-        commentExistingStrandTextfield.text = "Enter Comment...";
+        let commentExistingFocalTFWidth = viewPageWidth-55;
+        commentExistingFocalTextfield = addTextFieldProperties(CGRect(x: 5, y: closeButtonHeight+10, width: commentExistingFocalTFWidth, height: textFieldSize.height));
+        commentExistingFocalTextfield.text = "Enter Comment...";
         
-        let newCommentButtonRect = CGRect(x: 10+commentExistingStrandTFWidth, y: closeButtonHeight+10, width: 40, height: 40);
+        let newCommentButtonRect = CGRect(x: 10+commentExistingFocalTFWidth, y: closeButtonHeight+10, width: 40, height: 40);
         newCommentButton = addButtonProperties("Post", hidden: false, pos: newCommentButtonRect, cornerRadius: buttonCornerRadius, blurLight: true);
-        newCommentButton.addTarget(self, action: #selector(newCommentStrand), for: .touchUpInside);
+        newCommentButton.addTarget(self, action: #selector(newCommentFocal), for: .touchUpInside);
         
-        strandCommentsView.addSubview(newCommentButton);
-        strandCommentsView.addSubview(commentExistingStrandTextfield);
-        strandCommentsView.addSubview(closeStrandCommentsView);
-        strandCommentsView.addSubview(strandCommentsListScrollView);
-        self.view.addSubview(strandCommentsView);
+        focalCommentsView.addSubview(newCommentButton);
+        focalCommentsView.addSubview(commentExistingFocalTextfield);
+        focalCommentsView.addSubview(closeFocalCommentsView);
+        focalCommentsView.addSubview(focalCommentsListScrollView);
+        self.view.addSubview(focalCommentsView);
         
     }
     
 
     
-    func renderUserStrandsView(){
+    func renderUserFocalsView(){
         let viewHeight = 370;
-        userStrandListView = UIView(frame: CGRect(x:Int(screenSize.width/2)-viewPageWidth/2,y: defaultFormY + buttonSpace,width: viewPageWidth, height: viewHeight));
-        userStrandListView.isHidden = true;
-        userScrollStrandListView = UIScrollView(frame: CGRect(x:5,y: 25,width: viewPageWidth, height: viewHeight-30));
-        userScrollStrandListView.contentSize = CGSize(width: CGFloat(viewPageWidth), height: CGFloat(viewHeight));
-        userStrandListView.insertSubview(processBlurEffect(userStrandListView.bounds, cornerRadiusVal: buttonCornerRadius, light: true), at: 0);
+        userFocalListView = UIView(frame: CGRect(x:Int(screenSize.width/2)-viewPageWidth/2,y: defaultFormY + buttonSpace,width: viewPageWidth, height: viewHeight));
+        userFocalListView.isHidden = true;
+        userScrollFocalListView = UIScrollView(frame: CGRect(x:5,y: 25,width: viewPageWidth, height: viewHeight-30));
+        userScrollFocalListView.contentSize = CGSize(width: CGFloat(viewPageWidth), height: CGFloat(viewHeight));
+        userFocalListView.insertSubview(processBlurEffect(userFocalListView.bounds, cornerRadiusVal: buttonCornerRadius, light: true), at: 0);
         
 
-        let closeUserStrandViewRect = CGRect(x: viewPageWidth-(closeButtonWidth+5), y: 5, width: closeButtonWidth, height: closeButtonHeight);
-        closeUserStrandView = addButtonProperties("Close", hidden: false, pos: closeUserStrandViewRect, cornerRadius: buttonCornerRadius, blurLight: true);
-        closeUserStrandView.addTarget(self, action: #selector(hideAnyViews), for: .touchUpInside);
+        let closeUserFocalViewRect = CGRect(x: viewPageWidth-(closeButtonWidth+5), y: 5, width: closeButtonWidth, height: closeButtonHeight);
+        closeUserFocalView = addButtonProperties("Close", hidden: false, pos: closeUserFocalViewRect, cornerRadius: buttonCornerRadius, blurLight: true);
+        closeUserFocalView.addTarget(self, action: #selector(hideAnyViews), for: .touchUpInside);
 
-        userStrandListView.addSubview(closeUserStrandView);
-        userStrandListView.addSubview(userScrollStrandListView);
-        self.view.addSubview(userStrandListView);
+        userFocalListView.addSubview(closeUserFocalView);
+        userFocalListView.addSubview(userScrollFocalListView);
+        self.view.addSubview(userFocalListView);
     }
     
     
@@ -635,7 +635,7 @@ class UserInterface1{
         self.view.addSubview(userProfileView);
     }
     
-    func addStrandTapRecognizer(){
+    func addFocalTapRecognizer(){
         
         let tapRec: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(wrapTapped));
         tapRec.numberOfTapsRequired = 1;
@@ -695,7 +695,7 @@ class UserInterface1{
         
         let doneChoosingTapPosButtonRect = CGRect(x: Int(screenSize.width)-buttonSpace - (2*generalButtonWidth + 5),y: infoLabelYPos + buttonHeight + buttonSpace,width: generalButtonWidth, height: buttonHeight);
         doneChoosingTapPosButton = addButtonProperties("Done", hidden: true, pos: doneChoosingTapPosButtonRect,cornerRadius: buttonCornerRadius, blurLight: true);
-        doneChoosingTapPosButton.addTarget(self, action: #selector(newStrandComment), for: .touchUpInside);
+        doneChoosingTapPosButton.addTarget(self, action: #selector(newFocalComment), for: .touchUpInside);
         self.view.addSubview(doneChoosingTapPosButton);
         
         
@@ -732,9 +732,9 @@ class UserInterface1{
         self.view.addSubview(toggleMenuButton);
         
        
-        var buttonList = [mapName,"Login","Sign Up","Post Strand"," Help "];
+        var buttonList = [mapName,"Login","Sign Up","Post Focal"," Help "];
         if(loggedin == true){
-            buttonList = [mapName,"Post Strand"," Me ", " Help ", "My Strands", "Profile", "Logout"];
+            buttonList = [mapName,"Post Focal"," Me ", " Help ", "My Focals", "Profile", "Logout"];
         }
         
         var menuWidth = 0;
@@ -805,14 +805,14 @@ class UserInterface1{
         renderLabel();
         renderMenu(false);
         renderGeneralButtons();
-        addStrandTapRecognizer();
+        addFocalTapRecognizer();
         renderLoginForm();
         renderSignUpForm();
-        renderStrandCommentsView();
+        renderFocalCommentsView();
         renderPostCommentForm();
         renderProfileView();
-        renderUserStrandsView();
-        renderSingleStrandInfoView();
+        renderUserFocalsView();
+        renderSingleFocalInfoView();
     }
     
 }

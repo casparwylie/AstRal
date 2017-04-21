@@ -1,6 +1,6 @@
 //
 //  Map.swift
-//  Strands
+//  Focals
 //
 //  Created by Caspar Wylie on 06/08/2016.
 //  Copyright © 2016 Caspar Wylie. All rights reserved.
@@ -18,7 +18,7 @@ import Darwin
 
 
 @objc protocol mapActionDelegate {
-    @objc optional func renderTempStrandFromMap(_ mapTapCoord: CLLocationCoordinate2D);
+    @objc optional func renderTempFocalFromMap(_ mapTapCoord: CLLocationCoordinate2D);
 }
 
 class Map: NSObject, MKMapViewDelegate{
@@ -38,7 +38,7 @@ class Map: NSObject, MKMapViewDelegate{
         mapView.delegate = self;
         mapView.tag = 3;
         mapView.showsUserLocation = true;
-        addStrandMapTapRecognizer();
+        addFocalMapTapRecognizer();
         view.addSubview(mapView);
     }
     
@@ -50,8 +50,8 @@ class Map: NSObject, MKMapViewDelegate{
         return coordinateRegion;
     }
     
-    //MARK: add strand map tap
-    func addStrandMapTapRecognizer(){
+    //MARK: add focal map tap
+    func addFocalMapTapRecognizer(){
         let tapRec: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(wrapTappedMap));
         tapRec.numberOfTapsRequired = 1;
         mapView.addGestureRecognizer(tapRec);
@@ -62,19 +62,19 @@ class Map: NSObject, MKMapViewDelegate{
         let tapPoint = touch.location(in: mapView);
         let tapCoords = mapView.convert(tapPoint, toCoordinateFrom: mapView);
         if(self.tapMapToPost == true){
-            mapActionDelegate?.renderTempStrandFromMap!(tapCoords);
+            mapActionDelegate?.renderTempFocalFromMap!(tapCoords);
         }else{
-            //get strandinfo
+            //get focalinfo
         }
     }
     
-    func cancelTempStrand(){
+    func cancelTempFocal(){
         if(tempPin != nil){
             mapView.removeAnnotation(tempPin);
         }
     }
     
-    //MARK: update pins that represent strand
+    //MARK: update pins that represent focal
     var pcount = 0;
     func updateSinglePin(_ coord: CLLocation, temp: Bool){
         let CLLCoordType = CLLocationCoordinate2D(latitude: coord.coordinate.latitude,
@@ -144,7 +144,7 @@ class Map: NSObject, MKMapViewDelegate{
     
     //MARK: get all map points as px in preparation for openCV wrapper
     func collectPXfromMapPoints(_ mapPoints: [MKMapPoint], currMapPoint: MKMapPoint)
-        -> (strandValsPX: [(Double,Double)], currPointPX:[Double], pxLength: Int){
+        -> (focalValsPX: [(Double,Double)], currPointPX:[Double], pxLength: Int){
         
         var pixelsXY: [(Double,Double)] = [];
 
@@ -155,7 +155,7 @@ class Map: NSObject, MKMapViewDelegate{
             pixelsXY.append(resultsPX);
         }
         
-            return (strandValsPX: pixelsXY, currPointPX: resultsCurrPointXY, pxLength: mapPoints.count);
+            return (focalValsPX: pixelsXY, currPointPX: resultsCurrPointXY, pxLength: mapPoints.count);
     }
     
     

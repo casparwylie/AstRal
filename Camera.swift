@@ -1,6 +1,6 @@
 //
 //  Camera.swift
-//  Strands
+//  Astral
 //
 //  Created by Caspar Wylie on 05/08/2016.
 //  Copyright © 2016 Caspar Wylie. All rights reserved.

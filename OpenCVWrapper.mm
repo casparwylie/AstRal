@@ -1,6 +1,6 @@
 //
 //  OpenCVWrapper.m
-//  Strands1
+//  Focals1
 //
 //  Created by Caspar Wylie on 17/09/2016.
 //  Copyright © 2016 Caspar Wylie. All rights reserved.
@@ -28,7 +28,7 @@ int buildingFoundInLine(cv::Mat frame,cv::Mat testFrame, cv::Point point1, cv::P
     bool testing = false;
     int buildingFoundAt = -1;
     vector<int>  buildingColorBounds = {232,235};
-    int buildingDectectThicknessOffset = 4;
+    int buildingDectectThicknessOffset = 7;
     
     cv::LineIterator lineIter(frame, point1, point2);
     int buildingProb = 0;
@@ -39,7 +39,7 @@ int buildingFoundInLine(cv::Mat frame,cv::Mat testFrame, cv::Point point1, cv::P
             if(buildingDectectThicknessOffset <= buildingProb){
                 buildingFoundAt = i;
                // if(testing == false){
-                    break;
+                break;
                 //}
             }
             

@@ -25,9 +25,9 @@
 		B0E3561B1D995E110088EB10 /* OpenCVWrapper.mm in Sources */ = {isa = PBXBuildFile; fileRef = B0E356141D995E110088EB10 /* OpenCVWrapper.mm */; };
 		B0E3561C1D995E110088EB10 /* Scene.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E356151D995E110088EB10 /* Scene.swift */; };
 		B0E3561D1D995E110088EB10 /* UserInterface.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E356161D995E110088EB10 /* UserInterface.swift */; };
-		B0E356221D995E1E0088EB10 /* strandpost in Resources */ = {isa = PBXBuildFile; fileRef = B0E3561F1D995E1E0088EB10 /* strandpost */; };
-		B0E356231D995E1E0088EB10 /* strandpost.dae in Resources */ = {isa = PBXBuildFile; fileRef = B0E356201D995E1E0088EB10 /* strandpost.dae */; };
-		B0FCBD691DCFB45800622352 /* strand_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = B0FCBD681DCFB45800622352 /* strand_icon.png */; };
+		B0E356221D995E1E0088EB10 /* Astralpost in Resources */ = {isa = PBXBuildFile; fileRef = B0E3561F1D995E1E0088EB10 /* Astralpost */; };
+		B0E356231D995E1E0088EB10 /* Astralpost.dae in Resources */ = {isa = PBXBuildFile; fileRef = B0E356201D995E1E0088EB10 /* Astralpost.dae */; };
+		B0FCBD691DCFB45800622352 /* astral_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = B0FCBD681DCFB45800622352 /* astral_icon.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -50,33 +50,33 @@
 /* Begin PBXFileReference section */
 		1579034A9FAC0DCDE078DF9A /* Pods-Strands.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Strands.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Strands/Pods-Strands.debug.xcconfig"; sourceTree = "<group>"; };
 		B0476BF81DA28BCD000FC661 /* Starscream */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Starscream; path = ../../startest/Starscream; sourceTree = "<group>"; };
-		B053ECD61D9D3ACC009DA4AB /* Network.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Network.swift; sourceTree = "<group>"; };
+		B053ECD61D9D3ACC009DA4AB /* Network.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Network.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		B069B17A1E0D4EC400873A2E /* opencv2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = opencv2.framework; sourceTree = "<group>"; };
-		B0E355DC1D995DBF0088EB10 /* Strands.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Strands.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B0E355DC1D995DBF0088EB10 /* Astral.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Astral.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B0E355DF1D995DBF0088EB10 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B0E355E11D995DBF0088EB10 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		B0E355E41D995DBF0088EB10 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		B0E355E61D995DBF0088EB10 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B0E355E91D995DBF0088EB10 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		B0E355EB1D995DBF0088EB10 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		B0E355F01D995DBF0088EB10 /* StrandsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = StrandsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		B0E355F01D995DBF0088EB10 /* AstralTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AstralTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B0E355F41D995DBF0088EB10 /* StrandsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StrandsTests.swift; sourceTree = "<group>"; };
 		B0E355F61D995DBF0088EB10 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		B0E355FB1D995DBF0088EB10 /* StrandsUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = StrandsUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		B0E355FB1D995DBF0088EB10 /* AstralUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AstralUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B0E355FF1D995DBF0088EB10 /* StrandsUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StrandsUITests.swift; sourceTree = "<group>"; };
 		B0E356011D995DBF0088EB10 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B0E3560E1D995E110088EB10 /* Strands-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Strands-Bridging-Header.h"; sourceTree = "<group>"; };
 		B0E3560F1D995E110088EB10 /* Camera.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Camera.swift; sourceTree = "<group>"; };
 		B0E356101D995E110088EB10 /* Location.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Location.swift; sourceTree = "<group>"; };
-		B0E356111D995E110088EB10 /* Map.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Map.swift; sourceTree = "<group>"; };
+		B0E356111D995E110088EB10 /* Map.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Map.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		B0E356121D995E110088EB10 /* Misc.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Misc.swift; sourceTree = "<group>"; };
 		B0E356131D995E110088EB10 /* OpenCVWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenCVWrapper.h; sourceTree = "<group>"; };
 		B0E356141D995E110088EB10 /* OpenCVWrapper.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = OpenCVWrapper.mm; sourceTree = "<group>"; };
-		B0E356151D995E110088EB10 /* Scene.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Scene.swift; sourceTree = "<group>"; };
+		B0E356151D995E110088EB10 /* Scene.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Scene.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		B0E356161D995E110088EB10 /* UserInterface.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserInterface.swift; sourceTree = "<group>"; };
-		B0E3561F1D995E1E0088EB10 /* strandpost */ = {isa = PBXFileReference; lastKnownFileType = folder; path = strandpost; sourceTree = "<group>"; };
-		B0E356201D995E1E0088EB10 /* strandpost.dae */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml.dae; path = strandpost.dae; sourceTree = "<group>"; };
-		B0FCBD681DCFB45800622352 /* strand_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = strand_icon.png; sourceTree = "<group>"; };
+		B0E3561F1D995E1E0088EB10 /* Astralpost */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Astralpost; sourceTree = "<group>"; };
+		B0E356201D995E1E0088EB10 /* Astralpost.dae */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml.dae; path = Astralpost.dae; sourceTree = "<group>"; };
+		B0FCBD681DCFB45800622352 /* astral_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = astral_icon.png; sourceTree = "<group>"; };
 		D38F9152C59B50F78FC6CDFE /* Pods-Strands.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Strands.release.xcconfig"; path = "Pods/Target Support Files/Pods-Strands/Pods-Strands.release.xcconfig"; sourceTree = "<group>"; };
 		EA76AEA0DC651EA2EB870D49 /* Pods_Strands.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Strands.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -131,13 +131,13 @@
 			isa = PBXGroup;
 			children = (
 				B069B17A1E0D4EC400873A2E /* opencv2.framework */,
-				B0FCBD681DCFB45800622352 /* strand_icon.png */,
-				B0E3561F1D995E1E0088EB10 /* strandpost */,
-				B0E356201D995E1E0088EB10 /* strandpost.dae */,
+				B0FCBD681DCFB45800622352 /* astral_icon.png */,
+				B0E3561F1D995E1E0088EB10 /* Astralpost */,
+				B0E356201D995E1E0088EB10 /* Astralpost.dae */,
 				B0E3560D1D995DFA0088EB10 /* Components */,
-				B0E355DE1D995DBF0088EB10 /* Strands */,
-				B0E355F31D995DBF0088EB10 /* StrandsTests */,
-				B0E355FE1D995DBF0088EB10 /* StrandsUITests */,
+				B0E355DE1D995DBF0088EB10 /* Astral */,
+				B0E355F31D995DBF0088EB10 /* AstralTests */,
+				B0E355FE1D995DBF0088EB10 /* AstralUITests */,
 				B0E355DD1D995DBF0088EB10 /* Products */,
 				B0476BF71DA28BCD000FC661 /* Frameworks */,
 				663580958A3052F68192A6D9 /* Pods */,
@@ -147,14 +147,14 @@
 		B0E355DD1D995DBF0088EB10 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				B0E355DC1D995DBF0088EB10 /* Strands.app */,
-				B0E355F01D995DBF0088EB10 /* StrandsTests.xctest */,
-				B0E355FB1D995DBF0088EB10 /* StrandsUITests.xctest */,
+				B0E355DC1D995DBF0088EB10 /* Astral.app */,
+				B0E355F01D995DBF0088EB10 /* AstralTests.xctest */,
+				B0E355FB1D995DBF0088EB10 /* AstralUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		B0E355DE1D995DBF0088EB10 /* Strands */ = {
+		B0E355DE1D995DBF0088EB10 /* Astral */ = {
 			isa = PBXGroup;
 			children = (
 				B0E355DF1D995DBF0088EB10 /* AppDelegate.swift */,
@@ -164,24 +164,27 @@
 				B0E355E81D995DBF0088EB10 /* LaunchScreen.storyboard */,
 				B0E355EB1D995DBF0088EB10 /* Info.plist */,
 			);
+			name = Astral;
 			path = Strands;
 			sourceTree = "<group>";
 		};
-		B0E355F31D995DBF0088EB10 /* StrandsTests */ = {
+		B0E355F31D995DBF0088EB10 /* AstralTests */ = {
 			isa = PBXGroup;
 			children = (
 				B0E355F41D995DBF0088EB10 /* StrandsTests.swift */,
 				B0E355F61D995DBF0088EB10 /* Info.plist */,
 			);
+			name = AstralTests;
 			path = StrandsTests;
 			sourceTree = "<group>";
 		};
-		B0E355FE1D995DBF0088EB10 /* StrandsUITests */ = {
+		B0E355FE1D995DBF0088EB10 /* AstralUITests */ = {
 			isa = PBXGroup;
 			children = (
 				B0E355FF1D995DBF0088EB10 /* StrandsUITests.swift */,
 				B0E356011D995DBF0088EB10 /* Info.plist */,
 			);
+			name = AstralUITests;
 			path = StrandsUITests;
 			sourceTree = "<group>";
 		};
@@ -205,9 +208,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		B0E355DB1D995DBF0088EB10 /* Strands */ = {
+		B0E355DB1D995DBF0088EB10 /* Astral */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = B0E356041D995DBF0088EB10 /* Build configuration list for PBXNativeTarget "Strands" */;
+			buildConfigurationList = B0E356041D995DBF0088EB10 /* Build configuration list for PBXNativeTarget "Astral" */;
 			buildPhases = (
 				45B5FF1FA05D7A94FCBB6AA6 /* [CP] Check Pods Manifest.lock */,
 				B0E355D81D995DBF0088EB10 /* Sources */,
@@ -220,14 +223,14 @@
 			);
 			dependencies = (
 			);
-			name = Strands;
+			name = Astral;
 			productName = Strands;
-			productReference = B0E355DC1D995DBF0088EB10 /* Strands.app */;
+			productReference = B0E355DC1D995DBF0088EB10 /* Astral.app */;
 			productType = "com.apple.product-type.application";
 		};
-		B0E355EF1D995DBF0088EB10 /* StrandsTests */ = {
+		B0E355EF1D995DBF0088EB10 /* AstralTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = B0E356071D995DBF0088EB10 /* Build configuration list for PBXNativeTarget "StrandsTests" */;
+			buildConfigurationList = B0E356071D995DBF0088EB10 /* Build configuration list for PBXNativeTarget "AstralTests" */;
 			buildPhases = (
 				B0E355EC1D995DBF0088EB10 /* Sources */,
 				B0E355ED1D995DBF0088EB10 /* Frameworks */,
@@ -238,14 +241,14 @@
 			dependencies = (
 				B0E355F21D995DBF0088EB10 /* PBXTargetDependency */,
 			);
-			name = StrandsTests;
+			name = AstralTests;
 			productName = StrandsTests;
-			productReference = B0E355F01D995DBF0088EB10 /* StrandsTests.xctest */;
+			productReference = B0E355F01D995DBF0088EB10 /* AstralTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		B0E355FA1D995DBF0088EB10 /* StrandsUITests */ = {
+		B0E355FA1D995DBF0088EB10 /* AstralUITests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = B0E3560A1D995DBF0088EB10 /* Build configuration list for PBXNativeTarget "StrandsUITests" */;
+			buildConfigurationList = B0E3560A1D995DBF0088EB10 /* Build configuration list for PBXNativeTarget "AstralUITests" */;
 			buildPhases = (
 				B0E355F71D995DBF0088EB10 /* Sources */,
 				B0E355F81D995DBF0088EB10 /* Frameworks */,
@@ -256,9 +259,9 @@
 			dependencies = (
 				B0E355FD1D995DBF0088EB10 /* PBXTargetDependency */,
 			);
-			name = StrandsUITests;
+			name = AstralUITests;
 			productName = StrandsUITests;
-			productReference = B0E355FB1D995DBF0088EB10 /* StrandsUITests.xctest */;
+			productReference = B0E355FB1D995DBF0088EB10 /* AstralUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
@@ -293,7 +296,7 @@
 					};
 				};
 			};
-			buildConfigurationList = B0E355D71D995DBF0088EB10 /* Build configuration list for PBXProject "Strands" */;
+			buildConfigurationList = B0E355D71D995DBF0088EB10 /* Build configuration list for PBXProject "Astral" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -306,9 +309,9 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				B0E355DB1D995DBF0088EB10 /* Strands */,
-				B0E355EF1D995DBF0088EB10 /* StrandsTests */,
-				B0E355FA1D995DBF0088EB10 /* StrandsUITests */,
+				B0E355DB1D995DBF0088EB10 /* Astral */,
+				B0E355EF1D995DBF0088EB10 /* AstralTests */,
+				B0E355FA1D995DBF0088EB10 /* AstralUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -318,11 +321,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B0FCBD691DCFB45800622352 /* strand_icon.png in Resources */,
-				B0E356221D995E1E0088EB10 /* strandpost in Resources */,
+				B0FCBD691DCFB45800622352 /* astral_icon.png in Resources */,
+				B0E356221D995E1E0088EB10 /* Astralpost in Resources */,
 				B0E355EA1D995DBF0088EB10 /* LaunchScreen.storyboard in Resources */,
 				B0E355E71D995DBF0088EB10 /* Assets.xcassets in Resources */,
-				B0E356231D995E1E0088EB10 /* strandpost.dae in Resources */,
+				B0E356231D995E1E0088EB10 /* Astralpost.dae in Resources */,
 				B0E355E51D995DBF0088EB10 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -430,12 +433,12 @@
 /* Begin PBXTargetDependency section */
 		B0E355F21D995DBF0088EB10 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = B0E355DB1D995DBF0088EB10 /* Strands */;
+			target = B0E355DB1D995DBF0088EB10 /* Astral */;
 			targetProxy = B0E355F11D995DBF0088EB10 /* PBXContainerItemProxy */;
 		};
 		B0E355FD1D995DBF0088EB10 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = B0E355DB1D995DBF0088EB10 /* Strands */;
+			target = B0E355DB1D995DBF0088EB10 /* Astral */;
 			targetProxy = B0E355FC1D995DBF0088EB10 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -609,7 +612,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = casparwylie.StrandsTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Strands.app/Strands";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Astral.app/Astral";
 			};
 			name = Debug;
 		};
@@ -624,7 +627,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = casparwylie.StrandsTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Strands.app/Strands";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Astral.app/Astral";
 			};
 			name = Release;
 		};
@@ -659,7 +662,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		B0E355D71D995DBF0088EB10 /* Build configuration list for PBXProject "Strands" */ = {
+		B0E355D71D995DBF0088EB10 /* Build configuration list for PBXProject "Astral" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				B0E356021D995DBF0088EB10 /* Debug */,
@@ -668,7 +671,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		B0E356041D995DBF0088EB10 /* Build configuration list for PBXNativeTarget "Strands" */ = {
+		B0E356041D995DBF0088EB10 /* Build configuration list for PBXNativeTarget "Astral" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				B0E356051D995DBF0088EB10 /* Debug */,
@@ -677,7 +680,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		B0E356071D995DBF0088EB10 /* Build configuration list for PBXNativeTarget "StrandsTests" */ = {
+		B0E356071D995DBF0088EB10 /* Build configuration list for PBXNativeTarget "AstralTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				B0E356081D995DBF0088EB10 /* Debug */,
@@ -686,7 +689,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		B0E3560A1D995DBF0088EB10 /* Build configuration list for PBXNativeTarget "StrandsUITests" */ = {
+		B0E3560A1D995DBF0088EB10 /* Build configuration list for PBXNativeTarget "AstralUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				B0E3560B1D995DBF0088EB10 /* Debug */,

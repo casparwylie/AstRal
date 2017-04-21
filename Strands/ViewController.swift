@@ -59,22 +59,19 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
     //MARK: network request and response middleware functionality
     func renderRelStrands(_ newRender: Bool){
         
-        let pxVals = self.map.collectPXfromMapPoints(mapPoints: mapPoints, currMapPoint: currMapPoint);
+        let pxVals = self.map.collectPXfromMapPoints(mapPoints, currMapPoint: currMapPoint);
         var currPointPX = pxVals.currPointPX;
         var strandValsPX = pxVals.strandValsPX;
     
         
-        self.map.getMapAsIMG(completion: {(image) in
+        self.map.getMapAsIMG({(image) in
             
             let toHideAsSTR = OpenCVWrapper.buildingDetect( &strandValsPX, image: image, currPoint: &currPointPX, pxLength: Int32(pxVals.pxLength),forTapLimit: false);
             
-            self.scene.renderStrands(mapPoints:self.mapPoints, currMapPoint: self.currMapPoint,
+            self.scene.renderStrands(self.mapPoints, currMapPoint: self.currMapPoint,
                                      render: newRender, currentHeading: self.currentHeading, toHide: toHideAsSTR!, comments: self.strandFirstComments, tempStrandMapPoint: self.tempStrandMapPoint);
-            
         });
     }
-    
-   
     
     //MARK: region data updating requests and response middleware process
     func regionDataUpdate(_ currentLocation: CLLocation, currentHeading: CLHeading){
@@ -82,40 +79,38 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
         self.currentLocation = currentLocation;
         self.currMapPoint = MKMapPointForCoordinate(currentLocation.coordinate);
         self.currentHeading = currentHeading;
-        oldRenderPosition = (firstRender==true ? currentLocation : oldRenderPosition);
+        if(firstRender==true){
+            self.oldRenderPosition = self.currentLocation;
+        }
         
         self.strandDistAndBearingsFromUser = [];
         var count = 0;
         for _ in self.mapPoints{
             
-            let distAndBearing = self.location.collectStrandToUserData(point1X: currMapPoint.x, point1Y: currMapPoint.y, point2X: mapPoints[count].x, point2Y: mapPoints[count].y);
+            let distAndBearing = self.location.collectStrandToUserData(currMapPoint.x, point1Y: currMapPoint.y, point2X: mapPoints[count].x, point2Y: mapPoints[count].y);
             self.strandDistAndBearingsFromUser.append(distAndBearing);
             count += 1;
         }
         
-        let coordinateRegion: MKCoordinateRegion = self.map.centerToLocationRegion(location: currentLocation);
+        let coordinateRegion: MKCoordinateRegion = self.map.centerToLocationRegion(currentLocation);
         self.map.mapView.setRegion(coordinateRegion, animated: false);
-
-        if((currentLocation.distance(from: oldRenderPosition)>thresholdDistRerender)||firstRender==true){
-            
-            self.networkRequest.getRegionData(socket: self.networkWebSocket, currLocation: currentLocation);
-            
+        let distFromPrevPos = currentLocation.distance(from: self.oldRenderPosition);
+        if((distFromPrevPos>thresholdDistRerender)||firstRender==true){
+            self.networkRequest.getRegionData(self.networkWebSocket, currLocation: currentLocation);
         }else if(self.scene.strands.count>0){
             renderRelStrands(false);
         }
         
-    
     }
     
     func regionDataResponse(_ responseStr: String) {
-        let responseJSON = networkSocket.processResponseAsJSON(responseData: responseStr);
+        let responseJSON = networkSocket.processResponseAsJSON(responseStr);
         var coordsAsCLLocation: [CLLocation] = [];
         var realStrandIDs: [Int] = [];
         let responseStrandDataKey = "regionStrandData";
         let strandFirstCommentsKey = "fComments";
         
         if(responseJSON[responseStrandDataKey].count != 0){
-            
             for coordRowCount in 0...responseJSON[responseStrandDataKey].count-1{
                 let rowLatitude = Double(responseJSON[responseStrandDataKey][coordRowCount]["s_coord_lat"].rawString()!);
                 let rowLongitude = Double(responseJSON[responseStrandDataKey][coordRowCount]["s_coord_lon"].rawString()!);
@@ -123,10 +118,9 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
                 coordsAsCLLocation.append(rowAsCLLocation);
                 realStrandIDs.append(responseJSON[responseStrandDataKey][coordRowCount]["s_id"].int!);
             }
-            
         }
-        self.mapPoints = self.map.getCoordsAsMapPoints(coords: coordsAsCLLocation);
-        self.map.updatePins(coords: coordsAsCLLocation);
+        self.mapPoints = self.map.getCoordsAsMapPoints(coordsAsCLLocation);
+        self.map.updatePins(coordsAsCLLocation);
         self.coordPoints = coordsAsCLLocation;
         
         self.oldRenderPosition = self.currentLocation;
@@ -140,8 +134,6 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
         
     }
 
-    
-    
     //MARK: new strand request and response middleware process
     var addTempFirst = true;
     var phonePitch = 0;
@@ -154,27 +146,27 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
     func renderTempStrandFromUI(_ tapX: Int, tapY: Int){
         var newStrandDistMetres: Double = 0.0;
         var bearingDegreesTap: Double = 0.0;
-        newStrandDistMetres = self.location.getDistFromVerticalTap(tapX: Double(tapX), tapY: Double(tapY), phonePitch: Double(self.phonePitch));
+        newStrandDistMetres = self.location.getDistFromVerticalTap(Double(tapX), tapY: Double(tapY), phonePitch: Double(self.phonePitch));
         if(newStrandDistMetres < 0){
             newStrandDistMetres = 3;
         }
 
-        bearingDegreesTap = self.location.getBearingFromHorizontalTap(tapX: Double(tapX));
-        var strandLocation = location.getPolarCoords(distance: newStrandDistMetres, bearingDegrees: bearingDegreesTap);
+        bearingDegreesTap = self.location.getBearingFromHorizontalTap(Double(tapX));
+        var strandLocation = location.getPolarCoords(newStrandDistMetres, bearingDegrees: bearingDegreesTap);
     
         
-        let pxVals = self.map.collectPXfromMapPoints(mapPoints: [MKMapPointForCoordinate(strandLocation.coordinate)], currMapPoint: MKMapPointForCoordinate(currentLocation.coordinate));
+        let pxVals = self.map.collectPXfromMapPoints([MKMapPointForCoordinate(strandLocation.coordinate)], currMapPoint: MKMapPointForCoordinate(currentLocation.coordinate));
         
         var currentPointPX = pxVals.currPointPX;
         var strandDesValPX = pxVals.strandValsPX;
         
-        self.map.getMapAsIMG(completion: {(image) in
+        self.map.getMapAsIMG({(image) in
             
             let distLimitPX = Int(OpenCVWrapper.buildingDetect(&strandDesValPX, image: image, currPoint: &currentPointPX, pxLength: Int32(pxVals.pxLength), forTapLimit: true)!)!;
             
             if(distLimitPX > -1){
-                let distLimitMetres = distLimitPX / 2;
-                strandLocation = self.location.getPolarCoords(distance: Double(distLimitMetres), bearingDegrees: bearingDegreesTap);
+                let distLimitMetres = (distLimitPX / 2)-2;
+                strandLocation = self.location.getPolarCoords(Double(distLimitMetres), bearingDegrees: bearingDegreesTap);
             }
             
             self.addStrandTemp(strandLocation);
@@ -188,12 +180,10 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
         tempStrandMapPoint = MKMapPointForCoordinate(strandLocation.coordinate);
         let currentMapPoint = MKMapPointForCoordinate(currentLocation.coordinate);
 
-            
-        map.updateSinglePin(coord: strandLocation, temp: true);
-        self.scene.renderSingleStrand(renderID: 0, mapPoint: tempStrandMapPoint, currMapPoint: currentMapPoint, strandDisplayInfo: (" ", " "), render: self.addTempFirst, tempStrand: true);
+        map.updateSinglePin(strandLocation, temp: true);
+        self.scene.renderSingleStrand(0, mapPoint: tempStrandMapPoint, currMapPoint: currentMapPoint, strandDisplayInfo: (" ", " "), render: self.addTempFirst, tempStrand: true);
         self.addTempFirst = false;
-        
-
+    
     }
     
     func addStrandReady(_ comment: String){
@@ -209,20 +199,20 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
             }
             
             let strandInfo = (comment: comment, author: self.loggedinUserData.username, userID: self.loggedinUserData.id, areaName: areaName);
-            self.networkRequest.addStrand(socket: self.networkWebSocket, strandLocation: self.latestDesiredStrandLocation,strandDisplayInfo: strandInfo);
+            self.networkRequest.addStrand(self.networkWebSocket, strandLocation: self.latestDesiredStrandLocation,strandDisplayInfo: strandInfo);
         });
     }
     
-    
     func addedStrandResponse(_ responseStr: String) {
-        let responseJSON = networkSocket.processResponseAsJSON(responseData: responseStr);
+
+        let responseJSON = networkSocket.processResponseAsJSON(responseStr);
         let success: Bool = (responseJSON["success"]=="true" ? true: false);
         var responseMessage = "Unknown Error. Please try again later.";
         if(success == true){
             responseMessage = "Successfully posted new strand!";
         }
-        self.networkRequest.getRegionData(socket: self.networkWebSocket, currLocation: currentLocation);
-        self.userInterface.updateInfoLabel(newText: responseMessage, show: true, hideAfter: 4);
+        self.networkRequest.getRegionData(self.networkWebSocket, currLocation: currentLocation);
+        self.userInterface.updateInfoLabel(responseMessage, show: true, hideAfter: 4);
     }
     
     func cancelNewStrand() {
@@ -234,23 +224,23 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
     
     //MARK: retrieve user owned strands request and response middleware process
     func requestUserStrands() {
-        networkRequest.getUserStrands(socket: self.networkWebSocket, userID: self.loggedinUserData.id);
+        networkRequest.getUserStrands(self.networkWebSocket, userID: self.loggedinUserData.id);
     }
     
     func userStrandsResponse(_ responseStr: String) {
-        let responseJSON = networkSocket.processResponseAsJSON(responseData: responseStr);
-        self.userInterface.populateUserStrands(strands: responseJSON["strands"], firstComments: responseJSON["fComments"]);
+        let responseJSON = networkSocket.processResponseAsJSON(responseStr);
+        self.userInterface.populateUserStrands(responseJSON["strands"], firstComments: responseJSON["fComments"]);
     }
     
     
     //MARK: new user sign up / profile edit request and response middleware process
     func updateUserDataRequest(_ username: String, password: String, fullname: String, email: String) {
-        networkRequest.updateUserDataRequest(socket: self.networkWebSocket, username: username, password: password, fullname: fullname, email: email, userID: loggedinUserData.id);
+        networkRequest.updateUserDataRequest(self.networkWebSocket, username: username, password: password, fullname: fullname, email: email, userID: loggedinUserData.id);
     }
     
     
     func updatedUserDataResponse(_ responseStr: String) {
-        let responseJSON = networkSocket.processResponseAsJSON(responseData: responseStr);
+        let responseJSON = networkSocket.processResponseAsJSON(responseStr);
         let success: Bool = (responseJSON["success"]=="true" ? true: false);
         if(success==true){
             userInterface.hideAnyViews();
@@ -262,22 +252,22 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
                 userInterface.loggedinUserData = self.loggedinUserData;
             }
         }
-        self.userInterface.updateInfoLabel(newText: responseJSON["errorMsg"].string!, show: true, hideAfter: 5);
+        self.userInterface.updateInfoLabel(responseJSON["errorMsg"].string!, show: true, hideAfter: 5);
     }
 
     
     //MARK: User login request and response middleware process
     func loginRequest(_ username: String, password: String) {
-        networkRequest.loginUserRequest(socket: self.networkWebSocket, username: username, password: password);
+        networkRequest.loginUserRequest(self.networkWebSocket, username: username, password: password);
     }
     
     func userLoggedinResponse(_ responseStr: String) {
-        let responseJSON = networkSocket.processResponseAsJSON(responseData: responseStr);
+        let responseJSON = networkSocket.processResponseAsJSON(responseStr);
         var responseMessage = "Incorrect username or password.";
         if(responseJSON["success"].rawString()! == "true"){
             
             userInterface.hideAnyViews();
-            userInterface.renderMenu(loggedin: true);
+            userInterface.renderMenu(true);
             loggedinUserData.id = Int(responseJSON["result"]["u_id"].rawString()!)!;
             loggedinUserData.username = responseJSON["result"]["u_uname"].string!;
             loggedinUserData.fullname = responseJSON["result"]["u_fullname"].string!;
@@ -288,54 +278,55 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
             
         }
         
-        userInterface.updateInfoLabel(newText: responseMessage, show: true, hideAfter: 5);
+        userInterface.updateInfoLabel(responseMessage, show: true, hideAfter: 5);
     }
     
     
     func logoutUser() {
         loggedinUserData = (id: 0, username: "Unknown", fullname: "Unknown", email: "Unknown", password: "");
         self.userInterface.loggedinUserData = self.loggedinUserData;
-        self.userInterface.updateInfoLabel(newText: "You are logged out!", show: true, hideAfter: 2);
+        self.userInterface.updateInfoLabel("You are logged out!", show: true, hideAfter: 2);
     }
     
     
     //MARK: Retrieve strand comments request and response middleware process
     func getStrandComments(_ strandID: Int){
-        networkRequest.getStrandComments(socket: self.networkWebSocket, strandID: realStrandIDs[strandID]);
+        networkRequest.getStrandComments(self.networkWebSocket, strandID: realStrandIDs[strandID]);
     }
     var viewingStrandID = -1;
     func chooseStrandComments(_ tapX: Int, tapY: Int){
         let locationOfTap = CGPoint(x: tapX, y: tapY);
         var strandTapID = -1;
         let possStrandsFound = scene.sceneView.hitTest(locationOfTap, options: nil);
-        if let tappedStrand = possStrandsFound.first?.node.parent?.parent{
+        if let tappedStrand = possStrandsFound.first?.node.parent?.parent?.parent{
             print(tappedStrand.name!)
             let startIndex = tappedStrand.name?.index((tappedStrand.name?.startIndex)!, offsetBy: 2);
             strandTapID = Int((tappedStrand.name?.substring(from: startIndex!))!)!;
             viewingStrandID = strandTapID;
             
         }
-        if(strandTapID != nil && strandTapID != -1){
+
+        if(strandTapID != -1){
             getStrandComments(strandTapID);
             strandTapID = -1;
         }
     }
     func strandCommentsResponse(_ responseStr: String) {
-        let responseJSON = networkSocket.processResponseAsJSON(responseData: responseStr);
-        self.userInterface.populateStrandCommentsView(strandComments: responseJSON["strandComments"]);
+        let responseJSON = networkSocket.processResponseAsJSON(responseStr);
+        self.userInterface.populateStrandCommentsView(responseJSON["strandComments"]);
     }
     
     //MARK: Post new strand comment request and response middleware process
     func postNewComment(_ commentText: String) {
         if(viewingStrandID
             != -1){
-            networkRequest.postComment(socket: self.networkWebSocket, strandID: realStrandIDs[viewingStrandID], username: loggedinUserData.username, commentText: commentText);
+            networkRequest.postComment(self.networkWebSocket, strandID: realStrandIDs[viewingStrandID], username: loggedinUserData.username, commentText: commentText);
         }
     }
     
     func postedCommentResponse(_ responseStr: String) {
-        let responseJSON = networkSocket.processResponseAsJSON(responseData: responseStr);
-        self.userInterface.updateInfoLabel(newText: "Successfully Posted!", show: true, hideAfter: 2);
+        let responseJSON = networkSocket.processResponseAsJSON(responseStr);
+        self.userInterface.updateInfoLabel("Successfully Posted!", show: true, hideAfter: 2);
         self.getStrandComments(self.viewingStrandID);
     }
 
@@ -343,16 +334,16 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
     
     //MARK: Delete strand request and response middleware process
     func deleteStrandRequest(_ realID: Int){
-        networkRequest.deleteStrand(socket: self.networkWebSocket, strandID: realID);
+        networkRequest.deleteStrand(self.networkWebSocket, strandID: realID);
     }
     
     func deletedStrandResponse(_ responseStr: String) {
-        let responseJSON = networkSocket.processResponseAsJSON(responseData: responseStr);
+        let responseJSON = networkSocket.processResponseAsJSON(responseStr);
         let success: Bool = (responseJSON["success"]=="true" ? true: false);
-        self.userInterface.updateInfoLabel(newText: "Successfully Deleted!", show: true, hideAfter: 2);
+        self.userInterface.updateInfoLabel("Successfully Deleted!", show: true, hideAfter: 2);
         self.userInterface.closeSingleStrandInfoViewWrap();
         self.requestUserStrands();
-        self.networkRequest.getRegionData(socket: self.networkWebSocket, currLocation: currentLocation);
+        self.networkRequest.getRegionData(self.networkWebSocket, currLocation: currentLocation);
     }
     
     
@@ -368,21 +359,21 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
         
         //Initilize camera component
         let capDevice = camera.initilizeCamera();
-        camera.startCameraFeed(capDevice: capDevice, view: self.view);
+        camera.startCameraFeed(capDevice, view: self.view);
         
         //Initilize scene component
-        scene.renderSceneLayer(frameView: self.view);
+        scene.renderSceneLayer(self.view);
         scene.renderSceneEssentials();
         
         //Initilize Map component
-        map.renderMap(view: self.view);
+        map.renderMap(self.view);
         map.mapActionDelegate = self;
         self.view.viewWithTag(3)?.isHidden = true;
         
         //Initilize UI component
-        userInterface.renderAll(view: self.view);
+        userInterface.renderAll(self.view);
         userInterface.actionDelegate = self;
-        userInterface.updateInfoLabel(newText: "Please calibrate your phone by twisting it around", show: true, hideAfter: 4);
+        userInterface.updateInfoLabel("Please calibrate your phone by twisting it around", show: true, hideAfter: 4);
     
         //Initilize Motion Handler
         motionManager.deviceMotionUpdateInterval = 1.0 / 60.0;
@@ -393,7 +384,7 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
                 (gyroData: CMDeviceMotion?, NSError) ->Void in
                 let mData: CMAttitude = gyroData!.attitude;
                 self.phonePitch = 90 - Int(mData.pitch * (180 / M_PI));
-                self.scene.rotateCamera(gyroData: mData);
+                self.scene.rotateCamera(mData);
                 if(NSError != nil){
                     print("\(NSError)");
                 }
@@ -402,6 +393,7 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
         //Initilize Network socket component
         networkWebSocket = networkSocket.connectWebSocket();
         networkSocket.networkResponseDelegate = self;
+        networkSocket.ui = userInterface;
 
         
     

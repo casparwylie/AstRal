@@ -1,6 +1,6 @@
 //
 //  OpenCVWrapper.h
-//  Strands1
+//  Focals1
 //
 //  Created by Caspar Wylie on 17/09/2016.
 //  Copyright © 2016 Caspar Wylie. All rights reserved.
@@ -20,6 +20,6 @@
 
 +(NSString*) buildingDetect: (double[][2])pxVals image:(UIImage*)UIMap currPoint:(double[2])currPointPX pxLength:(int) pxLength forTapLimit:(bool)forTapLimit;
 
-//+(NSString*) limitNewStrandDist: (double[2])currPoint image:(UIImage*)UIMap desPoint:(double[2])desPoint;
+//+(NSString*) limitNewFocalDist: (double[2])currPoint image:(UIImage*)UIMap desPoint:(double[2])desPoint;
 
 @end

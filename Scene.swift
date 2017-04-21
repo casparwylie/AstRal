@@ -1,6 +1,6 @@
 //
 //  Scene.swift
-//  Strands
+//  Focals
 //
 //  Created by Caspar Wylie on 05/08/2016.
 //  Copyright © 2016 Caspar Wylie. All rights reserved.
@@ -24,8 +24,8 @@ class Scene{
     let lightNode = SCNNode();
     let cameraNode = SCNNode();
     let scene = SCNScene();
-    var tempStrandNode: SCNNode!;
-    var strands: [SCNNode] = [];
+    var tempFocalNode: SCNNode!;
+    var focals: [SCNNode] = [];
     var sceneView: SCNView!;
     
     //MARK: Add scene view to view
@@ -77,14 +77,14 @@ class Scene{
         return (x: pX, y: pY);
     }
     
-    func DAEtoSCNNodeWithText(_ filepath:String, strandDisplayInfo: (comment: String, author: String)) -> SCNNode {
+    func DAEtoSCNNodeWithText(_ filepath:String, focalDisplayInfo: (comment: String, author: String)) -> SCNNode {
         
         //setup text nodes
         let singNode = SCNNode();
         let localScene = SCNScene(named: filepath);
         let singNodeArray = localScene!.rootNode.childNodes;
-        let midText = ((strandDisplayInfo.author != " ") ? " \n\n By " : "");
-        let displayText = strandDisplayInfo.comment + midText + strandDisplayInfo.author;
+        let midText = ((focalDisplayInfo.author != " ") ? " \n\n By " : "");
+        let displayText = focalDisplayInfo.comment + midText + focalDisplayInfo.author;
         let textRenderFront = SCNText(string: displayText, extrusionDepth:1);
         let textRenderBack = SCNText(string: displayText, extrusionDepth:1);
         
@@ -92,7 +92,7 @@ class Scene{
         let textContainerFrame = CGRect(x: 0,y: 0, width: 270, height: 100);
         let textIsWrapped = true;
         let textColor = UIColor.black;
-        let textNodeScale = SCNVector3(0.07,0.07,0.07);
+        _ = SCNVector3(0.07,0.07,0.07);
         
         //setting attributes
         textRenderFront.isWrapped = textIsWrapped;
@@ -106,7 +106,7 @@ class Scene{
         
         //build DAE scene as node by each component
         for childNode in singNodeArray {
-            
+            /*
             let textNodeFront = SCNNode(geometry: textRenderFront);
             let textNodeBack = SCNNode(geometry: textRenderBack);
             
@@ -119,91 +119,88 @@ class Scene{
             textNodeBack.eulerAngles = SCNVector3(x: 0, y: -1.5708, z: 0);
             
             singNode.addChildNode(textNodeFront);
-            singNode.addChildNode(textNodeBack);
+            singNode.addChildNode(textNodeBack);*/
             singNode.addChildNode(childNode as SCNNode);
             
         }
         return singNode;
     }
     
-    func renderSingleStrand(_ renderID: Int, mapPoint: MKMapPoint, currMapPoint: MKMapPoint, strandDisplayInfo: (String, String), render: Bool, tempStrand: Bool){
+    func renderSingleFocal(_ renderID: Int, mapPoint: MKMapPoint, currMapPoint: MKMapPoint, focalDisplayInfo: (String, String), render: Bool, tempFocal: Bool){
         
-        var strandCoord = (x: mapPoint.x - currMapPoint.x, y: mapPoint.y - currMapPoint.y);
-        strandCoord = rotateAroundPoint(strandCoord, angle: -90);
+        var focalCoord = (x: mapPoint.x - currMapPoint.x, y: mapPoint.y - currMapPoint.y);
+        focalCoord = rotateAroundPoint(focalCoord, angle: -90);
+        
         if(render==true){
-            //initiate strands
-            if(tempStrand == false){
-                let strand = DAEtoSCNNodeWithText("strandpost.dae", strandDisplayInfo: strandDisplayInfo);
-                strand.name = "s_" + String(renderID);
-                strand.position = SCNVector3(x: Float(strandCoord.x), y: 0, z:  Float(strandCoord.y));
-                strands.append(strand);
-                self.scene.rootNode.addChildNode(strands.last!);
+            //initiate focals
+            if(tempFocal == false){
+                let focal = DAEtoSCNNodeWithText("focalpost.dae", focalDisplayInfo: focalDisplayInfo);
+                focal.name = "s_" + String(renderID);
+                focal.position = SCNVector3(x: Float(focalCoord.x), y: 0, z:  Float(focalCoord.y));
+                focals.append(focal);
+                self.scene.rootNode.addChildNode(focals.last!);
             }else{
-                tempStrandNode = DAEtoSCNNodeWithText("strandpost.dae", strandDisplayInfo: strandDisplayInfo);
-                tempStrandNode.name = "s_" + String(renderID);
-                tempStrandNode.position = SCNVector3(x: Float(strandCoord.x), y: 0, z:  Float(strandCoord.y));
-                self.scene.rootNode.addChildNode(tempStrandNode);
+                tempFocalNode = DAEtoSCNNodeWithText("focalpost.dae", focalDisplayInfo: focalDisplayInfo);
+                tempFocalNode.name = "s_" + String(renderID);
+                tempFocalNode.position = SCNVector3(x: Float(focalCoord.x), y: 0, z:  Float(focalCoord.y));
+                self.scene.rootNode.addChildNode(tempFocalNode);
             }
             
         }else{
-            //update strand position
-            let newPos = SCNVector3(x: Float(strandCoord.x), y: 0.0, z:  Float(strandCoord.y));
-            if(tempStrand == false){
-                //print(strands);
+            //update focal position
+            let newPos = SCNVector3(x: Float(focalCoord.x), y: 0.0, z:  Float(focalCoord.y));
+            if(tempFocal == false){
+                //print(focals);
                 let moveToAction = SCNAction.move(to: newPos, duration: 1);
-                strands[renderID].runAction(moveToAction);
+                focals[renderID].runAction(moveToAction);
             }else{
-                tempStrandNode.position = newPos;
+                tempFocalNode.position = newPos;
             }
         }
-
-        
     }
     
-    func removeTempStrand(){
-        tempStrandNode?.removeFromParentNode();
+    func removeTempFocal(){
+        tempFocalNode?.removeFromParentNode();
     }
-    
-    //MARK: render or update strand within 3D atmosphere
-    func renderStrands(_ mapPoints: [MKMapPoint], currMapPoint: MKMapPoint,
-                       render: Bool, currentHeading: CLHeading, toHide: String, comments: JSON, tempStrandMapPoint: MKMapPoint){
+    //MARK: render or update focal within 3D atmosphere
+    func renderFocals(_ mapPoints: [MKMapPoint], currMapPoint: MKMapPoint,
+                       render: Bool, currentHeading: CLHeading, toHide: String, comments: JSON, tempFocalMapPoint: MKMapPoint){
         
         let toHideAsArr = toHide.components(separatedBy: ",");
         
         //remove previous area / region data
         if(render==true){
-            if (strands.count != 0) {
-                for oldStrandID in 0...strands.count-1{
-                    strands[oldStrandID].removeFromParentNode();
+            if (focals.count != 0) {
+                for oldFocalID in 0...focals.count-1{
+                    focals[oldFocalID].removeFromParentNode();
                 }
-                strands = [];
+                focals = [];
             }
         }
-        
-        if(tempStrandMapPoint.x != 0.0){
-            let tempStrandDisplayInfo = (comment: " ", author: " ");
-            renderSingleStrand(-1,mapPoint: tempStrandMapPoint, currMapPoint: currMapPoint, strandDisplayInfo: tempStrandDisplayInfo, render: render, tempStrand: true);
+        if(tempFocalMapPoint.x != 0.0){
+            let tempFocalDisplayInfo = (comment: " ", author: " ");
+            renderSingleFocal(-1,mapPoint: tempFocalMapPoint, currMapPoint: currMapPoint, focalDisplayInfo: tempFocalDisplayInfo, render: false, tempFocal: true);
+
         }
-        
-        //render or move new strands
+
+        //render or move new focals
         var i = 0;
         for mPoint in mapPoints{
-            let strandDisplayInfo = (comment: comments[i]["c_text"].rawString()!, author: comments[i]["c_u_uname"].rawString()!);
+            let focalDisplayInfo = (comment: comments[i]["c_text"].rawString()!, author: comments[i]["c_u_uname"].rawString()!);
             
-            renderSingleStrand(renderID: i,mapPoint: mPoint, currMapPoint: currMapPoint, strandDisplayInfo: strandDisplayInfo, render: render, tempStrand: false);
-            //hide non-street visible strands
+            renderSingleFocal(i,mapPoint: mPoint, currMapPoint: currMapPoint, focalDisplayInfo: focalDisplayInfo, render: render, tempFocal: false);
+            //hide non-street visible focals
             for hideID in toHideAsArr{
                 if (hideID == String(i)){
-                   // strands[i].isHidden = true;
+                    //focals[i].isHidden = true;
                     break;
                 }else{
-                    strands[i].isHidden = false;
+                    focals[i].isHidden = false;
                 }
             }
             i += 1;
         }
     }
-    
     //MARK: gyro to scene camera mapping, on new gyro/motion data (delegated call from ViewController)
     func rotateCamera(_ gyroData: CMAttitude){
         
@@ -218,7 +215,6 @@ class Scene{
 
        cameraNode.eulerAngles = SCNVector3(x: Float(attitudePitch - 1.5708),y: Float(attitudeYaw),z: Float(-attitudeRoll));
     }
-
 
     //MARK: Add all nodes to scene
     func renderSceneEssentials(){

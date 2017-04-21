@@ -1,6 +1,6 @@
 //
 //  Network.swift
-//  Strands
+//  Focals
 //
 //  Created by Caspar Wylie on 29/09/2016.
 //  Copyright © 2016 Caspar Wylie. All rights reserved.
@@ -22,10 +22,10 @@ import SwiftyJSON
     
     @objc optional func regionDataResponse(_ responseStr: String);
     @objc optional func userLoggedinResponse(_ responseStr: String);
-    @objc optional func addedStrandResponse(_ responseStr: String);
-    @objc optional func userStrandsResponse(_ responseStr: String);
-    @objc optional func deletedStrandResponse(_ responseStr: String);
-    @objc optional func strandCommentsResponse(_ responseStr: String);
+    @objc optional func addedFocalResponse(_ responseStr: String);
+    @objc optional func userFocalsResponse(_ responseStr: String);
+    @objc optional func deletedFocalResponse(_ responseStr: String);
+    @objc optional func focalCommentsResponse(_ responseStr: String);
     @objc optional func postedCommentResponse(_ responseStr: String);
     @objc optional func updatedUserDataResponse(_ responseStr: String);
     
@@ -36,6 +36,7 @@ import SwiftyJSON
 class NetworkSocketHandler{
     
     let socket = WebSocket(url: URL(string: "ws://casparwylie.me:3000/")!);
+    var ui: UserInterface1!;
     var networkResponseDelegate: NetworkResponseDelegate?;
     func connectWebSocket() -> WebSocket{
         socket.connect();
@@ -67,24 +68,24 @@ class NetworkSocketHandler{
     
     func setResponseRouteHandler(){
         socket.onText = { (responseString: String) in
-            let responseJSON = self.processResponseAsJSON(responseData: responseString);
+            let responseJSON = self.processResponseAsJSON(responseString);
             switch(responseJSON["response"].string!){
                 case "regionData":
-                    self.networkResponseDelegate?.regionDataResponse!(responseStr: responseString);
+                    self.networkResponseDelegate?.regionDataResponse!(responseString);
                 case "userLoggedin":
-                    self.networkResponseDelegate?.userLoggedinResponse!(responseStr: responseString);
-                case "addedStrand":
-                    self.networkResponseDelegate?.addedStrandResponse!(responseStr: responseString);
-                case "userStrands":
-                    self.networkResponseDelegate?.userStrandsResponse!(responseStr: responseString);
-                case "deletedStrand":
-                    self.networkResponseDelegate?.deletedStrandResponse!(responseStr: responseString);
-                case "strandComments":
-                    self.networkResponseDelegate?.strandCommentsResponse!(responseStr: responseString);
+                    self.networkResponseDelegate?.userLoggedinResponse!(responseString);
+                case "addedFocal":
+                    self.networkResponseDelegate?.addedFocalResponse!(responseString);
+                case "userFocals":
+                    self.networkResponseDelegate?.userFocalsResponse!(responseString);
+                case "deletedFocal":
+                    self.networkResponseDelegate?.deletedFocalResponse!(responseString);
+                case "focalComments":
+                    self.networkResponseDelegate?.focalCommentsResponse!(responseString);
                 case "postedComment":
-                    self.networkResponseDelegate?.postedCommentResponse!(responseStr: responseString);
+                    self.networkResponseDelegate?.postedCommentResponse!(responseString);
                 case "updatedUserData":
-                    self.networkResponseDelegate?.updatedUserDataResponse!(responseStr: responseString);
+                    self.networkResponseDelegate?.updatedUserDataResponse!(responseString);
                 default:
                     print("failed");
 
@@ -100,7 +101,7 @@ class NetworkRequestHandler{
     
     func loginUserRequest(_ socket: WebSocket, username: String, password: String){
         let organisedRelevantData = ["username": username, "password": password];
-        NetworkSocketHandler().sendRelevantJsonRequest(socket: socket,requestName: "loginUserRequest", relevantData: organisedRelevantData);
+        NetworkSocketHandler().sendRelevantJsonRequest(socket,requestName: "loginUserRequest", relevantData: organisedRelevantData);
 
     }
     
@@ -108,7 +109,7 @@ class NetworkRequestHandler{
         
         let updateType = (userID > 0 ? "userUpdate" : "userSignUp");
         let organisedRelevantData = ["username":username, "password": password, "email": email, "fullname": fullname, "userID": String(userID), "updateType" : updateType];
-        NetworkSocketHandler().sendRelevantJsonRequest(socket: socket,requestName: "updateUserDataRequest", relevantData: organisedRelevantData);
+        NetworkSocketHandler().sendRelevantJsonRequest(socket,requestName: "updateUserDataRequest", relevantData: organisedRelevantData);
         
     }
 
@@ -118,49 +119,49 @@ class NetworkRequestHandler{
         let currentLon = currLocation.coordinate.longitude;
         
        let organisedRelevantData = ["longitude": String(currentLon), "latitude": String(currentLat)];
-        NetworkSocketHandler().sendRelevantJsonRequest(socket: socket,requestName: "regionDataRequest", relevantData: organisedRelevantData);
+        NetworkSocketHandler().sendRelevantJsonRequest(socket,requestName: "regionDataRequest", relevantData: organisedRelevantData);
 
     }
     
-    func addStrand(_ socket: WebSocket, strandLocation: CLLocation,strandDisplayInfo: (comment: String, author: String, userID: Int, areaName: String)){
+    func addFocal(_ socket: WebSocket, focalLocation: CLLocation,focalDisplayInfo: (comment: String, author: String, userID: Int, areaName: String)){
         
-        let strandLat = strandLocation.coordinate.latitude;
-        let strandLon = strandLocation.coordinate.longitude;
+        let focalLat = focalLocation.coordinate.latitude;
+        let focalLon = focalLocation.coordinate.longitude;
         
         
-       let organisedRelevantData = ["longitude": String(strandLon),
-                                     "latitude": String(strandLat),
-                                     "postText": strandDisplayInfo.comment,
-                                     "author": strandDisplayInfo.author,
-                                     "userID": String(strandDisplayInfo.userID),
-                                     "areaName": strandDisplayInfo.areaName];
+       let organisedRelevantData = ["longitude": String(focalLon),
+                                     "latitude": String(focalLat),
+                                     "postText": focalDisplayInfo.comment,
+                                     "author": focalDisplayInfo.author,
+                                     "userID": String(focalDisplayInfo.userID),
+                                     "areaName": focalDisplayInfo.areaName];
         
-        NetworkSocketHandler().sendRelevantJsonRequest(socket: socket,requestName: "addStrandRequest", relevantData: organisedRelevantData);
+        NetworkSocketHandler().sendRelevantJsonRequest(socket,requestName: "addFocalRequest", relevantData: organisedRelevantData);
     }
     
-    func getUserStrands(_ socket: WebSocket,userID: Int){
+    func getUserFocals(_ socket: WebSocket,userID: Int){
         
         let organisedRelevantData = ["userID": String(userID)];
-        NetworkSocketHandler().sendRelevantJsonRequest(socket: socket,requestName: "userStrandsRequest", relevantData: organisedRelevantData);
+        NetworkSocketHandler().sendRelevantJsonRequest(socket,requestName: "userFocalsRequest", relevantData: organisedRelevantData);
     }
     
-    func deleteStrand(_ socket: WebSocket,strandID: Int){
+    func deleteFocal(_ socket: WebSocket,focalID: Int){
         
-        let organisedRelevantData = ["strandID": String(strandID)];
-        NetworkSocketHandler().sendRelevantJsonRequest(socket: socket,requestName: "deleteStrandRequest", relevantData: organisedRelevantData);
+        let organisedRelevantData = ["focalID": String(focalID)];
+        NetworkSocketHandler().sendRelevantJsonRequest(socket,requestName: "deleteFocalRequest", relevantData: organisedRelevantData);
 
     }
     
-    func getStrandComments(_ socket: WebSocket, strandID: Int){
+    func getFocalComments(_ socket: WebSocket, focalID: Int){
 
-        let organisedRelevantData = ["strandID": String(strandID)];
-        NetworkSocketHandler().sendRelevantJsonRequest(socket: socket,requestName: "strandCommentsRequest", relevantData: organisedRelevantData);
+        let organisedRelevantData = ["focalID": String(focalID)];
+        NetworkSocketHandler().sendRelevantJsonRequest(socket,requestName: "focalCommentsRequest", relevantData: organisedRelevantData);
     }
     
-    func postComment(_ socket: WebSocket, strandID: Int, username: String, commentText: String){
+    func postComment(_ socket: WebSocket, focalID: Int, username: String, commentText: String){
         
-        let organisedRelevantData = ["strandID": String(strandID), "username": username, "postText": commentText];
-        NetworkSocketHandler().sendRelevantJsonRequest(socket: socket,requestName: "postStrandCommentRequest", relevantData: organisedRelevantData);
+        let organisedRelevantData = ["focalID": String(focalID), "username": username, "postText": commentText];
+        NetworkSocketHandler().sendRelevantJsonRequest(socket,requestName: "postFocalCommentRequest", relevantData: organisedRelevantData);
         
     }
     

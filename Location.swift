@@ -1,6 +1,6 @@
 //
 //  Location.swift
-//  Strands
+//  Astral
 //
 //  Created by Caspar Wylie on 05/08/2016.
 //  Copyright © 2016 Caspar Wylie. All rights reserved.
@@ -128,7 +128,7 @@ class Location: NSObject, CLLocationManagerDelegate{
         return distMetres;
     }
     
-    func collectStrandToUserData(_ point1X: Double, point1Y:  Double, point2X:  Double, point2Y: Double) -> (Int, Int){
+    func collectFocalToUserData(_ point1X: Double, point1Y:  Double, point2X:  Double, point2Y: Double) -> (Int, Int){
         
         let lineBetweenBearing = getBearingFromTwo2dPoints(point1X, point1Y: point1Y, point2X: point2X, point2Y: point2Y);
         

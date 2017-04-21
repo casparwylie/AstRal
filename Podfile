@@ -2,7 +2,7 @@
 platform :ios, '9.0'
 use_frameworks!
 
-target 'Strands' do
+target 'Astral' do
   pod 'Starscream', '~> 2.0.0'
   pod 'SwiftyJSON'
 end
