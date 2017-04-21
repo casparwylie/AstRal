@@ -1,5 +1,4 @@
 # Astral
 Augmented reality social network
 
-
-![img_1159](https://cloud.githubusercontent.com/assets/7353547/24998792/3fb0b352-2033-11e7-8161-d2aa699770c7.PNG)
+![untitled](https://cloud.githubusercontent.com/assets/7353547/25282487/84c13dba-26a8-11e7-9591-d9c5f532245f.png)![16586389_1410717132303265_1015032875_o 1](https://cloud.githubusercontent.com/assets/7353547/25282492/8926e594-26a8-11e7-8859-5dd7f109268f.jpg)
