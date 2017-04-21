@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "B0E355DB1D995DBF0088EB10"
-               BuildableName = "Strands.app"
-               BlueprintName = "Strands"
-               ReferencedContainer = "container:Strands.xcodeproj">
+               BuildableName = "Astral.app"
+               BlueprintName = "Astral"
+               ReferencedContainer = "container:Astral.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -28,34 +28,14 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "B0E355EF1D995DBF0088EB10"
-               BuildableName = "StrandsTests.xctest"
-               BlueprintName = "StrandsTests"
-               ReferencedContainer = "container:Strands.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "B0E355FA1D995DBF0088EB10"
-               BuildableName = "StrandsUITests.xctest"
-               BlueprintName = "StrandsUITests"
-               ReferencedContainer = "container:Strands.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
       </Testables>
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "B0E355DB1D995DBF0088EB10"
-            BuildableName = "Strands.app"
-            BlueprintName = "Strands"
-            ReferencedContainer = "container:Strands.xcodeproj">
+            BuildableName = "Astral.app"
+            BlueprintName = "Astral"
+            ReferencedContainer = "container:Astral.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -76,9 +56,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "B0E355DB1D995DBF0088EB10"
-            BuildableName = "Strands.app"
-            BlueprintName = "Strands"
-            ReferencedContainer = "container:Strands.xcodeproj">
+            BuildableName = "Astral.app"
+            BlueprintName = "Astral"
+            ReferencedContainer = "container:Astral.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -95,9 +75,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "B0E355DB1D995DBF0088EB10"
-            BuildableName = "Strands.app"
-            BlueprintName = "Strands"
-            ReferencedContainer = "container:Strands.xcodeproj">
+            BuildableName = "Astral.app"
+            BlueprintName = "Astral"
+            ReferencedContainer = "container:Astral.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
