@@ -1,0 +1,7 @@
+Copyright (c) 2017, Caspar Wylie
+All rights reserved.
+
+Astral is public on a read only bases. Trying out or using
+Astral personally is permitted. However it is not to be
+realised to a commerical store under another name, or
+used in producation at all. 
