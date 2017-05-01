@@ -1,3 +1,5 @@
+If you are interested in contributing, or getting involved in anyway, please contact me so I can set you up with more info.
+
 # Astral
 Augmented reality social network
 
