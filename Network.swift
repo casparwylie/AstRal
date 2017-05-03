@@ -28,6 +28,7 @@ import SwiftyJSON
     @objc optional func focalCommentsResponse(_ responseStr: String);
     @objc optional func postedCommentResponse(_ responseStr: String);
     @objc optional func updatedUserDataResponse(_ responseStr: String);
+    @objc optional func votedCommentResponse(_ responseStr: String);
     
 }
 
@@ -86,6 +87,8 @@ class NetworkSocketHandler{
                     self.networkResponseDelegate?.postedCommentResponse!(responseString);
                 case "updatedUserData":
                     self.networkResponseDelegate?.updatedUserDataResponse!(responseString);
+                case "votedComment":
+                    self.networkResponseDelegate?.votedCommentResponse!(responseString);
                 default:
                     print("failed");
 
@@ -163,6 +166,11 @@ class NetworkRequestHandler{
         let organisedRelevantData = ["focalID": String(focalID), "username": username, "postText": commentText];
         NetworkSocketHandler().sendRelevantJsonRequest(socket,requestName: "postFocalCommentRequest", relevantData: organisedRelevantData);
         
+    }
+    
+    func newVoteComment(_ socket: WebSocket, vote: Int, cID: Int, uID: Int){
+        let organisedRelevantData = ["commentID": String(cID), "userID": String(uID), "vote": String(vote)];
+        NetworkSocketHandler().sendRelevantJsonRequest(socket,requestName: "newVoteCommentRequest", relevantData: organisedRelevantData);
     }
     
 }

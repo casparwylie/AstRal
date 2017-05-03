@@ -31,6 +31,7 @@ import CoreLocation
     @objc optional func deleteFocalRequest(_ realID: Int);
     @objc optional func chooseFocalComments(_ tapX: Int, tapY: Int);
     @objc optional func postNewComment(_ commentText: String);
+    @objc optional func newVoteComment(_ vote: Int, cID: Int);
     
 }
 
@@ -77,9 +78,13 @@ class UserInterface1{
     var singleFocalInfoView: UIView!;
     var userScrollFocalListView: UIScrollView!;
     var focalCommentsListScrollView: UIScrollView!;
+    var upVoteCommentIcons: [Int: UIImageView] = [:];
+    var downVoteCommentIcons: [Int: UIImageView] = [:];
     
     //UI Labels
     var singleFocalFcommentTitle: UILabel!;
+    var upVoteCommentLabels: [Int: UILabel] = [:];
+    var downVoteCommentLabels: [Int: UILabel] = [:];
     
     //General Presets
     var loggedinUserData = (id: 0, username: "Unknown", fullname: "Unknown", email: "Unknown", password: "");
@@ -98,6 +103,7 @@ class UserInterface1{
     var posFocalToDeleteRealID = 0;
     var userFocalsJSON: JSON!;
     var userFocalFirstCommentsJSON: JSON!;
+    var focalCommentsJSON: JSON!;
     var currBlurState = "light";
     var screenSize: CGRect = UIScreen.main.bounds;
     var singleFocalTapRecs: [UITapGestureRecognizer] = [];
@@ -105,7 +111,8 @@ class UserInterface1{
     
     //MARK: UI constants
     let mainTypeFace = "Futura";
-    var viewPageWidth: Int!
+    var viewPageWidth: Int!;
+    var viewPageX: Int!;
     var mainFont: UIFont!;
     var textFieldFont: UIFont!;
     let mainFontColor = UIColor.black;
@@ -290,6 +297,7 @@ class UserInterface1{
     }
     
     @objc func newCommentFocal(){
+        self.view.endEditing(true);
         actionDelegate?.postNewComment!(commentExistingFocalTextfield.text!);
     }
     
@@ -330,7 +338,7 @@ class UserInterface1{
     
     @objc func showSingleFocalInfo(_ sender: UITapGestureRecognizer){
         let focalInfoLocalID = sender.view?.tag;
-        posFocalToDeleteRealID = userFocalsJSON[focalInfoLocalID!]["s_id"].int!;
+        posFocalToDeleteRealID = userFocalsJSON[focalInfoLocalID!]["f_id"].int!;
         let relTitleText = userFocalFirstCommentsJSON[focalInfoLocalID!]["c_text"].rawString()!;
         singleFocalFcommentTitle.text = relTitleText;
         singleFocalInfoView.isHidden = false;
@@ -347,7 +355,7 @@ class UserInterface1{
         userScrollFocalListView.contentSize = CGSize(width: CGFloat(viewPageWidth), height: CGFloat(5+(focals.count*labelHeight)));
         var count = 0;
         for focal in focals{
-            let areaName = focals[count]["s_area_name"].rawString()!;
+            let areaName = focals[count]["f_area_name"].rawString()!;
             self.addUserFocalLabel(firstComments[count]["c_text"].rawString()!, areaName: areaName, localID: count);
             self.userFocalLabelYPos += 2*self.userFocalLabelHeight + 10;
             count += 1;
@@ -365,11 +373,11 @@ class UserInterface1{
     }
     
     var lastCommentHeight = 0;
-    var commentInfoHeight = 20;
-    func addFocalCommentLabel(_ text: String, infoString: String){
-        
+    var commentInfoHeight = 40;
+    func addFocalCommentLabel(_ text: String, infoString: String, cID: String, downVotes: String, upVotes: String, canVote: Bool){
+        let cID = Int(cID);
         let labelWidth = viewPageWidth-20;
-        let labelTextHeight =  getHeightForField(text, font: mainFont, width: CGFloat(labelWidth)) + 10;
+        let labelTextHeight =  getHeightForField(text, font: mainFont, width: CGFloat(labelWidth));
         lastCommentHeight = Int(labelTextHeight);
         let commentTextLabel: UILabel  = UILabel(frame: CGRect(x: 5, y: focalCommentListLabelYPos+10, width: labelWidth, height: Int(labelTextHeight)));
         
@@ -379,32 +387,121 @@ class UserInterface1{
         commentTextLabel.font = mainFont;
         
         let commentInfoLabel: UILabel  = UILabel(frame: CGRect(x: 5, y: focalCommentListLabelYPos+Int(labelTextHeight), width: labelWidth, height: commentInfoHeight));
-        
     
         commentInfoLabel.text = infoString;
-
-
         commentInfoLabel.font = UIFont(name: mainTypeFace+"-Bold", size: 11);
+        
+        let voteIconNamePrefix = canVote ? "v" : "vd";
+        let vUpIconDest = voteIconNamePrefix + "_up_icon.png";
+        let vDownIconDest = voteIconNamePrefix + "_down_icon.png";
+        
+        
+        let voteIconY = focalCommentListLabelYPos+Int(labelTextHeight) + 30;
+        let voteIconX = 160;
+        let voteIconHeight = 13;
+        let voteIconWidth = 18;
+        let voteCountFontSize: CGFloat = 9.0;
+       
+        let vUpIcon = UIImage(named: vUpIconDest);
+        upVoteCommentIcons[cID!] = UIImageView(image: vUpIcon!);
+        upVoteCommentIcons[cID!]?.tag = cID!;
+        upVoteCommentIcons[cID!]?.frame = CGRect(x: voteIconX+10, y: voteIconY, width: voteIconWidth, height: voteIconHeight);
+        let vUpTap = UITapGestureRecognizer(target: self, action: #selector(voteCommentUp));
+        upVoteCommentIcons[cID!]?.isUserInteractionEnabled = canVote;
+        upVoteCommentIcons[cID!]?.addGestureRecognizer(vUpTap);
+        
+        upVoteCommentLabels[cID!] = UILabel(frame: CGRect(x: voteIconX-30, y: voteIconY, width: 40, height: 10));
+        upVoteCommentLabels[cID!]?.text = upVotes;
+        upVoteCommentLabels[cID!]?.font = UIFont(name: mainTypeFace, size: voteCountFontSize);
+        upVoteCommentLabels[cID!]?.textAlignment = .right;
+        upVoteCommentLabels[cID!]?.textColor = UIColor(red: 0.3373, green:0.6784, blue:0.3569, alpha: 1.0);
+        
+       
+        let vDownIcon = UIImage(named: vDownIconDest);
+        downVoteCommentIcons[cID!] = UIImageView(image: vDownIcon!);
+        downVoteCommentIcons[cID!]?.tag = cID!;
+        downVoteCommentIcons[cID!]?.frame = CGRect(x: voteIconX+30, y: voteIconY, width: voteIconWidth, height: voteIconHeight);
+        let vDownTap = UITapGestureRecognizer(target: self, action: #selector(voteCommentDown));
+        downVoteCommentIcons[cID!]?.isUserInteractionEnabled = canVote;
+        downVoteCommentIcons[cID!]?.addGestureRecognizer(vDownTap);
+        
+        downVoteCommentLabels[cID!] = UILabel(frame: CGRect(x: voteIconX+50, y: voteIconY, width: 40, height: 10));
+        downVoteCommentLabels[cID!]?.text = downVotes;
+        downVoteCommentLabels[cID!]?.font = UIFont(name: mainTypeFace, size: voteCountFontSize);
+        downVoteCommentLabels[cID!]?.textAlignment = .left;
+        downVoteCommentLabels[cID!]?.textColor = UIColor(red: 0.7882, green: 0.3373, blue: 0.2353, alpha: 1.0);
+        
+        let cSeparator = UIView(frame: CGRect(x:0,y:voteIconY+15, width: viewPageWidth-10, height: 1));
+        
+        cSeparator.layer.borderColor = UIColor.gray.cgColor;
+        cSeparator.layer.borderWidth = 1;
         
         focalCommentsListScrollView.addSubview(commentTextLabel);
         focalCommentsListScrollView.addSubview(commentInfoLabel);
+        focalCommentsListScrollView.addSubview(upVoteCommentIcons[cID!]!);
+        focalCommentsListScrollView.addSubview(downVoteCommentIcons[cID!]!);
+        focalCommentsListScrollView.addSubview(upVoteCommentLabels[cID!]!);
+        focalCommentsListScrollView.addSubview(downVoteCommentLabels[cID!]!);
+        focalCommentsListScrollView.addSubview(cSeparator);
     }
     
-    func populateFocalCommentsView(_ focalComments: JSON){
+    func disableVoteTap(cID: Int){
+        downVoteCommentIcons[cID]?.isUserInteractionEnabled = false;
+        upVoteCommentIcons[cID]?.isUserInteractionEnabled = false;
+        downVoteCommentIcons[cID]?.image = UIImage(named: "vd_down_icon.png");
+        upVoteCommentIcons[cID]?.image = UIImage(named: "vd_up_icon.png");
+    }
+    
+    @objc func voteCommentDown(_ sender: UITapGestureRecognizer){
+        let cID = sender.view?.tag;
+        downVoteCommentLabels[cID!]?.text = String(Int((downVoteCommentLabels[cID!]?.text!)!)! + 1);
+        voteComment(vote: -1, cID: cID!);
+        disableVoteTap(cID: cID!);
+    }
+    @objc func voteCommentUp(_ sender: UITapGestureRecognizer){
+        let cID = sender.view?.tag;
+        upVoteCommentLabels[cID!]?.text = String(Int((upVoteCommentLabels[cID!]?.text!)!)! + 1);
+        voteComment(vote: 1, cID: cID!);
+        disableVoteTap(cID: cID!);
+    }
+    func voteComment(vote: Int, cID: Int){
+        actionDelegate?.newVoteComment!(vote, cID: cID);
+    }
+    
+    func populateFocalCommentsView(_ focalComments: JSON, userCommentVotes: JSON){
         focalCommentsView.isHidden = false;
         lastCommentHeight = 0;
         for subview in focalCommentsListScrollView.subviews{
             subview.removeFromSuperview();
         }
+        focalCommentsJSON = focalComments;
         focalCommentsListScrollView.contentSize = CGSize(width: CGFloat(viewPageWidth), height: CGFloat(800));
         focalCommentListLabelYPos = 5;
         
         var count = 0;
         var nextYPosCalc = 0;
         for _ in focalComments{
+            var canVote = true;
+            let userVotes = userCommentVotes[count];
+            if(Int(loggedinUserData.id) != 0){
+                for userID in userVotes{
+                    print(userID.1["u_id"].int!);
+                    if(loggedinUserData.id == userID.1["u_id"].int!){
+                        canVote = false;
+                        break;
+                    }
+                }
+            }else{
+                canVote = false;
+            }
             let commentText = focalComments[count]["c_text"].rawString()!;
-            let infoString = "By " + focalComments[count]["c_u_uname"].rawString()! + ", at " + focalComments[count]["c_time"].rawString()!;
-            addFocalCommentLabel(commentText, infoString: infoString);
+            let timestamp = focalComments[count]["c_time"].rawString()!;
+            let timestampDate = NSDate(timeIntervalSince1970: Double(timestamp)!);
+            let dateFormatter = DateFormatter();
+            dateFormatter.dateFormat = " HH:mm dd/mm/yyyy";
+            let colloquialTime = dateFormatter.string(from: timestampDate as Date);
+            let infoString = "By " + focalComments[count]["c_u_uname"].rawString()! + ", at " + colloquialTime;
+            addFocalCommentLabel(commentText, infoString: infoString, cID: focalComments[count]["c_id"].rawString()!, downVotes:focalComments[count]["c_v_down"].rawString()!,upVotes:focalComments[count]["c_v_up"].rawString()!, canVote: canVote);
             nextYPosCalc = lastCommentHeight + commentInfoHeight;
             focalCommentListLabelYPos += nextYPosCalc;
             count += 1;
@@ -464,7 +561,7 @@ class UserInterface1{
         let buttonWidthLogin =  viewPageWidth/2 - 10;
         let textWidthLogin =  viewPageWidth-10;
         
-        loginForm = UIView(frame: CGRect(x:Int(screenSize.width/2)-viewPageWidth/2,y: defaultFormY + buttonSpace,width: viewPageWidth, height: formHeight));
+        loginForm = UIView(frame: CGRect(x:viewPageX,y: defaultFormY + buttonSpace,width: viewPageWidth, height: formHeight));
         loginForm.isHidden = true;
         loginForm.insertSubview(processBlurEffect(loginForm.bounds, cornerRadiusVal: buttonCornerRadius, light: true), at: 0);
         
@@ -499,7 +596,7 @@ class UserInterface1{
         let buttonWidthSignUp = viewPageWidth/2 - 10;
         let textWidthSignUp =  viewPageWidth - 10;
         
-        signUpForm = UIView(frame: CGRect(x:Int(screenSize.width/2)-viewPageWidth/2,y: defaultFormY + buttonSpace,width: viewPageWidth, height: formHeight));
+        signUpForm = UIView(frame: CGRect(x:viewPageX,y: defaultFormY + buttonSpace,width: viewPageWidth, height: formHeight));
         signUpForm.isHidden = true;
         signUpForm.insertSubview(processBlurEffect(signUpForm.bounds, cornerRadiusVal: buttonCornerRadius, light: true), at: 0);
         
@@ -536,7 +633,7 @@ class UserInterface1{
     
     func renderSingleFocalInfoView(){
         let viewHeight = 250;
-        singleFocalInfoView = UIView(frame: CGRect(x:Int(screenSize.width/2)-viewPageWidth/2,y: defaultFormY + buttonSpace,width: viewPageWidth, height: viewHeight));
+        singleFocalInfoView = UIView(frame: CGRect(x:viewPageX,y: defaultFormY + buttonSpace,width: viewPageWidth, height: viewHeight));
         singleFocalInfoView.isHidden = true;
         singleFocalInfoView.insertSubview(processBlurEffect(singleFocalInfoView.bounds, cornerRadiusVal: buttonCornerRadius, light: true), at: 0);
         
@@ -573,8 +670,8 @@ class UserInterface1{
     }
     
     func renderFocalCommentsView(){
-        let viewHeight = 300;
-        focalCommentsView = UIView(frame: CGRect(x:Int(screenSize.width/2)-viewPageWidth/2,y: defaultFormY + buttonSpace,width: viewPageWidth, height: viewHeight));
+        let viewHeight = 350;
+        focalCommentsView = UIView(frame: CGRect(x:viewPageX,y: defaultFormY + buttonSpace,width: viewPageWidth, height: viewHeight));
         focalCommentsView.isHidden = true;
         focalCommentsView.insertSubview(processBlurEffect(focalCommentsView.bounds, cornerRadiusVal: buttonCornerRadius, light: true), at: 0);
         
@@ -604,12 +701,11 @@ class UserInterface1{
     
     func renderUserFocalsView(){
         let viewHeight = 370;
-        userFocalListView = UIView(frame: CGRect(x:Int(screenSize.width/2)-viewPageWidth/2,y: defaultFormY + buttonSpace,width: viewPageWidth, height: viewHeight));
+        userFocalListView = UIView(frame: CGRect(x:viewPageX,y: defaultFormY + buttonSpace,width: viewPageWidth, height: viewHeight));
         userFocalListView.isHidden = true;
         userScrollFocalListView = UIScrollView(frame: CGRect(x:5,y: 25,width: viewPageWidth, height: viewHeight-30));
         userScrollFocalListView.contentSize = CGSize(width: CGFloat(viewPageWidth), height: CGFloat(viewHeight));
         userFocalListView.insertSubview(processBlurEffect(userFocalListView.bounds, cornerRadiusVal: buttonCornerRadius, light: true), at: 0);
-        
 
         let closeUserFocalViewRect = CGRect(x: viewPageWidth-(closeButtonWidth+5), y: 5, width: closeButtonWidth, height: closeButtonHeight);
         closeUserFocalView = addButtonProperties("Close", hidden: false, pos: closeUserFocalViewRect, cornerRadius: buttonCornerRadius, blurLight: true);
@@ -623,7 +719,7 @@ class UserInterface1{
     
     func renderProfileView(){
         let viewHeight = 370;
-        userProfileView = UIView(frame: CGRect(x:Int(screenSize.width/2)-viewPageWidth/2,y: defaultFormY + buttonSpace,width: viewPageWidth, height: viewHeight));
+        userProfileView = UIView(frame: CGRect(x:viewPageX,y: defaultFormY + buttonSpace,width: viewPageWidth, height: viewHeight));
         userProfileView.isHidden = true;
         userProfileView.insertSubview(processBlurEffect(userProfileView.bounds, cornerRadiusVal: buttonCornerRadius, light: true), at: 0);
         
@@ -801,6 +897,7 @@ class UserInterface1{
         mainFont = UIFont(name: mainTypeFace, size: 12);
         textFieldFont = UIFont(name: mainTypeFace, size: 15);
         viewPageWidth = Int(screenSize.width)-10;
+        viewPageX = Int(screenSize.width/2)-viewPageWidth/2;
         
         renderLabel();
         renderMenu(false);

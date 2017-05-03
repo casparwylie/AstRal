@@ -135,13 +135,13 @@ class Scene{
             //initiate focals
             if(tempFocal == false){
                 let focal = DAEtoSCNNodeWithText("focalpost.dae", focalDisplayInfo: focalDisplayInfo);
-                focal.name = "s_" + String(renderID);
+                focal.name = "f_" + String(renderID);
                 focal.position = SCNVector3(x: Float(focalCoord.x), y: 0, z:  Float(focalCoord.y));
                 focals.append(focal);
                 self.scene.rootNode.addChildNode(focals.last!);
             }else{
                 tempFocalNode = DAEtoSCNNodeWithText("focalpost.dae", focalDisplayInfo: focalDisplayInfo);
-                tempFocalNode.name = "s_" + String(renderID);
+                tempFocalNode.name = "f_" + String(renderID);
                 tempFocalNode.position = SCNVector3(x: Float(focalCoord.x), y: 0, z:  Float(focalCoord.y));
                 self.scene.rootNode.addChildNode(tempFocalNode);
             }

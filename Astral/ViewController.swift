@@ -37,17 +37,17 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
     var currMapPoint: MKMapPoint!;
     var currentHeading: CLHeading!;
    
-    var tempStrandMapPoint: MKMapPoint = MKMapPoint();
+    var tempFocalMapPoint: MKMapPoint = MKMapPoint();
     var mapPoints: [MKMapPoint] = [];
     var coordPoints: [CLLocation] = [];
-    var realStrandIDs: [Int] = [];
-    var strandFirstComments = JSON("");
-    var strandDistAndBearingsFromUser: [(distance: Int, bearing: Int)] = [];
+    var realFocalIDs: [Int] = [];
+    var focalFirstComments = JSON("");
+    var focalDistAndBearingsFromUser: [(distance: Int, bearing: Int)] = [];
     
     
-    func toggleMap(_ isAddingStrand: Bool) {
-        map.tapMapToPost = isAddingStrand;
-        if self.view.viewWithTag(3)?.isHidden == false && isAddingStrand == false {
+    func toggleMap(_ isAddingFocal: Bool) {
+        map.tapMapToPost = isAddingFocal;
+        if self.view.viewWithTag(3)?.isHidden == false && isAddingFocal == false {
             
             self.view.viewWithTag(3)?.isHidden = true;
         }else{
@@ -57,19 +57,19 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
     }
     
     //MARK: network request and response middleware functionality
-    func renderRelStrands(_ newRender: Bool){
+    func renderRelFocals(_ newRender: Bool){
         
         let pxVals = self.map.collectPXfromMapPoints(mapPoints, currMapPoint: currMapPoint);
         var currPointPX = pxVals.currPointPX;
-        var strandValsPX = pxVals.strandValsPX;
+        var focalValsPX = pxVals.focalValsPX;
     
         
         self.map.getMapAsIMG({(image) in
             
-            let toHideAsSTR = OpenCVWrapper.buildingDetect( &strandValsPX, image: image, currPoint: &currPointPX, pxLength: Int32(pxVals.pxLength),forTapLimit: false);
+            let toHideAsSTR = OpenCVWrapper.buildingDetect( &focalValsPX, image: image, currPoint: &currPointPX, pxLength: Int32(pxVals.pxLength),forTapLimit: false);
             
-            self.scene.renderStrands(self.mapPoints, currMapPoint: self.currMapPoint,
-                                     render: newRender, currentHeading: self.currentHeading, toHide: toHideAsSTR!, comments: self.strandFirstComments, tempStrandMapPoint: self.tempStrandMapPoint);
+            self.scene.renderFocals(self.mapPoints, currMapPoint: self.currMapPoint,
+                                     render: newRender, currentHeading: self.currentHeading, toHide: toHideAsSTR!, comments: self.focalFirstComments, tempFocalMapPoint: self.tempFocalMapPoint);
         });
     }
     
@@ -83,12 +83,12 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
             self.oldRenderPosition = self.currentLocation;
         }
         
-        self.strandDistAndBearingsFromUser = [];
+        self.focalDistAndBearingsFromUser = [];
         var count = 0;
         for _ in self.mapPoints{
             
-            let distAndBearing = self.location.collectStrandToUserData(currMapPoint.x, point1Y: currMapPoint.y, point2X: mapPoints[count].x, point2Y: mapPoints[count].y);
-            self.strandDistAndBearingsFromUser.append(distAndBearing);
+            let distAndBearing = self.location.collectFocalToUserData(currMapPoint.x, point1Y: currMapPoint.y, point2X: mapPoints[count].x, point2Y: mapPoints[count].y);
+            self.focalDistAndBearingsFromUser.append(distAndBearing);
             count += 1;
         }
         
@@ -97,8 +97,8 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
         let distFromPrevPos = currentLocation.distance(from: self.oldRenderPosition);
         if((distFromPrevPos>thresholdDistRerender)||firstRender==true){
             self.networkRequest.getRegionData(self.networkWebSocket, currLocation: currentLocation);
-        }else if(self.scene.strands.count>0){
-            renderRelStrands(false);
+        }else if(self.scene.focals.count>0){
+            renderRelFocals(false);
         }
         
     }
@@ -106,17 +106,17 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
     func regionDataResponse(_ responseStr: String) {
         let responseJSON = networkSocket.processResponseAsJSON(responseStr);
         var coordsAsCLLocation: [CLLocation] = [];
-        var realStrandIDs: [Int] = [];
-        let responseStrandDataKey = "regionStrandData";
-        let strandFirstCommentsKey = "fComments";
+        var realFocalIDs: [Int] = [];
+        let responseFocalDataKey = "regionFocalData";
+        let focalFirstCommentsKey = "fComments";
         
-        if(responseJSON[responseStrandDataKey].count != 0){
-            for coordRowCount in 0...responseJSON[responseStrandDataKey].count-1{
-                let rowLatitude = Double(responseJSON[responseStrandDataKey][coordRowCount]["s_coord_lat"].rawString()!);
-                let rowLongitude = Double(responseJSON[responseStrandDataKey][coordRowCount]["s_coord_lon"].rawString()!);
+        if(responseJSON[responseFocalDataKey].count != 0){
+            for coordRowCount in 0...responseJSON[responseFocalDataKey].count-1{
+                let rowLatitude = Double(responseJSON[responseFocalDataKey][coordRowCount]["f_coord_lat"].rawString()!);
+                let rowLongitude = Double(responseJSON[responseFocalDataKey][coordRowCount]["f_coord_lon"].rawString()!);
                 let rowAsCLLocation = CLLocation(latitude: CLLocationDegrees(rowLatitude!), longitude: CLLocationDegrees(rowLongitude!));
                 coordsAsCLLocation.append(rowAsCLLocation);
-                realStrandIDs.append(responseJSON[responseStrandDataKey][coordRowCount]["s_id"].int!);
+                realFocalIDs.append(responseJSON[responseFocalDataKey][coordRowCount]["f_id"].int!);
             }
         }
         self.mapPoints = self.map.getCoordsAsMapPoints(coordsAsCLLocation);
@@ -124,112 +124,112 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
         self.coordPoints = coordsAsCLLocation;
         
         self.oldRenderPosition = self.currentLocation;
-        self.strandFirstComments = responseJSON[strandFirstCommentsKey];
-        self.realStrandIDs = realStrandIDs;
+        self.focalFirstComments = responseJSON[focalFirstCommentsKey];
+        self.realFocalIDs = realFocalIDs;
         
-        self.renderRelStrands(true);
+        self.renderRelFocals(true);
         if(firstRender == true){
             firstRender = false;
         }
         
     }
 
-    //MARK: new strand request and response middleware process
+    //MARK: new focal request and response middleware process
     var addTempFirst = true;
     var phonePitch = 0;
-    var latestDesiredStrandLocation: CLLocation!;
-    func renderTempStrandFromMap(_ mapTapCoord: CLLocationCoordinate2D){
-        let strandLocation = CLLocation(latitude: mapTapCoord.latitude, longitude: mapTapCoord.longitude);
-        addStrandTemp(strandLocation);
+    var latestDesiredFocalLocation: CLLocation!;
+    func renderTempFocalFromMap(_ mapTapCoord: CLLocationCoordinate2D){
+        let focalLocation = CLLocation(latitude: mapTapCoord.latitude, longitude: mapTapCoord.longitude);
+        addFocalTemp(focalLocation);
     }
     
-    func renderTempStrandFromUI(_ tapX: Int, tapY: Int){
-        var newStrandDistMetres: Double = 0.0;
+    func renderTempFocalFromUI(_ tapX: Int, tapY: Int){
+        var newFocalDistMetres: Double = 0.0;
         var bearingDegreesTap: Double = 0.0;
-        newStrandDistMetres = self.location.getDistFromVerticalTap(Double(tapX), tapY: Double(tapY), phonePitch: Double(self.phonePitch));
-        if(newStrandDistMetres < 0){
-            newStrandDistMetres = 3;
+        newFocalDistMetres = self.location.getDistFromVerticalTap(Double(tapX), tapY: Double(tapY), phonePitch: Double(self.phonePitch));
+        if(newFocalDistMetres < 0){
+            newFocalDistMetres = 3;
         }
 
         bearingDegreesTap = self.location.getBearingFromHorizontalTap(Double(tapX));
-        var strandLocation = location.getPolarCoords(newStrandDistMetres, bearingDegrees: bearingDegreesTap);
+        var focalLocation = location.getPolarCoords(newFocalDistMetres, bearingDegrees: bearingDegreesTap);
     
         
-        let pxVals = self.map.collectPXfromMapPoints([MKMapPointForCoordinate(strandLocation.coordinate)], currMapPoint: MKMapPointForCoordinate(currentLocation.coordinate));
+        let pxVals = self.map.collectPXfromMapPoints([MKMapPointForCoordinate(focalLocation.coordinate)], currMapPoint: MKMapPointForCoordinate(currentLocation.coordinate));
         
         var currentPointPX = pxVals.currPointPX;
-        var strandDesValPX = pxVals.strandValsPX;
+        var focalDesValPX = pxVals.focalValsPX;
         
         self.map.getMapAsIMG({(image) in
             
-            let distLimitPX = Int(OpenCVWrapper.buildingDetect(&strandDesValPX, image: image, currPoint: &currentPointPX, pxLength: Int32(pxVals.pxLength), forTapLimit: true)!)!;
+            let distLimitPX = Int(OpenCVWrapper.buildingDetect(&focalDesValPX, image: image, currPoint: &currentPointPX, pxLength: Int32(pxVals.pxLength), forTapLimit: true)!)!;
             
             if(distLimitPX > -1){
                 let distLimitMetres = (distLimitPX / 2)-2;
-                strandLocation = self.location.getPolarCoords(Double(distLimitMetres), bearingDegrees: bearingDegreesTap);
+                focalLocation = self.location.getPolarCoords(Double(distLimitMetres), bearingDegrees: bearingDegreesTap);
             }
             
-            self.addStrandTemp(strandLocation);
+            self.addFocalTemp(focalLocation);
             
         });
     }
-    func addStrandTemp(_ strandLocation: CLLocation){
+    func addFocalTemp(_ focalLocation: CLLocation){
         
-        self.latestDesiredStrandLocation = strandLocation;
+        self.latestDesiredFocalLocation = focalLocation;
         self.userInterface.showTapFinishedOptions();
-        tempStrandMapPoint = MKMapPointForCoordinate(strandLocation.coordinate);
+        tempFocalMapPoint = MKMapPointForCoordinate(focalLocation.coordinate);
         let currentMapPoint = MKMapPointForCoordinate(currentLocation.coordinate);
 
-        map.updateSinglePin(strandLocation, temp: true);
-        self.scene.renderSingleStrand(0, mapPoint: tempStrandMapPoint, currMapPoint: currentMapPoint, strandDisplayInfo: (" ", " "), render: self.addTempFirst, tempStrand: true);
+        map.updateSinglePin(focalLocation, temp: true);
+        self.scene.renderSingleFocal(0, mapPoint: tempFocalMapPoint, currMapPoint: currentMapPoint, focalDisplayInfo: (" ", " "), render: self.addTempFirst, tempFocal: true);
         self.addTempFirst = false;
     
     }
     
-    func addStrandReady(_ comment: String){
+    func addFocalReady(_ comment: String){
         
         self.addTempFirst = true;
-        tempStrandMapPoint = MKMapPoint();
-        self.scene.removeTempStrand();
-        CLGeocoder().reverseGeocodeLocation(self.latestDesiredStrandLocation, completionHandler: {(placemarks,err) in
+        tempFocalMapPoint = MKMapPoint();
+        self.scene.removeTempFocal();
+        CLGeocoder().reverseGeocodeLocation(self.latestDesiredFocalLocation, completionHandler: {(placemarks,err) in
             var areaName = "N/A";
             if((placemarks?.count)!>0){
                 let placemark = (placemarks?[0])! as CLPlacemark;
                 areaName = placemark.thoroughfare! + ", " + placemark.locality!;
             }
             
-            let strandInfo = (comment: comment, author: self.loggedinUserData.username, userID: self.loggedinUserData.id, areaName: areaName);
-            self.networkRequest.addStrand(self.networkWebSocket, strandLocation: self.latestDesiredStrandLocation,strandDisplayInfo: strandInfo);
+            let focalInfo = (comment: comment, author: self.loggedinUserData.username, userID: self.loggedinUserData.id, areaName: areaName);
+            self.networkRequest.addFocal(self.networkWebSocket, focalLocation: self.latestDesiredFocalLocation,focalDisplayInfo: focalInfo);
         });
     }
     
-    func addedStrandResponse(_ responseStr: String) {
+    func addedFocalResponse(_ responseStr: String) {
 
         let responseJSON = networkSocket.processResponseAsJSON(responseStr);
         let success: Bool = (responseJSON["success"]=="true" ? true: false);
         var responseMessage = "Unknown Error. Please try again later.";
         if(success == true){
-            responseMessage = "Successfully posted new strand!";
+            responseMessage = "Successfully posted new focal!";
         }
         self.networkRequest.getRegionData(self.networkWebSocket, currLocation: currentLocation);
         self.userInterface.updateInfoLabel(responseMessage, show: true, hideAfter: 4);
     }
     
-    func cancelNewStrand() {
-        self.scene.removeTempStrand();
-        self.map.cancelTempStrand();
+    func cancelNewFocal() {
+        self.scene.removeTempFocal();
+        self.map.cancelTempFocal();
         self.addTempFirst = true;
     }
   
     
-    //MARK: retrieve user owned strands request and response middleware process
-    func requestUserStrands() {
-        networkRequest.getUserStrands(self.networkWebSocket, userID: self.loggedinUserData.id);
+    //MARK: retrieve user owned focals request and response middleware process
+    func requestUserFocals() {
+        networkRequest.getUserFocals(self.networkWebSocket, userID: self.loggedinUserData.id);
     }
     
-    func userStrandsResponse(_ responseStr: String) {
+    func userFocalsResponse(_ responseStr: String) {
         let responseJSON = networkSocket.processResponseAsJSON(responseStr);
-        self.userInterface.populateUserStrands(responseJSON["strands"], firstComments: responseJSON["fComments"]);
+        self.userInterface.populateUserFocals(responseJSON["focals"], firstComments: responseJSON["fComments"]);
     }
     
     
@@ -289,60 +289,68 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
     }
     
     
-    //MARK: Retrieve strand comments request and response middleware process
-    func getStrandComments(_ strandID: Int){
-        networkRequest.getStrandComments(self.networkWebSocket, strandID: realStrandIDs[strandID]);
+    //MARK: Retrieve focal comments request and response middleware process
+    func getFocalComments(_ focalID: Int){
+        networkRequest.getFocalComments(self.networkWebSocket, focalID: realFocalIDs[focalID]);
     }
-    var viewingStrandID = -1;
-    func chooseStrandComments(_ tapX: Int, tapY: Int){
+    var viewingFocalID = -1;
+    func chooseFocalComments(_ tapX: Int, tapY: Int){
         let locationOfTap = CGPoint(x: tapX, y: tapY);
-        var strandTapID = -1;
-        let possStrandsFound = scene.sceneView.hitTest(locationOfTap, options: nil);
-        if let tappedStrand = possStrandsFound.first?.node.parent?.parent?.parent{
-            print(tappedStrand.name!)
-            let startIndex = tappedStrand.name?.index((tappedStrand.name?.startIndex)!, offsetBy: 2);
-            strandTapID = Int((tappedStrand.name?.substring(from: startIndex!))!)!;
-            viewingStrandID = strandTapID;
+        var focalTapID = -1;
+        let possFocalsFound = scene.sceneView.hitTest(locationOfTap, options: nil);
+        if let tappedFocal = possFocalsFound.first?.node.parent?.parent?.parent{
+            print(tappedFocal.name!)
+            let startIndex = tappedFocal.name?.index((tappedFocal.name?.startIndex)!, offsetBy: 2);
+            focalTapID = Int((tappedFocal.name?.substring(from: startIndex!))!)!;
+            viewingFocalID = focalTapID;
             
         }
 
-        if(strandTapID != -1){
-            getStrandComments(strandTapID);
-            strandTapID = -1;
+        if(focalTapID != -1){
+            getFocalComments(focalTapID);
+            focalTapID = -1;
         }
     }
-    func strandCommentsResponse(_ responseStr: String) {
+    func focalCommentsResponse(_ responseStr: String) {
         let responseJSON = networkSocket.processResponseAsJSON(responseStr);
-        self.userInterface.populateStrandCommentsView(responseJSON["strandComments"]);
+        self.userInterface.populateFocalCommentsView(responseJSON["focalComments"], userCommentVotes: responseJSON["commentUserVotes"]);
     }
     
-    //MARK: Post new strand comment request and response middleware process
+    //MARK: Post new focal comment request and response middleware process
     func postNewComment(_ commentText: String) {
-        if(viewingStrandID
+        if(viewingFocalID
             != -1){
-            networkRequest.postComment(self.networkWebSocket, strandID: realStrandIDs[viewingStrandID], username: loggedinUserData.username, commentText: commentText);
+            networkRequest.postComment(self.networkWebSocket, focalID: realFocalIDs[viewingFocalID], username: loggedinUserData.username, commentText: commentText);
         }
     }
     
     func postedCommentResponse(_ responseStr: String) {
         let responseJSON = networkSocket.processResponseAsJSON(responseStr);
         self.userInterface.updateInfoLabel("Successfully Posted!", show: true, hideAfter: 2);
-        self.getStrandComments(self.viewingStrandID);
+        self.getFocalComments(self.viewingFocalID);
     }
+    
+    //MARK: Vote focal comment request and response middleware process
+    
 
-    
-    
-    //MARK: Delete strand request and response middleware process
-    func deleteStrandRequest(_ realID: Int){
-        networkRequest.deleteStrand(self.networkWebSocket, strandID: realID);
+    func newVoteComment(_ vote: Int, cID: Int){
+        networkRequest.newVoteComment(self.networkWebSocket, vote: vote, cID: cID, uID: loggedinUserData.id);
+    }
+    func votedCommentResponse(_ responseStr: String){
+        
     }
     
-    func deletedStrandResponse(_ responseStr: String) {
+    //MARK: Delete focal request and response middleware process
+    func deleteFocalRequest(_ realID: Int){
+        networkRequest.deleteFocal(self.networkWebSocket, focalID: realID);
+    }
+    
+    func deletedFocalResponse(_ responseStr: String) {
         let responseJSON = networkSocket.processResponseAsJSON(responseStr);
         let success: Bool = (responseJSON["success"]=="true" ? true: false);
         self.userInterface.updateInfoLabel("Successfully Deleted!", show: true, hideAfter: 2);
-        self.userInterface.closeSingleStrandInfoViewWrap();
-        self.requestUserStrands();
+        self.userInterface.closeSingleFocalInfoViewWrap();
+        self.requestUserFocals();
         self.networkRequest.getRegionData(self.networkWebSocket, currLocation: currentLocation);
     }
     

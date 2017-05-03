@@ -8,14 +8,20 @@
 
 /* Begin PBXBuildFile section */
 		74D0F5E9CB0A54F9F1333EC7 /* Pods_Strands.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA76AEA0DC651EA2EB870D49 /* Pods_Strands.framework */; };
+		B0023B6E1EAA586C00F1EC09 /* focal_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = B0023B6D1EAA586C00F1EC09 /* focal_icon.png */; };
+		B0023B711EB8CBD400F1EC09 /* v_down_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = B0023B6F1EB8CBD400F1EC09 /* v_down_icon.png */; };
+		B0023B721EB8CBD400F1EC09 /* v_up_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = B0023B701EB8CBD400F1EC09 /* v_up_icon.png */; };
+		B0023B751EBA0E6E00F1EC09 /* vd_down_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = B0023B731EBA0E6D00F1EC09 /* vd_down_icon.png */; };
+		B0023B761EBA0E6E00F1EC09 /* vd_up_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = B0023B741EBA0E6E00F1EC09 /* vd_up_icon.png */; };
+		B0023B7A1EBA1C1400F1EC09 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0023B791EBA1C1400F1EC09 /* ViewController.swift */; };
+		B0023B7C1EBA1C1800F1EC09 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0023B7B1EBA1C1800F1EC09 /* AppDelegate.swift */; };
+		B0023B7E1EBA1C1D00F1EC09 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B0023B7D1EBA1C1D00F1EC09 /* Info.plist */; };
+		B0023B801EBA1C2200F1EC09 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B0023B7F1EBA1C2200F1EC09 /* Assets.xcassets */; };
+		B03D88E71EBA1DFA007EE08E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B03D88E31EBA1DFA007EE08E /* LaunchScreen.storyboard */; };
+		B03D88E81EBA1DFA007EE08E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B03D88E51EBA1DFA007EE08E /* Main.storyboard */; };
 		B0476C6B1DA28CFE000FC661 /* Starscream in Frameworks */ = {isa = PBXBuildFile; fileRef = B0476BF81DA28BCD000FC661 /* Starscream */; settings = {ATTRIBUTES = (Required, ); }; };
 		B053ECD71D9D3ACC009DA4AB /* Network.swift in Sources */ = {isa = PBXBuildFile; fileRef = B053ECD61D9D3ACC009DA4AB /* Network.swift */; };
 		B069B17B1E0D4EC400873A2E /* opencv2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B069B17A1E0D4EC400873A2E /* opencv2.framework */; };
-		B0E355E01D995DBF0088EB10 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E355DF1D995DBF0088EB10 /* AppDelegate.swift */; };
-		B0E355E21D995DBF0088EB10 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E355E11D995DBF0088EB10 /* ViewController.swift */; };
-		B0E355E51D995DBF0088EB10 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B0E355E31D995DBF0088EB10 /* Main.storyboard */; };
-		B0E355E71D995DBF0088EB10 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B0E355E61D995DBF0088EB10 /* Assets.xcassets */; };
-		B0E355EA1D995DBF0088EB10 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B0E355E81D995DBF0088EB10 /* LaunchScreen.storyboard */; };
 		B0E355F51D995DBF0088EB10 /* StrandsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E355F41D995DBF0088EB10 /* StrandsTests.swift */; };
 		B0E356001D995DBF0088EB10 /* StrandsUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E355FF1D995DBF0088EB10 /* StrandsUITests.swift */; };
 		B0E356171D995E110088EB10 /* Camera.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E3560F1D995E110088EB10 /* Camera.swift */; };
@@ -25,9 +31,8 @@
 		B0E3561B1D995E110088EB10 /* OpenCVWrapper.mm in Sources */ = {isa = PBXBuildFile; fileRef = B0E356141D995E110088EB10 /* OpenCVWrapper.mm */; };
 		B0E3561C1D995E110088EB10 /* Scene.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E356151D995E110088EB10 /* Scene.swift */; };
 		B0E3561D1D995E110088EB10 /* UserInterface.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E356161D995E110088EB10 /* UserInterface.swift */; };
-		B0E356221D995E1E0088EB10 /* Astralpost in Resources */ = {isa = PBXBuildFile; fileRef = B0E3561F1D995E1E0088EB10 /* Astralpost */; };
-		B0E356231D995E1E0088EB10 /* Astralpost.dae in Resources */ = {isa = PBXBuildFile; fileRef = B0E356201D995E1E0088EB10 /* Astralpost.dae */; };
-		B0FCBD691DCFB45800622352 /* astral_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = B0FCBD681DCFB45800622352 /* astral_icon.png */; };
+		B0E356221D995E1E0088EB10 /* focalpost in Resources */ = {isa = PBXBuildFile; fileRef = B0E3561F1D995E1E0088EB10 /* focalpost */; };
+		B0E356231D995E1E0088EB10 /* focalpost.dae in Resources */ = {isa = PBXBuildFile; fileRef = B0E356201D995E1E0088EB10 /* focalpost.dae */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,16 +54,21 @@
 
 /* Begin PBXFileReference section */
 		1579034A9FAC0DCDE078DF9A /* Pods-Strands.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Strands.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Strands/Pods-Strands.debug.xcconfig"; sourceTree = "<group>"; };
+		B0023B6D1EAA586C00F1EC09 /* focal_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = focal_icon.png; sourceTree = "<group>"; };
+		B0023B6F1EB8CBD400F1EC09 /* v_down_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = v_down_icon.png; sourceTree = "<group>"; };
+		B0023B701EB8CBD400F1EC09 /* v_up_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = v_up_icon.png; sourceTree = "<group>"; };
+		B0023B731EBA0E6D00F1EC09 /* vd_down_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = vd_down_icon.png; sourceTree = "<group>"; };
+		B0023B741EBA0E6E00F1EC09 /* vd_up_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = vd_up_icon.png; sourceTree = "<group>"; };
+		B0023B791EBA1C1400F1EC09 /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ViewController.swift; path = Astral/ViewController.swift; sourceTree = SOURCE_ROOT; };
+		B0023B7B1EBA1C1800F1EC09 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = Astral/AppDelegate.swift; sourceTree = SOURCE_ROOT; };
+		B0023B7D1EBA1C1D00F1EC09 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Astral/Info.plist; sourceTree = SOURCE_ROOT; };
+		B0023B7F1EBA1C2200F1EC09 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = Astral/Assets.xcassets; sourceTree = SOURCE_ROOT; };
+		B03D88E41EBA1DFA007EE08E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Astral/Base.lproj/LaunchScreen.storyboard; sourceTree = SOURCE_ROOT; };
+		B03D88E61EBA1DFA007EE08E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Astral/Base.lproj/Main.storyboard; sourceTree = SOURCE_ROOT; };
 		B0476BF81DA28BCD000FC661 /* Starscream */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Starscream; path = ../../startest/Starscream; sourceTree = "<group>"; };
 		B053ECD61D9D3ACC009DA4AB /* Network.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Network.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		B069B17A1E0D4EC400873A2E /* opencv2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = opencv2.framework; sourceTree = "<group>"; };
 		B0E355DC1D995DBF0088EB10 /* Astral.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Astral.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		B0E355DF1D995DBF0088EB10 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		B0E355E11D995DBF0088EB10 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		B0E355E41D995DBF0088EB10 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		B0E355E61D995DBF0088EB10 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		B0E355E91D995DBF0088EB10 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		B0E355EB1D995DBF0088EB10 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B0E355F01D995DBF0088EB10 /* AstralTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AstralTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B0E355F41D995DBF0088EB10 /* StrandsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StrandsTests.swift; sourceTree = "<group>"; };
 		B0E355F61D995DBF0088EB10 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -74,9 +84,8 @@
 		B0E356141D995E110088EB10 /* OpenCVWrapper.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = OpenCVWrapper.mm; sourceTree = "<group>"; };
 		B0E356151D995E110088EB10 /* Scene.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Scene.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		B0E356161D995E110088EB10 /* UserInterface.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserInterface.swift; sourceTree = "<group>"; };
-		B0E3561F1D995E1E0088EB10 /* Astralpost */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Astralpost; sourceTree = "<group>"; };
-		B0E356201D995E1E0088EB10 /* Astralpost.dae */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml.dae; path = Astralpost.dae; sourceTree = "<group>"; };
-		B0FCBD681DCFB45800622352 /* astral_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = astral_icon.png; sourceTree = "<group>"; };
+		B0E3561F1D995E1E0088EB10 /* focalpost */ = {isa = PBXFileReference; lastKnownFileType = folder; path = focalpost; sourceTree = "<group>"; };
+		B0E356201D995E1E0088EB10 /* focalpost.dae */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml.dae; path = focalpost.dae; sourceTree = "<group>"; };
 		D38F9152C59B50F78FC6CDFE /* Pods-Strands.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Strands.release.xcconfig"; path = "Pods/Target Support Files/Pods-Strands/Pods-Strands.release.xcconfig"; sourceTree = "<group>"; };
 		EA76AEA0DC651EA2EB870D49 /* Pods_Strands.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Strands.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -130,10 +139,14 @@
 		B0E355D31D995DBF0088EB10 = {
 			isa = PBXGroup;
 			children = (
+				B0023B731EBA0E6D00F1EC09 /* vd_down_icon.png */,
+				B0023B741EBA0E6E00F1EC09 /* vd_up_icon.png */,
+				B0023B6F1EB8CBD400F1EC09 /* v_down_icon.png */,
+				B0023B701EB8CBD400F1EC09 /* v_up_icon.png */,
+				B0023B6D1EAA586C00F1EC09 /* focal_icon.png */,
 				B069B17A1E0D4EC400873A2E /* opencv2.framework */,
-				B0FCBD681DCFB45800622352 /* astral_icon.png */,
-				B0E3561F1D995E1E0088EB10 /* Astralpost */,
-				B0E356201D995E1E0088EB10 /* Astralpost.dae */,
+				B0E3561F1D995E1E0088EB10 /* focalpost */,
+				B0E356201D995E1E0088EB10 /* focalpost.dae */,
 				B0E3560D1D995DFA0088EB10 /* Components */,
 				B0E355DE1D995DBF0088EB10 /* Astral */,
 				B0E355F31D995DBF0088EB10 /* AstralTests */,
@@ -157,12 +170,12 @@
 		B0E355DE1D995DBF0088EB10 /* Astral */ = {
 			isa = PBXGroup;
 			children = (
-				B0E355DF1D995DBF0088EB10 /* AppDelegate.swift */,
-				B0E355E11D995DBF0088EB10 /* ViewController.swift */,
-				B0E355E31D995DBF0088EB10 /* Main.storyboard */,
-				B0E355E61D995DBF0088EB10 /* Assets.xcassets */,
-				B0E355E81D995DBF0088EB10 /* LaunchScreen.storyboard */,
-				B0E355EB1D995DBF0088EB10 /* Info.plist */,
+				B03D88E31EBA1DFA007EE08E /* LaunchScreen.storyboard */,
+				B03D88E51EBA1DFA007EE08E /* Main.storyboard */,
+				B0023B791EBA1C1400F1EC09 /* ViewController.swift */,
+				B0023B7B1EBA1C1800F1EC09 /* AppDelegate.swift */,
+				B0023B7D1EBA1C1D00F1EC09 /* Info.plist */,
+				B0023B7F1EBA1C2200F1EC09 /* Assets.xcassets */,
 			);
 			name = Astral;
 			path = Strands;
@@ -321,12 +334,17 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B0FCBD691DCFB45800622352 /* astral_icon.png in Resources */,
-				B0E356221D995E1E0088EB10 /* Astralpost in Resources */,
-				B0E355EA1D995DBF0088EB10 /* LaunchScreen.storyboard in Resources */,
-				B0E355E71D995DBF0088EB10 /* Assets.xcassets in Resources */,
-				B0E356231D995E1E0088EB10 /* Astralpost.dae in Resources */,
-				B0E355E51D995DBF0088EB10 /* Main.storyboard in Resources */,
+				B0E356221D995E1E0088EB10 /* focalpost in Resources */,
+				B0023B761EBA0E6E00F1EC09 /* vd_up_icon.png in Resources */,
+				B0023B721EB8CBD400F1EC09 /* v_up_icon.png in Resources */,
+				B03D88E71EBA1DFA007EE08E /* LaunchScreen.storyboard in Resources */,
+				B0023B711EB8CBD400F1EC09 /* v_down_icon.png in Resources */,
+				B03D88E81EBA1DFA007EE08E /* Main.storyboard in Resources */,
+				B0023B6E1EAA586C00F1EC09 /* focal_icon.png in Resources */,
+				B0023B751EBA0E6E00F1EC09 /* vd_down_icon.png in Resources */,
+				B0023B7E1EBA1C1D00F1EC09 /* Info.plist in Resources */,
+				B0E356231D995E1E0088EB10 /* focalpost.dae in Resources */,
+				B0023B801EBA1C2200F1EC09 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -399,10 +417,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B0023B7C1EBA1C1800F1EC09 /* AppDelegate.swift in Sources */,
 				B053ECD71D9D3ACC009DA4AB /* Network.swift in Sources */,
 				B0E356191D995E110088EB10 /* Map.swift in Sources */,
-				B0E355E21D995DBF0088EB10 /* ViewController.swift in Sources */,
-				B0E355E01D995DBF0088EB10 /* AppDelegate.swift in Sources */,
+				B0023B7A1EBA1C1400F1EC09 /* ViewController.swift in Sources */,
 				B0E3561A1D995E110088EB10 /* Misc.swift in Sources */,
 				B0E3561C1D995E110088EB10 /* Scene.swift in Sources */,
 				B0E3561B1D995E110088EB10 /* OpenCVWrapper.mm in Sources */,
@@ -444,20 +462,20 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		B0E355E31D995DBF0088EB10 /* Main.storyboard */ = {
+		B03D88E31EBA1DFA007EE08E /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
-				B0E355E41D995DBF0088EB10 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
-		B0E355E81D995DBF0088EB10 /* LaunchScreen.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				B0E355E91D995DBF0088EB10 /* Base */,
+				B03D88E41EBA1DFA007EE08E /* Base */,
 			);
 			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+		B03D88E51EBA1DFA007EE08E /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				B03D88E61EBA1DFA007EE08E /* Base */,
+			);
+			name = Main.storyboard;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -570,7 +588,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)",
 				);
-				INFOPLIST_FILE = Strands/Info.plist;
+				INFOPLIST_FILE = "$(SRCROOT)/Astral/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = casparwylie.Strands;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -592,7 +610,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)",
 				);
-				INFOPLIST_FILE = Strands/Info.plist;
+				INFOPLIST_FILE = "$(SRCROOT)/Astral/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = casparwylie.Strands;
 				PRODUCT_NAME = "$(TARGET_NAME)";
