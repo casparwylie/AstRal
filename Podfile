@@ -5,4 +5,5 @@ use_frameworks!
 target 'Astral' do
   pod 'Starscream', '~> 2.0.0'
   pod 'SwiftyJSON'
+  pod 'CryptoSwift'
 end

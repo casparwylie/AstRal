@@ -20,9 +20,7 @@ class Misc{
         }
     }
     
-    func processResponseAsJSON(_ responseData: String) -> JSON{
-        let responseData = responseData.data(using: String.Encoding.utf8,allowLossyConversion: false);
-        let responseJSON = JSON(data: responseData!);
-        return responseJSON;
+    func sha512(string: String){
+        
     }
 }

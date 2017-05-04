@@ -13,6 +13,7 @@ import CoreMotion
 import MapKit
 import Starscream
 import SwiftyJSON
+import CryptoSwift
 
 class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapActionDelegate, NetworkResponseDelegate{
     
@@ -36,12 +37,13 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
     var currentLocation: CLLocation!;
     var currMapPoint: MKMapPoint!;
     var currentHeading: CLHeading!;
-   
+    var keyData: JSON!;
     var tempFocalMapPoint: MKMapPoint = MKMapPoint();
     var mapPoints: [MKMapPoint] = [];
     var coordPoints: [CLLocation] = [];
     var realFocalIDs: [Int] = [];
     var focalFirstComments = JSON("");
+    var gotKeyData = false;
     var focalDistAndBearingsFromUser: [(distance: Int, bearing: Int)] = [];
     
     
@@ -81,6 +83,14 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
         self.currentHeading = currentHeading;
         if(firstRender==true){
             self.oldRenderPosition = self.currentLocation;
+        }
+        
+        if(self.currentLocation.horizontalAccuracy > 10){
+            self.userInterface.updateInfoLabel("Locating Focals, please wait...", show: true, hideAfter: 3);
+        }
+        
+        if(gotKeyData == false){
+            getKeyData();
         }
         
         self.focalDistAndBearingsFromUser = [];
@@ -165,7 +175,7 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
             let distLimitPX = Int(OpenCVWrapper.buildingDetect(&focalDesValPX, image: image, currPoint: &currentPointPX, pxLength: Int32(pxVals.pxLength), forTapLimit: true)!)!;
             
             if(distLimitPX > -1){
-                let distLimitMetres = (distLimitPX / 2)-2;
+                let distLimitMetres = (distLimitPX / 2)-4;
                 focalLocation = self.location.getPolarCoords(Double(distLimitMetres), bearingDegrees: bearingDegreesTap);
             }
             
@@ -235,7 +245,9 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
     
     //MARK: new user sign up / profile edit request and response middleware process
     func updateUserDataRequest(_ username: String, password: String, fullname: String, email: String) {
-        networkRequest.updateUserDataRequest(self.networkWebSocket, username: username, password: password, fullname: fullname, email: email, userID: loggedinUserData.id);
+        let pass = password.sha512();
+        print(pass);
+        networkRequest.updateUserDataRequest(self.networkWebSocket, username: username, password: pass, fullname: fullname, email: email, userID: loggedinUserData.id);
     }
     
     
@@ -258,7 +270,9 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
     
     //MARK: User login request and response middleware process
     func loginRequest(_ username: String, password: String) {
-        networkRequest.loginUserRequest(self.networkWebSocket, username: username, password: password);
+        let pass = password.sha512();
+        print(pass);
+        networkRequest.loginUserRequest(self.networkWebSocket, username: username, password: pass);
     }
     
     func userLoggedinResponse(_ responseStr: String) {
@@ -313,7 +327,7 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
     }
     func focalCommentsResponse(_ responseStr: String) {
         let responseJSON = networkSocket.processResponseAsJSON(responseStr);
-        self.userInterface.populateFocalCommentsView(responseJSON["focalComments"], userCommentVotes: responseJSON["commentUserVotes"]);
+        self.userInterface.populateFocalCommentsView(responseJSON["focalComments"], userCommentVotes: responseJSON["commentUserVotes"], focalVisitCount: responseJSON["focalVisitCount"]);
     }
     
     //MARK: Post new focal comment request and response middleware process
@@ -354,7 +368,16 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
         self.networkRequest.getRegionData(self.networkWebSocket, currLocation: currentLocation);
     }
     
-    
+    //MARK: key data request
+    func getKeyData(){
+        networkRequest.getKeyData(self.networkWebSocket);
+    }
+    func keyDataResponse(_ responseStr: String){
+        let responseJSON = networkSocket.processResponseAsJSON(responseStr);
+        keyData = responseJSON;
+        gotKeyData = true;
+        self.userInterface.renderHelpText(text: keyData["data"][0]["data"].rawString()!);
+    }
 
 
     //MARK: Main stem
@@ -402,9 +425,9 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
         networkWebSocket = networkSocket.connectWebSocket();
         networkSocket.networkResponseDelegate = self;
         networkSocket.ui = userInterface;
+        
 
         
-    
         super.viewDidLoad();
     }
     

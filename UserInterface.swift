@@ -53,6 +53,7 @@ class UserInterface1{
     var cancelSignUpButton: UIButton!;
     var closeUserFocalView: UIButton!;
     var closeUserProfileView: UIButton!;
+    var closeHelpView: UIButton!;
     var closeSingleFocalInfoView: UIButton!;
     var closeFocalCommentsView: UIButton!;
     var deleteFocalButton: UIButton!;
@@ -70,11 +71,12 @@ class UserInterface1{
     
     //UI Views
     var loginForm: UIView!;
-    var commentForm: UIView!;
+    var commentForm: UIView!
     var signUpForm: UIView!;
     var userFocalListView: UIView!;
     var focalCommentsView: UIView!;
     var userProfileView: UIView!;
+    var helpView: UIView!;
     var singleFocalInfoView: UIView!;
     var userScrollFocalListView: UIScrollView!;
     var focalCommentsListScrollView: UIScrollView!;
@@ -85,6 +87,8 @@ class UserInterface1{
     var singleFocalFcommentTitle: UILabel!;
     var upVoteCommentLabels: [Int: UILabel] = [:];
     var downVoteCommentLabels: [Int: UILabel] = [:];
+    var helpTextLabel: UILabel!;
+    var focalVisitCountLabel: UILabel!;
     
     //General Presets
     var loggedinUserData = (id: 0, username: "Unknown", fullname: "Unknown", email: "Unknown", password: "");
@@ -189,6 +193,11 @@ class UserInterface1{
             renderMenu(false);
             hideAnyViews();
             actionDelegate?.logoutUser!();
+        
+        case " Help ":
+            hideAnyViews();
+            helpView.isHidden = false;
+            
             
         default:
             toggleMenu(false);
@@ -224,6 +233,7 @@ class UserInterface1{
         focalCommentsView.isHidden = true;
         singleFocalInfoView.isHidden = true;
         userProfileView.isHidden = true;
+        helpView.isHidden = true;
         self.view.endEditing(true);
     }
     
@@ -468,7 +478,7 @@ class UserInterface1{
         actionDelegate?.newVoteComment!(vote, cID: cID);
     }
     
-    func populateFocalCommentsView(_ focalComments: JSON, userCommentVotes: JSON){
+    func populateFocalCommentsView(_ focalComments: JSON, userCommentVotes: JSON, focalVisitCount: JSON){
         focalCommentsView.isHidden = false;
         lastCommentHeight = 0;
         for subview in focalCommentsListScrollView.subviews{
@@ -477,6 +487,8 @@ class UserInterface1{
         focalCommentsJSON = focalComments;
         focalCommentsListScrollView.contentSize = CGSize(width: CGFloat(viewPageWidth), height: CGFloat(800));
         focalCommentListLabelYPos = 5;
+        
+        focalVisitCountLabel.text = focalVisitCount.rawString()! + " Focal visit(s)";
         
         var count = 0;
         var nextYPosCalc = 0;
@@ -681,6 +693,9 @@ class UserInterface1{
         closeFocalCommentsView = addButtonProperties("Close", hidden: false, pos: closefocalCommentsViewRect, cornerRadius: buttonCornerRadius, blurLight: true);
         closeFocalCommentsView.addTarget(self, action: #selector(hideAnyViews), for: .touchUpInside);
         
+        focalVisitCountLabel = UILabel(frame: CGRect(x: 5, y: 5, width: 250, height: 25));
+        focalVisitCountLabel.font = UIFont(name: mainTypeFace+"-Bold", size: 11);
+        
         let commentExistingFocalTFWidth = viewPageWidth-55;
         commentExistingFocalTextfield = addTextFieldProperties(CGRect(x: 5, y: closeButtonHeight+10, width: commentExistingFocalTFWidth, height: textFieldSize.height));
         commentExistingFocalTextfield.text = "Enter Comment...";
@@ -690,6 +705,7 @@ class UserInterface1{
         newCommentButton.addTarget(self, action: #selector(newCommentFocal), for: .touchUpInside);
         
         focalCommentsView.addSubview(newCommentButton);
+        focalCommentsView.addSubview(focalVisitCountLabel);
         focalCommentsView.addSubview(commentExistingFocalTextfield);
         focalCommentsView.addSubview(closeFocalCommentsView);
         focalCommentsView.addSubview(focalCommentsListScrollView);
@@ -716,6 +732,32 @@ class UserInterface1{
         self.view.addSubview(userFocalListView);
     }
     
+    func renderHelpView(){
+        let viewHeight = 370;
+        helpView = UIView(frame: CGRect(x:viewPageX,y: defaultFormY + buttonSpace,width: viewPageWidth, height: viewHeight));
+        helpView.insertSubview(processBlurEffect(helpView.bounds, cornerRadiusVal: buttonCornerRadius, light: true), at: 0);
+        helpView.isHidden = true;
+        
+        
+        let closeHelpViewRect = CGRect(x: viewPageWidth-(closeButtonWidth+5), y: 5, width: closeButtonWidth, height: closeButtonHeight);
+        closeHelpView = addButtonProperties("Close", hidden: false, pos:closeHelpViewRect, cornerRadius: buttonCornerRadius, blurLight: true);
+        closeHelpView.addTarget(self, action: #selector(hideAnyViews), for: .touchUpInside);
+        
+        self.view.addSubview(helpView);
+        helpView.addSubview(closeHelpView);
+    
+    }
+    
+    func renderHelpText(text: String){
+        helpTextLabel = UILabel(frame: CGRect(x: 5, y: 10, width: 280, height: 360));
+        helpTextLabel.lineBreakMode = NSLineBreakMode.byWordWrapping;
+        helpTextLabel.text = text;
+        let labelTextHeight = getHeightForField(text, font: mainFont, width: CGFloat(200));
+        helpTextLabel.numberOfLines = Int(labelTextHeight/20)+1;
+        helpTextLabel.font = mainFont;
+        helpView.addSubview(helpTextLabel);
+        
+    }
     
     func renderProfileView(){
         let viewHeight = 370;
@@ -908,6 +950,7 @@ class UserInterface1{
         renderFocalCommentsView();
         renderPostCommentForm();
         renderProfileView();
+        renderHelpView();
         renderUserFocalsView();
         renderSingleFocalInfoView();
     }

@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		74D0F5E9CB0A54F9F1333EC7 /* Pods_Strands.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA76AEA0DC651EA2EB870D49 /* Pods_Strands.framework */; };
+		2E4B3ED2F535E0E6D0B0CE99 /* Pods_Astral.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 27AB2A4CB9DB1EC7ED74066D /* Pods_Astral.framework */; };
 		B0023B6E1EAA586C00F1EC09 /* focal_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = B0023B6D1EAA586C00F1EC09 /* focal_icon.png */; };
 		B0023B711EB8CBD400F1EC09 /* v_down_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = B0023B6F1EB8CBD400F1EC09 /* v_down_icon.png */; };
 		B0023B721EB8CBD400F1EC09 /* v_up_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = B0023B701EB8CBD400F1EC09 /* v_up_icon.png */; };
@@ -53,7 +53,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		1579034A9FAC0DCDE078DF9A /* Pods-Strands.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Strands.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Strands/Pods-Strands.debug.xcconfig"; sourceTree = "<group>"; };
+		27AB2A4CB9DB1EC7ED74066D /* Pods_Astral.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Astral.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B0023B6D1EAA586C00F1EC09 /* focal_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = focal_icon.png; sourceTree = "<group>"; };
 		B0023B6F1EB8CBD400F1EC09 /* v_down_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = v_down_icon.png; sourceTree = "<group>"; };
 		B0023B701EB8CBD400F1EC09 /* v_up_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = v_up_icon.png; sourceTree = "<group>"; };
@@ -86,8 +86,8 @@
 		B0E356161D995E110088EB10 /* UserInterface.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserInterface.swift; sourceTree = "<group>"; };
 		B0E3561F1D995E1E0088EB10 /* focalpost */ = {isa = PBXFileReference; lastKnownFileType = folder; path = focalpost; sourceTree = "<group>"; };
 		B0E356201D995E1E0088EB10 /* focalpost.dae */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml.dae; path = focalpost.dae; sourceTree = "<group>"; };
-		D38F9152C59B50F78FC6CDFE /* Pods-Strands.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Strands.release.xcconfig"; path = "Pods/Target Support Files/Pods-Strands/Pods-Strands.release.xcconfig"; sourceTree = "<group>"; };
-		EA76AEA0DC651EA2EB870D49 /* Pods_Strands.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Strands.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		E9ECF3C72CCBC475F304CD86 /* Pods-Astral.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Astral.release.xcconfig"; path = "Pods/Target Support Files/Pods-Astral/Pods-Astral.release.xcconfig"; sourceTree = "<group>"; };
+		FE3A2B397D47949F4194E4EC /* Pods-Astral.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Astral.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Astral/Pods-Astral.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,7 +97,7 @@
 			files = (
 				B069B17B1E0D4EC400873A2E /* opencv2.framework in Frameworks */,
 				B0476C6B1DA28CFE000FC661 /* Starscream in Frameworks */,
-				74D0F5E9CB0A54F9F1333EC7 /* Pods_Strands.framework in Frameworks */,
+				2E4B3ED2F535E0E6D0B0CE99 /* Pods_Astral.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -118,11 +118,11 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		663580958A3052F68192A6D9 /* Pods */ = {
+		12B029C36EFC235BB3478A4D /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				1579034A9FAC0DCDE078DF9A /* Pods-Strands.debug.xcconfig */,
-				D38F9152C59B50F78FC6CDFE /* Pods-Strands.release.xcconfig */,
+				FE3A2B397D47949F4194E4EC /* Pods-Astral.debug.xcconfig */,
+				E9ECF3C72CCBC475F304CD86 /* Pods-Astral.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -131,7 +131,7 @@
 			isa = PBXGroup;
 			children = (
 				B0476BF81DA28BCD000FC661 /* Starscream */,
-				EA76AEA0DC651EA2EB870D49 /* Pods_Strands.framework */,
+				27AB2A4CB9DB1EC7ED74066D /* Pods_Astral.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -153,7 +153,7 @@
 				B0E355FE1D995DBF0088EB10 /* AstralUITests */,
 				B0E355DD1D995DBF0088EB10 /* Products */,
 				B0476BF71DA28BCD000FC661 /* Frameworks */,
-				663580958A3052F68192A6D9 /* Pods */,
+				12B029C36EFC235BB3478A4D /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -377,7 +377,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Strands/Pods-Strands-frameworks.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Astral/Pods-Astral-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		45B5FF1FA05D7A94FCBB6AA6 /* [CP] Check Pods Manifest.lock */ = {
@@ -392,7 +392,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		FB4251B5FC7CA7FA02CB6417 /* [CP] Copy Pods Resources */ = {
@@ -407,7 +407,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Strands/Pods-Strands-resources.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Astral/Pods-Astral-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -578,7 +578,7 @@
 		};
 		B0E356051D995DBF0088EB10 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1579034A9FAC0DCDE078DF9A /* Pods-Strands.debug.xcconfig */;
+			baseConfigurationReference = FE3A2B397D47949F4194E4EC /* Pods-Astral.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -600,7 +600,7 @@
 		};
 		B0E356061D995DBF0088EB10 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = D38F9152C59B50F78FC6CDFE /* Pods-Strands.release.xcconfig */;
+			baseConfigurationReference = E9ECF3C72CCBC475F304CD86 /* Pods-Astral.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
