@@ -1,3 +1,6 @@
+<img width="351" alt="logo copy 3" src="https://cloud.githubusercontent.com/assets/7353547/25748457/fefc7324-31a2-11e7-860a-985e9b906f80.png" style="text-align: center;margin: 0 auto;">
+
+
 If you are interested in contributing, or getting involved in anyway, please contact me so I can set you up with more info.
 
 # Astral
