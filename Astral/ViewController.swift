@@ -50,7 +50,6 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
     func toggleMap(_ isAddingFocal: Bool) {
         map.tapMapToPost = isAddingFocal;
         if self.view.viewWithTag(3)?.isHidden == false && isAddingFocal == false {
-            
             self.view.viewWithTag(3)?.isHidden = true;
         }else{
             self.view.viewWithTag(3)?.isHidden = false;
@@ -68,7 +67,7 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
         
         self.map.getMapAsIMG({(image) in
             
-            let toHideAsSTR = OpenCVWrapper.buildingDetect( &focalValsPX, image: image, currPoint: &currPointPX, pxLength: Int32(pxVals.pxLength),forTapLimit: false);
+            let toHideAsSTR = OpenCVWrapper.buildingDetect( &focalValsPX, image: image, currPoint: &currPointPX, pxLength: Int32(pxVals.pxLength),forTapLimit: false, forBuildingTap: false);
             
             self.scene.renderFocals(self.mapPoints, currMapPoint: self.currMapPoint,
                                      render: newRender, currentHeading: self.currentHeading, toHide: toHideAsSTR!, comments: self.focalFirstComments, tempFocalMapPoint: self.tempFocalMapPoint);
@@ -150,7 +149,21 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
     var latestDesiredFocalLocation: CLLocation!;
     func renderTempFocalFromMap(_ mapTapCoord: CLLocationCoordinate2D){
         let focalLocation = CLLocation(latitude: mapTapCoord.latitude, longitude: mapTapCoord.longitude);
-        addFocalTemp(focalLocation);
+        self.map.getMapAsIMG({(image) in
+            
+            let pxVals = self.map.collectPXfromMapPoints([MKMapPointForCoordinate(focalLocation.coordinate)], currMapPoint: MKMapPointForCoordinate(self.currentLocation.coordinate));
+            
+            var currentPointPX = pxVals.currPointPX;
+            var focalDesValPX = pxVals.focalValsPX;
+            
+            let distNoBilding = Int(OpenCVWrapper.buildingDetect(&focalDesValPX, image: image, currPoint: &currentPointPX, pxLength: Int32(pxVals.pxLength), forTapLimit: true, forBuildingTap: true)!)!;
+            
+            if(distNoBilding > 5){
+                self.addFocalTemp(focalLocation);
+            }else{
+                self.userInterface.updateInfoLabel("You cannot place a focal on a building.", show: true, hideAfter: 3);
+            }
+        });
     }
     
     func renderTempFocalFromUI(_ tapX: Int, tapY: Int){
@@ -172,7 +185,7 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
         
         self.map.getMapAsIMG({(image) in
             
-            let distLimitPX = Int(OpenCVWrapper.buildingDetect(&focalDesValPX, image: image, currPoint: &currentPointPX, pxLength: Int32(pxVals.pxLength), forTapLimit: true)!)!;
+            let distLimitPX = Int(OpenCVWrapper.buildingDetect(&focalDesValPX, image: image, currPoint: &currentPointPX, pxLength: Int32(pxVals.pxLength), forTapLimit: true, forBuildingTap: false)!)!;
             
             if(distLimitPX > -1){
                 let distLimitMetres = (distLimitPX / 2)-4;
@@ -260,7 +273,6 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
                 loggedinUserData.username = responseJSON["dataUsed"]["username"].string!;
                 loggedinUserData.fullname = responseJSON["dataUsed"]["fullname"].string!;
                 loggedinUserData.email = responseJSON["dataUsed"]["email"].string!;
-                loggedinUserData.password = responseJSON["dataUsed"]["password"].string!;
                 userInterface.loggedinUserData = self.loggedinUserData;
             }
         }
@@ -286,7 +298,6 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
             loggedinUserData.username = responseJSON["result"]["u_uname"].string!;
             loggedinUserData.fullname = responseJSON["result"]["u_fullname"].string!;
             loggedinUserData.email = responseJSON["result"]["u_email"].string!;
-            loggedinUserData.password = responseJSON["result"]["u_password"].string!;
             userInterface.loggedinUserData = self.loggedinUserData;
             responseMessage = "Welcome " + loggedinUserData.fullname.components(separatedBy: " ")[0] + "!";
             
@@ -312,7 +323,7 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
         let locationOfTap = CGPoint(x: tapX, y: tapY);
         var focalTapID = -1;
         let possFocalsFound = scene.sceneView.hitTest(locationOfTap, options: nil);
-        if let tappedFocal = possFocalsFound.first?.node.parent?.parent?.parent{
+        if let tappedFocal = possFocalsFound.first?.node.parent{
             print(tappedFocal.name!)
             let startIndex = tappedFocal.name?.index((tappedFocal.name?.startIndex)!, offsetBy: 2);
             focalTapID = Int((tappedFocal.name?.substring(from: startIndex!))!)!;

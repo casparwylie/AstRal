@@ -108,6 +108,7 @@ class UserInterface1{
     var userFocalsJSON: JSON!;
     var userFocalFirstCommentsJSON: JSON!;
     var focalCommentsJSON: JSON!;
+    var tapAnywhere: UITapGestureRecognizer!;
     var currBlurState = "light";
     var screenSize: CGRect = UIScreen.main.bounds;
     var singleFocalTapRecs: [UITapGestureRecognizer] = [];
@@ -247,7 +248,6 @@ class UserInterface1{
         if(mapShowing == false){
             if(self.tapToPost == true ){
                 actionDelegate?.renderTempFocalFromUI!(Int(tapPoint.x), tapY: Int(tapPoint.y));
-                updateInfoLabel("Tap somewhere else or 'Done'", show: true, hideAfter: 0);
             }else{
                 actionDelegate?.chooseFocalComments!(Int(tapPoint.x), tapY: Int(tapPoint.y));
             }
@@ -264,7 +264,25 @@ class UserInterface1{
     
     @objc func signUpSubmitWrapper(_ sender: UIButton!){
         self.view.endEditing(true);
-        actionDelegate?.updateUserDataRequest!((signUpFields.username?.text)!, password: (signUpFields.password?.text)!, fullname: (signUpFields.fullname?.text)!, email: (signUpFields.email?.text)!);
+        var error = "";
+        let pLength = signUpFields.password?.text?.characters.count;
+        let uLength = signUpFields.username?.text?.characters.count;
+        let minLength = 4;
+        if(( pLength! < minLength && Int(loggedinUserData.id) == 0 )||(Int(loggedinUserData.id) > 0 && pLength! > 0 && pLength! < minLength )){
+            error = "Your password must be longer.";
+        }
+        if(uLength! < minLength){
+            error = "Your username must be longer.";
+        }
+        
+        if(error == ""){
+            actionDelegate?.updateUserDataRequest!((signUpFields.username?.text)!, password: (signUpFields.password?.text)!, fullname: (signUpFields.fullname?.text)!, email: (signUpFields.email?.text)!);
+            
+                signUpFields.password?.text = "";
+            
+        }else{
+            self.updateInfoLabel(error, show: true, hideAfter: 3);
+        }
     }
     
     func signUpToProfileUpdateTransformForm(_ asProfile: Bool){
@@ -272,12 +290,12 @@ class UserInterface1{
             signUpFields.username?.text = loggedinUserData.username;
             signUpFields.email?.text = loggedinUserData.email;
             signUpFields.fullname?.text = loggedinUserData.fullname;
-            signUpFields.password?.text = loggedinUserData.password;
+            signUpFields.password?.placeholder = "Password";
             signUpSubmitButton.setTitle("Update", for: UIControlState());
         }else{
-            signUpFields.username?.text = "Username..";
-            signUpFields.email?.text = "Email...";
-            signUpFields.fullname?.text = "Fullname...";
+            signUpFields.username?.placeholder = "Username";
+            signUpFields.email?.placeholder = "Email";
+            signUpFields.fullname?.placeholder = "Fullname";
             signUpSubmitButton.setTitle("Sign Up", for: UIControlState());
         }
     }
@@ -525,12 +543,12 @@ class UserInterface1{
     //MARK: render UI components
     func renderPostCommentForm(){
         let formHeight = 100;
-        commentForm = UIView(frame: CGRect(x:Int(screenSize.width/2)-formWidth/2,y: defaultFormY + buttonHeight + buttonSpace,width: formWidth, height: formHeight));
+        commentForm = UIView(frame: CGRect(x:Int(screenSize.width/2)-formWidth/2,y: defaultFormY + buttonHeight + buttonSpace,width: formWidth-10, height: formHeight));
         commentForm.isHidden = true;
         commentForm.insertSubview(processBlurEffect(commentForm.bounds, cornerRadiusVal: buttonCornerRadius, light: true), at: 0);
         
-        commentTextfield = addTextFieldProperties(CGRect(x: 5, y: 5, width: 240, height: textFieldSize.height));
-        commentTextfield.text = "Enter Comment...";
+        commentTextfield = addTextFieldProperties(CGRect(x: 5, y: 5, width: 230, height: textFieldSize.height));
+        commentTextfield.placeholder = "Enter Comment...";
         
         let postFocalButtonRect = CGRect(x: 5, y: 5+textFieldSize.height+10, width: 100, height: 40);
         postFocalButton = addButtonProperties("Post Focal", hidden: false, pos: postFocalButtonRect, cornerRadius: buttonCornerRadius, blurLight: true);
@@ -578,10 +596,10 @@ class UserInterface1{
         loginForm.insertSubview(processBlurEffect(loginForm.bounds, cornerRadiusVal: buttonCornerRadius, light: true), at: 0);
         
         usernameLoginField = addTextFieldProperties(CGRect(x: 5, y: 5, width: textWidthLogin, height: textFieldSize.height));
-        usernameLoginField.text = "Test123";
+        usernameLoginField.placeholder = "Username";
         
         passwordLoginField = addTextFieldProperties(CGRect(x: 5, y: 55, width: textWidthLogin, height: textFieldSize.height));
-        passwordLoginField.text = "test123";
+        passwordLoginField.placeholder = "Password";
         passwordLoginField.isSecureTextEntry = true;
         
         
@@ -613,17 +631,17 @@ class UserInterface1{
         signUpForm.insertSubview(processBlurEffect(signUpForm.bounds, cornerRadiusVal: buttonCornerRadius, light: true), at: 0);
         
         signUpFields.username = addTextFieldProperties(CGRect(x: 5, y: 5, width: textWidthSignUp, height: textFieldSize.height));
-        signUpFields.username?.text = "Username...";
+        signUpFields.username?.placeholder = "Username";
         
         signUpFields.password = addTextFieldProperties(CGRect(x: 5, y: 55, width: textWidthSignUp, height: textFieldSize.height));
-        signUpFields.password?.text = "Password...";
+        signUpFields.password?.placeholder = "Password";
         signUpFields.password?.isSecureTextEntry = true;
         
         signUpFields.fullname = addTextFieldProperties(CGRect(x: 5, y: 105, width: textWidthSignUp, height: textFieldSize.height));
-        signUpFields.fullname?.text = "Fullname...";
+        signUpFields.fullname?.placeholder = "Fullname";
         
         signUpFields.email = addTextFieldProperties(CGRect(x: 5, y: 155, width: textWidthSignUp, height: textFieldSize.height));
-        signUpFields.email?.text = "Email...";
+        signUpFields.email?.placeholder = "Email";
         
         let signUpSubmitButtonRect = CGRect(x: 5, y: 225, width: buttonWidthSignUp, height: textFieldSize.height);
         signUpSubmitButton = addButtonProperties("Sign Up", hidden: false, pos: signUpSubmitButtonRect, cornerRadius: buttonCornerRadius, blurLight: true);
@@ -698,7 +716,7 @@ class UserInterface1{
         
         let commentExistingFocalTFWidth = viewPageWidth-55;
         commentExistingFocalTextfield = addTextFieldProperties(CGRect(x: 5, y: closeButtonHeight+10, width: commentExistingFocalTFWidth, height: textFieldSize.height));
-        commentExistingFocalTextfield.text = "Enter Comment...";
+        commentExistingFocalTextfield.placeholder = "Enter Comment...";
         
         let newCommentButtonRect = CGRect(x: 10+commentExistingFocalTFWidth, y: closeButtonHeight+10, width: 40, height: 40);
         newCommentButton = addButtonProperties("Post", hidden: false, pos: newCommentButtonRect, cornerRadius: buttonCornerRadius, blurLight: true);
@@ -933,6 +951,10 @@ class UserInterface1{
         }
     }
     
+    @objc func removeEditing(){
+        self.view.endEditing(true);
+    }
+    
     //MARK: Render all items
     func renderAll(_ view: UIView){
         self.view = view;
@@ -940,6 +962,9 @@ class UserInterface1{
         textFieldFont = UIFont(name: mainTypeFace, size: 15);
         viewPageWidth = Int(screenSize.width)-10;
         viewPageX = Int(screenSize.width/2)-viewPageWidth/2;
+        
+        tapAnywhere = UITapGestureRecognizer(target: self.view, action: #selector(removeEditing));
+        self.view.addGestureRecognizer(tapAnywhere);
         
         renderLabel();
         renderMenu(false);

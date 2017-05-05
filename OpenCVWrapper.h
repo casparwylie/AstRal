@@ -18,7 +18,7 @@
 
 @interface OpenCVWrapper : NSObject
 
-+(NSString*) buildingDetect: (double[][2])pxVals image:(UIImage*)UIMap currPoint:(double[2])currPointPX pxLength:(int) pxLength forTapLimit:(bool)forTapLimit;
++(NSString*) buildingDetect: (double[][2])pxVals image:(UIImage*)UIMap currPoint:(double[2])currPointPX pxLength:(int) pxLength forTapLimit:(bool)forTapLimit forBuildingTap:(bool)forBuildingTap;
 
 //+(NSString*) limitNewFocalDist: (double[2])currPoint image:(UIImage*)UIMap desPoint:(double[2])desPoint;
 

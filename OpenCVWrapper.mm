@@ -23,12 +23,19 @@ using namespace std;
 
 @implementation OpenCVWrapper
 
-int buildingFoundInLine(cv::Mat frame,cv::Mat testFrame, cv::Point point1, cv::Point point2){
+int buildingFoundInLine(cv::Mat frame,cv::Mat testFrame, cv::Point point1, cv::Point point2,bool forBuildingTap){
     
     bool testing = false;
     int buildingFoundAt = -1;
     vector<int>  buildingColorBounds = {232,235};
+    
     int buildingDectectThicknessOffset = 7;
+    if(forBuildingTap == true){
+        buildingDectectThicknessOffset = 2;
+        cv::Point pointTemp1 = point1;
+        point1 = point2;
+        point2 = pointTemp1;
+    }
     
     cv::LineIterator lineIter(frame, point1, point2);
     int buildingProb = 0;
@@ -57,7 +64,7 @@ int buildingFoundInLine(cv::Mat frame,cv::Mat testFrame, cv::Point point1, cv::P
     return buildingFoundAt;
 }
 
-+(NSString*) buildingDetect: (double[][2])pxVals image:(UIImage*)UIMap currPoint:(double[2])currPointPX pxLength:(int) pxLength forTapLimit:(bool)forTapLimit{
++(NSString*) buildingDetect: (double[][2])pxVals image:(UIImage*)UIMap currPoint:(double[2])currPointPX pxLength:(int) pxLength forTapLimit:(bool)forTapLimit forBuildingTap:(bool)forBuildingTap {
 
     //setup matrix
     cv::Mat orgFrame, taskFrame;
@@ -81,7 +88,7 @@ int buildingFoundInLine(cv::Mat frame,cv::Mat testFrame, cv::Point point1, cv::P
         int rowsY = pxVals[count][1] * frameHeight;
         cv::Point pointXY = cv::Point(colsX,rowsY);
         
-        buildingAt = buildingFoundInLine(taskFrame, orgFrame,currPoint, pointXY);
+        buildingAt = buildingFoundInLine(taskFrame, orgFrame,currPoint, pointXY, forBuildingTap);
         if(buildingAt > -1){
             toHide += to_string(count) + ",";
         }
@@ -90,7 +97,7 @@ int buildingFoundInLine(cv::Mat frame,cv::Mat testFrame, cv::Point point1, cv::P
     
     //convert to UIIMAGE for view (for testing)
 
-    UIImage* new1IMG = MatToUIImage(orgFrame);
+    //UIImage* new1IMG = MatToUIImage(orgFrame);
     
     if(forTapLimit == false){
         NSString* toHideReturn = [NSString stringWithUTF8String:toHide.c_str()];
