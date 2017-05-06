@@ -37,6 +37,7 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
     var currentLocation: CLLocation!;
     var currMapPoint: MKMapPoint!;
     var currentHeading: CLHeading!;
+    var reconnectTimer: Timer!;
     var keyData: JSON!;
     var tempFocalMapPoint: MKMapPoint = MKMapPoint();
     var mapPoints: [MKMapPoint] = [];
@@ -131,8 +132,7 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
         self.mapPoints = self.map.getCoordsAsMapPoints(coordsAsCLLocation);
         self.map.updatePins(coordsAsCLLocation);
         self.coordPoints = coordsAsCLLocation;
-        
-        self.userInterface.updateInfoLabel("new region, focals: " + String(self.mapPoints.count), show: true, hideAfter: 4);
+    
         
         self.oldRenderPosition = self.currentLocation;
         self.focalFirstComments = responseJSON[focalFirstCommentsKey];
@@ -392,7 +392,9 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
         self.userInterface.renderHelpText(text: keyData["data"][0]["data"].rawString()!);
     }
 
-
+    func connWebRetry(){
+        networkWebSocket.connect();
+    }
     //MARK: Main stem
     override func viewDidLoad() {
         
@@ -439,6 +441,20 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
         networkSocket.networkResponseDelegate = self;
         networkSocket.ui = userInterface;
         
+        networkWebSocket.onDisconnect = { (error: NSError?) in
+            self.userInterface.updateInfoLabel("Disconnected. Trying to connect...", show: true, hideAfter: 5);
+            self.reconnectTimer = Timer.scheduledTimer(timeInterval: 5, target: self, selector: #selector(self.connWebRetry), userInfo: nil, repeats: false);
+        }
+        networkWebSocket.onConnect = {
+            if(self.reconnectTimer != nil){
+                self.userInterface.updateInfoLabel("Successfully connected!", show: true, hideAfter: 2);
+                self.reconnectTimer.invalidate();
+                self.reconnectTimer = nil;
+                self.firstRender = true;
+                self.networkRequest.getRegionData(self.networkWebSocket, currLocation: self.currentLocation);
+            }
+            
+        }
 
         
         super.viewDidLoad();

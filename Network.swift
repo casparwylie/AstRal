@@ -40,15 +40,14 @@ class NetworkSocketHandler{
     let socket = WebSocket(url: URL(string: "ws://casparwylie.me:3000/")!);
     var ui: UserInterface1!;
     var networkResponseDelegate: NetworkResponseDelegate?;
+    
+    
     func connectWebSocket() -> WebSocket{
         socket.connect();
-        socket.onConnect = {
-            print("Connected to WebSocket");
-        }
         setResponseRouteHandler();
-        
         return socket;
     }
+    
     
     func processResponseAsJSON(_ responseData: String) -> JSON{
         let responseData = responseData.data(using: String.Encoding.utf8,allowLossyConversion: false);
