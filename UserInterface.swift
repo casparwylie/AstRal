@@ -91,7 +91,7 @@ class UserInterface1{
     var focalVisitCountLabel: UILabel!;
     
     //General Presets
-    var loggedinUserData = (id: 0, username: "Unknown", fullname: "Unknown", email: "Unknown", password: "");
+    var loggedinUserData = (id: 0, username: "unknown user", fullname: "unknown user", email: "Unknown", password: "");
     var actionDelegate: UIActionDelegate?;
     var tapToPost = false;
     var view: UIView!;

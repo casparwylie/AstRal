@@ -192,7 +192,7 @@ class Scene{
             //hide non-street visible focals
             for hideID in toHideAsArr{
                 if (hideID == String(i)){
-                    //focals[i].isHidden = true;
+                    focals[i].isHidden = true;
                     break;
                 }else{
                     focals[i].isHidden = false;

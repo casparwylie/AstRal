@@ -23,20 +23,22 @@ using namespace std;
 
 @implementation OpenCVWrapper
 
-int buildingFoundInLine(cv::Mat frame,cv::Mat testFrame, cv::Point point1, cv::Point point2,bool forBuildingTap){
+int buildingFoundInLine(cv::Mat frame,cv::Mat testFrame, cv::Point point1, cv::Point point2,bool forBuildingTap,bool forTapLimit){
     
     bool testing = false;
     int buildingFoundAt = -1;
-    vector<int>  buildingColorBounds = {232,235};
+    vector<int>  buildingColorBounds = {231,236};
     
+    int focalBehindBuilding = -1;
     int buildingDectectThicknessOffset = 7;
     if(forBuildingTap == true){
         buildingDectectThicknessOffset = 2;
         cv::Point pointTemp1 = point1;
         point1 = point2;
         point2 = pointTemp1;
-    }
+    }//even blue
     
+    int backFromBuilding = 0;
     cv::LineIterator lineIter(frame, point1, point2);
     int buildingProb = 0;
     for(int i = 0; i < lineIter.count; i++, lineIter++){
@@ -45,23 +47,45 @@ int buildingFoundInLine(cv::Mat frame,cv::Mat testFrame, cv::Point point1, cv::P
             buildingProb++;
             if(buildingDectectThicknessOffset <= buildingProb){
                 buildingFoundAt = i;
-               // if(testing == false){
-                break;
-                //}
+                if(forTapLimit == true || forBuildingTap == true){
+                   break;
+                }
             }
             
-            //visualisation of output
             if(testing == true){
                 circle(testFrame, lineIter.pos(), 1, cv::Scalar(0,255,0));
             }
+           
+            //visualisation of output
+           
         }else{
             if(testing == true){
-                circle(testFrame, lineIter.pos(), 1, cv::Scalar(0,0,255));
+                if(buildingProb > buildingDectectThicknessOffset){
+                    if(backFromBuilding > 5){
+                        circle(testFrame, lineIter.pos(), 1, cv::Scalar(255,0,0));
+                    }else{
+                         circle(testFrame, lineIter.pos(), 1, cv::Scalar(0,0,255));
+                    }
+                }else{
+                    circle(testFrame, lineIter.pos(), 1, cv::Scalar(0,0,255));
+                }
             }
+            if(buildingProb > buildingDectectThicknessOffset){
+                backFromBuilding ++;
+                if(backFromBuilding > 5){
+                    focalBehindBuilding = 1;
+                    break;
+                }
+            }
+           
         }
     }
     
-    return buildingFoundAt;
+    if(forTapLimit == true || forBuildingTap == true){
+        return buildingFoundAt;
+    }else{
+        return focalBehindBuilding;
+    }
 }
 
 +(NSString*) buildingDetect: (double[][2])pxVals image:(UIImage*)UIMap currPoint:(double[2])currPointPX pxLength:(int) pxLength forTapLimit:(bool)forTapLimit forBuildingTap:(bool)forBuildingTap {
@@ -88,8 +112,8 @@ int buildingFoundInLine(cv::Mat frame,cv::Mat testFrame, cv::Point point1, cv::P
         int rowsY = pxVals[count][1] * frameHeight;
         cv::Point pointXY = cv::Point(colsX,rowsY);
         
-        buildingAt = buildingFoundInLine(taskFrame, orgFrame,currPoint, pointXY, forBuildingTap);
-        if(buildingAt > -1){
+        buildingAt = buildingFoundInLine(taskFrame, orgFrame,currPoint, pointXY, forBuildingTap, forTapLimit);
+        if(buildingAt > -1 && forBuildingTap == false and forTapLimit == false){
             toHide += to_string(count) + ",";
         }
         count++;
@@ -97,9 +121,9 @@ int buildingFoundInLine(cv::Mat frame,cv::Mat testFrame, cv::Point point1, cv::P
     
     //convert to UIIMAGE for view (for testing)
 
-    //UIImage* new1IMG = MatToUIImage(orgFrame);
+    UIImage* new1IMG = MatToUIImage(orgFrame);
     
-    if(forTapLimit == false){
+    if(forTapLimit == false && forBuildingTap == false){
         NSString* toHideReturn = [NSString stringWithUTF8String:toHide.c_str()];
         return toHideReturn;
     }else{

@@ -76,7 +76,7 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
     
     //MARK: region data updating requests and response middleware process
     func regionDataUpdate(_ currentLocation: CLLocation, currentHeading: CLHeading){
-        
+       // let currentLocation = CLLocation(latitude: CLLocationDegrees(51.776701), longitude: CLLocationDegrees(-1.265575));
         self.currentLocation = currentLocation;
         self.currMapPoint = MKMapPointForCoordinate(currentLocation.coordinate);
         self.currentHeading = currentHeading;
@@ -132,6 +132,8 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
         self.map.updatePins(coordsAsCLLocation);
         self.coordPoints = coordsAsCLLocation;
         
+        self.userInterface.updateInfoLabel("new region, focals: " + String(self.mapPoints.count), show: true, hideAfter: 4);
+        
         self.oldRenderPosition = self.currentLocation;
         self.focalFirstComments = responseJSON[focalFirstCommentsKey];
         self.realFocalIDs = realFocalIDs;
@@ -156,9 +158,9 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
             var currentPointPX = pxVals.currPointPX;
             var focalDesValPX = pxVals.focalValsPX;
             
-            let distNoBilding = Int(OpenCVWrapper.buildingDetect(&focalDesValPX, image: image, currPoint: &currentPointPX, pxLength: Int32(pxVals.pxLength), forTapLimit: true, forBuildingTap: true)!)!;
+            let distNoBuilding = Int(OpenCVWrapper.buildingDetect(&focalDesValPX, image: image, currPoint: &currentPointPX, pxLength: Int32(pxVals.pxLength), forTapLimit: true, forBuildingTap: true)!)!;
             
-            if(distNoBilding > 5){
+            if(distNoBuilding > 5){
                 self.addFocalTemp(focalLocation);
             }else{
                 self.userInterface.updateInfoLabel("You cannot place a focal on a building.", show: true, hideAfter: 3);
