@@ -30,6 +30,7 @@ import SwiftyJSON
     @objc optional func updatedUserDataResponse(_ responseStr: String);
     @objc optional func votedCommentResponse(_ responseStr: String);
     @objc optional func keyDataResponse(_ responseStr: String);
+    @objc optional func userKnowsFocalsResponse(_ responseStr: String);
     
 }
 
@@ -91,8 +92,10 @@ class NetworkSocketHandler{
                     self.networkResponseDelegate?.votedCommentResponse!(responseString);
                 case "keyData":
                     self.networkResponseDelegate?.keyDataResponse!(responseString);
+                case "userKnowsFocals":
+                    self.networkResponseDelegate?.userKnowsFocalsResponse!(responseString);
                 default:
-                    print("failed");
+                    print("No response");
 
         
             }
@@ -179,5 +182,15 @@ class NetworkRequestHandler{
         let organisedRelevantData  = ["":""];
         NetworkSocketHandler().sendRelevantJsonRequest(socket,requestName: "keyDataRequest", relevantData:organisedRelevantData);
     }
+    /*func userKnowsFocal(_ socket: WebSocket, focalID: Int, uuid: String){
+        print(uuid);
+        let organisedRelevantData  = ["focalID":String(focalID), "uuid":uuid];
+        NetworkSocketHandler().sendRelevantJsonRequest(socket,requestName: "newFocalNotifiedRequest", relevantData:organisedRelevantData);
+    }
+    
+    func getUserKnowsFocals(_ socket: WebSocket, uuid: String){
+        let organisedRelevantData  = ["uuid":uuid];
+        NetworkSocketHandler().sendRelevantJsonRequest(socket,requestName: "userKnowsFocalsRequest", relevantData:organisedRelevantData);
+    }*/
     
 }

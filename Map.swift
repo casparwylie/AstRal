@@ -27,6 +27,7 @@ class Map: NSObject, MKMapViewDelegate{
     var mapActionDelegate: mapActionDelegate?;
     var tapMapToPost = false;
     var tempPin: MKPointAnnotation!;
+    var tapRec: UITapGestureRecognizer!;
     
     //MARK: setup map
     func renderMap(_ view: UIView){
@@ -52,7 +53,7 @@ class Map: NSObject, MKMapViewDelegate{
     
     //MARK: add focal map tap
     func addFocalMapTapRecognizer(){
-        let tapRec: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(wrapTappedMap));
+        tapRec = UITapGestureRecognizer(target: self, action: #selector(wrapTappedMap));
         tapRec.numberOfTapsRequired = 1;
         mapView.addGestureRecognizer(tapRec);
         
@@ -71,6 +72,7 @@ class Map: NSObject, MKMapViewDelegate{
     func cancelTempFocal(){
         if(tempPin != nil){
             mapView.removeAnnotation(tempPin);
+            tapRec.isEnabled = false;
         }
     }
     

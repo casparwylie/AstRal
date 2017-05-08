@@ -25,7 +25,7 @@ using namespace std;
 
 int buildingFoundInLine(cv::Mat frame,cv::Mat testFrame, cv::Point point1, cv::Point point2,bool forBuildingTap,bool forTapLimit){
     
-    bool testing = false;
+    bool testing = true;
     int buildingFoundAt = -1;
     vector<int>  buildingColorBounds = {231,236};
     

@@ -37,6 +37,7 @@ class Scene{
         frameView.addSubview(sceneView);
         
         sceneView.scene = scene;
+        sceneView.audioEngine.mainMixerNode.outputVolume = 0.0;
     }
     
     //MARK: values are approximate within tolerance bound

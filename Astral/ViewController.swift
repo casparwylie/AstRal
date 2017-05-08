@@ -27,6 +27,7 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
     var map = Map();
     var networkSocket = NetworkSocketHandler();
     var networkRequest = NetworkRequestHandler();
+    let appDelegate = UIApplication.shared.delegate as! AppDelegate;
     
     //MARK: general data
     var loggedinUserData = (id: 0, username: "Unknown", fullname: "Unknown", email: "Unknown", password: "");
@@ -45,11 +46,17 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
     var realFocalIDs: [Int] = [];
     var focalFirstComments = JSON("");
     var gotKeyData = false;
+    var userKnownFocals: JSON!;
+    var focalsNotifiedAlready: [Int] = [];
+    let uuid = String(describing: UIDevice.current.identifierForVendor!);
     var focalDistAndBearingsFromUser: [(distance: Int, bearing: Int)] = [];
     
     
     func toggleMap(_ isAddingFocal: Bool) {
         map.tapMapToPost = isAddingFocal;
+        if(isAddingFocal){
+            self.map.tapRec.isEnabled = true;
+        }
         if self.view.viewWithTag(3)?.isHidden == false && isAddingFocal == false {
             self.view.viewWithTag(3)?.isHidden = true;
         }else{
@@ -77,6 +84,7 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
     
     //MARK: region data updating requests and response middleware process
     func regionDataUpdate(_ currentLocation: CLLocation, currentHeading: CLHeading){
+
        // let currentLocation = CLLocation(latitude: CLLocationDegrees(51.776701), longitude: CLLocationDegrees(-1.265575));
         self.currentLocation = currentLocation;
         self.currMapPoint = MKMapPointForCoordinate(currentLocation.coordinate);
@@ -90,17 +98,51 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
         }
         
         if(gotKeyData == false){
-            getKeyData();
+            networkRequest.getKeyData(self.networkWebSocket);
+           // networkRequest.getUserKnowsFocals(self.networkWebSocket, uuid: uuid);
         }
+        
         
         self.focalDistAndBearingsFromUser = [];
         var count = 0;
+        var focalsClose: [Int] = [];
         for _ in self.mapPoints{
             
             let distAndBearing = self.location.collectFocalToUserData(currMapPoint.x, point1Y: currMapPoint.y, point2X: mapPoints[count].x, point2Y: mapPoints[count].y);
+            if(distAndBearing.distance < 400){
+                focalsClose.append(realFocalIDs[count]);
+            }
             self.focalDistAndBearingsFromUser.append(distAndBearing);
             count += 1;
         }
+       
+        
+       /* var focalsToNotify: [Int] = [];
+        if(userKnownFocals != nil){
+            for focalID in focalsClose{
+                var found = false;
+                for knownFocalID in userKnownFocals{
+                    if(knownFocalID.1["f_id"].int! == focalID){
+                        found = true;
+                        break;
+                    }
+                }
+                if(found == false){
+                    focalsToNotify.append(focalID);
+                    networkRequest.userKnowsFocal(networkWebSocket, focalID: focalID, uuid: uuid);
+                }
+            }
+            networkRequest.getUserKnowsFocals(self.networkWebSocket, uuid: uuid);
+            if(focalsToNotify.count > 0 && UIApplication.shared.applicationState != .active){
+                print("BG");
+                let notificationMsg = (focalsToNotify.count > 1 ? "There are " + String(focalsToNotify.count) + " nearby!" : "There is a focal nearby!");
+                let notification = UILocalNotification();
+                notification.alertBody = notificationMsg;
+                notification.soundName = "Default";
+                UIApplication.shared.presentLocalNotificationNow(notification);
+                
+            }
+        }*/
         
         let coordinateRegion: MKCoordinateRegion = self.map.centerToLocationRegion(currentLocation);
         self.map.mapView.setRegion(coordinateRegion, animated: false);
@@ -160,7 +202,7 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
             
             let distNoBuilding = Int(OpenCVWrapper.buildingDetect(&focalDesValPX, image: image, currPoint: &currentPointPX, pxLength: Int32(pxVals.pxLength), forTapLimit: true, forBuildingTap: true)!)!;
             
-            if(distNoBuilding > 5){
+            if(distNoBuilding > 5 || distNoBuilding == -1){
                 self.addFocalTemp(focalLocation);
             }else{
                 self.userInterface.updateInfoLabel("You cannot place a focal on a building.", show: true, hideAfter: 3);
@@ -381,16 +423,18 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
         self.networkRequest.getRegionData(self.networkWebSocket, currLocation: currentLocation);
     }
     
-    //MARK: key data request
-    func getKeyData(){
-        networkRequest.getKeyData(self.networkWebSocket);
-    }
+    //MARK: key data response
     func keyDataResponse(_ responseStr: String){
         let responseJSON = networkSocket.processResponseAsJSON(responseStr);
         keyData = responseJSON;
         gotKeyData = true;
         self.userInterface.renderHelpText(text: keyData["data"][0]["data"].rawString()!);
     }
+    
+    /*func userKnowsFocalsResponse(_ responseStr: String){
+        let userKnownFocalsJSON = networkSocket.processResponseAsJSON(responseStr);
+        userKnownFocals = userKnownFocalsJSON["focals"];
+    }*/
 
     func connWebRetry(){
         networkWebSocket.connect();
@@ -416,10 +460,13 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
         map.mapActionDelegate = self;
         self.view.viewWithTag(3)?.isHidden = true;
         
+        appDelegate.viewController = self;
+        
         //Initilize UI component
         userInterface.renderAll(self.view);
         userInterface.actionDelegate = self;
         userInterface.updateInfoLabel("Please calibrate your phone by twisting it around", show: true, hideAfter: 4);
+        location.ui = userInterface;
     
         //Initilize Motion Handler
         motionManager.deviceMotionUpdateInterval = 1.0 / 60.0;
@@ -450,13 +497,14 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
                 self.userInterface.updateInfoLabel("Successfully connected!", show: true, hideAfter: 2);
                 self.reconnectTimer.invalidate();
                 self.reconnectTimer = nil;
-                self.firstRender = true;
-                self.networkRequest.getRegionData(self.networkWebSocket, currLocation: self.currentLocation);
+               // self.firstRender = true;
+               // self.networkRequest.getRegionData(self.networkWebSocket, currLocation: self.currentLocation);
             }
             
         }
-
         
+        
+
         super.viewDidLoad();
     }
     

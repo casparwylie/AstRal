@@ -17,11 +17,13 @@
 		B0023B7C1EBA1C1800F1EC09 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0023B7B1EBA1C1800F1EC09 /* AppDelegate.swift */; };
 		B0023B7E1EBA1C1D00F1EC09 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B0023B7D1EBA1C1D00F1EC09 /* Info.plist */; };
 		B0023B801EBA1C2200F1EC09 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B0023B7F1EBA1C2200F1EC09 /* Assets.xcassets */; };
-		B03D88E71EBA1DFA007EE08E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B03D88E31EBA1DFA007EE08E /* LaunchScreen.storyboard */; };
 		B03D88E81EBA1DFA007EE08E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B03D88E51EBA1DFA007EE08E /* Main.storyboard */; };
 		B0476C6B1DA28CFE000FC661 /* Starscream in Frameworks */ = {isa = PBXBuildFile; fileRef = B0476BF81DA28BCD000FC661 /* Starscream */; settings = {ATTRIBUTES = (Required, ); }; };
 		B053ECD71D9D3ACC009DA4AB /* Network.swift in Sources */ = {isa = PBXBuildFile; fileRef = B053ECD61D9D3ACC009DA4AB /* Network.swift */; };
+		B05E050E1EC0C158009D20E5 /* splash.png in Resources */ = {isa = PBXBuildFile; fileRef = B05E050D1EC0C158009D20E5 /* splash.png */; };
+		B05E05161EC0C3AD009D20E5 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B05E05151EC0C3AD009D20E5 /* Launch Screen.storyboard */; };
 		B069B17B1E0D4EC400873A2E /* opencv2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B069B17A1E0D4EC400873A2E /* opencv2.framework */; };
+		B07944E21EBFB1DB00CA6379 /* CryptoSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B07944E11EBFB1DB00CA6379 /* CryptoSwift.framework */; };
 		B0E355F51D995DBF0088EB10 /* StrandsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E355F41D995DBF0088EB10 /* StrandsTests.swift */; };
 		B0E356001D995DBF0088EB10 /* StrandsUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E355FF1D995DBF0088EB10 /* StrandsUITests.swift */; };
 		B0E356171D995E110088EB10 /* Camera.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0E3560F1D995E110088EB10 /* Camera.swift */; };
@@ -63,11 +65,13 @@
 		B0023B7B1EBA1C1800F1EC09 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = Astral/AppDelegate.swift; sourceTree = SOURCE_ROOT; };
 		B0023B7D1EBA1C1D00F1EC09 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Astral/Info.plist; sourceTree = SOURCE_ROOT; };
 		B0023B7F1EBA1C2200F1EC09 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = Astral/Assets.xcassets; sourceTree = SOURCE_ROOT; };
-		B03D88E41EBA1DFA007EE08E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Astral/Base.lproj/LaunchScreen.storyboard; sourceTree = SOURCE_ROOT; };
 		B03D88E61EBA1DFA007EE08E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Astral/Base.lproj/Main.storyboard; sourceTree = SOURCE_ROOT; };
 		B0476BF81DA28BCD000FC661 /* Starscream */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Starscream; path = ../../startest/Starscream; sourceTree = "<group>"; };
 		B053ECD61D9D3ACC009DA4AB /* Network.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Network.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		B05E050D1EC0C158009D20E5 /* splash.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = splash.png; path = ../../../../Downloads/appicon/ios/screenshots/splash.png; sourceTree = "<group>"; };
+		B05E05151EC0C3AD009D20E5 /* Launch Screen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 		B069B17A1E0D4EC400873A2E /* opencv2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = opencv2.framework; sourceTree = "<group>"; };
+		B07944E11EBFB1DB00CA6379 /* CryptoSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CryptoSwift.framework; path = "Build/Products/Debug-iphoneos/CryptoSwift/CryptoSwift.framework"; sourceTree = "<group>"; };
 		B0E355DC1D995DBF0088EB10 /* Astral.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Astral.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B0E355F01D995DBF0088EB10 /* AstralTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AstralTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B0E355F41D995DBF0088EB10 /* StrandsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StrandsTests.swift; sourceTree = "<group>"; };
@@ -95,6 +99,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B07944E21EBFB1DB00CA6379 /* CryptoSwift.framework in Frameworks */,
 				B069B17B1E0D4EC400873A2E /* opencv2.framework in Frameworks */,
 				B0476C6B1DA28CFE000FC661 /* Starscream in Frameworks */,
 				2E4B3ED2F535E0E6D0B0CE99 /* Pods_Astral.framework in Frameworks */,
@@ -130,6 +135,7 @@
 		B0476BF71DA28BCD000FC661 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				B07944E11EBFB1DB00CA6379 /* CryptoSwift.framework */,
 				B0476BF81DA28BCD000FC661 /* Starscream */,
 				27AB2A4CB9DB1EC7ED74066D /* Pods_Astral.framework */,
 			);
@@ -139,6 +145,8 @@
 		B0E355D31D995DBF0088EB10 = {
 			isa = PBXGroup;
 			children = (
+				B05E05151EC0C3AD009D20E5 /* Launch Screen.storyboard */,
+				B05E050D1EC0C158009D20E5 /* splash.png */,
 				B0023B731EBA0E6D00F1EC09 /* vd_down_icon.png */,
 				B0023B741EBA0E6E00F1EC09 /* vd_up_icon.png */,
 				B0023B6F1EB8CBD400F1EC09 /* v_down_icon.png */,
@@ -170,7 +178,6 @@
 		B0E355DE1D995DBF0088EB10 /* Astral */ = {
 			isa = PBXGroup;
 			children = (
-				B03D88E31EBA1DFA007EE08E /* LaunchScreen.storyboard */,
 				B03D88E51EBA1DFA007EE08E /* Main.storyboard */,
 				B0023B791EBA1C1400F1EC09 /* ViewController.swift */,
 				B0023B7B1EBA1C1800F1EC09 /* AppDelegate.swift */,
@@ -289,9 +296,14 @@
 				TargetAttributes = {
 					B0E355DB1D995DBF0088EB10 = {
 						CreatedOnToolsVersion = 8.0;
-						DevelopmentTeam = 3WBLGY4N68;
+						DevelopmentTeam = 27QDUAD326;
 						LastSwiftMigration = 0820;
 						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+						};
 					};
 					B0E355EF1D995DBF0088EB10 = {
 						CreatedOnToolsVersion = 8.0;
@@ -337,9 +349,10 @@
 				B0E356221D995E1E0088EB10 /* focalpost in Resources */,
 				B0023B761EBA0E6E00F1EC09 /* vd_up_icon.png in Resources */,
 				B0023B721EB8CBD400F1EC09 /* v_up_icon.png in Resources */,
-				B03D88E71EBA1DFA007EE08E /* LaunchScreen.storyboard in Resources */,
+				B05E050E1EC0C158009D20E5 /* splash.png in Resources */,
 				B0023B711EB8CBD400F1EC09 /* v_down_icon.png in Resources */,
 				B03D88E81EBA1DFA007EE08E /* Main.storyboard in Resources */,
+				B05E05161EC0C3AD009D20E5 /* Launch Screen.storyboard in Resources */,
 				B0023B6E1EAA586C00F1EC09 /* focal_icon.png in Resources */,
 				B0023B751EBA0E6E00F1EC09 /* vd_down_icon.png in Resources */,
 				B0023B7E1EBA1C1D00F1EC09 /* Info.plist in Resources */,
@@ -462,14 +475,6 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		B03D88E31EBA1DFA007EE08E /* LaunchScreen.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				B03D88E41EBA1DFA007EE08E /* Base */,
-			);
-			name = LaunchScreen.storyboard;
-			sourceTree = "<group>";
-		};
 		B03D88E51EBA1DFA007EE08E /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -481,6 +486,109 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		B07944E71EBFB2EF00CA6379 /* Distribution */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Caspar Wylie (27QDUAD326)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Caspar Wylie (27QDUAD326)";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 3WBLGY4N68;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PROVISIONING_PROFILE = "1411dd44-b6b1-4388-b49b-226f975a66b4";
+				PROVISIONING_PROFILE_SPECIFIER = AstRal;
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Distribution;
+		};
+		B07944E81EBFB2EF00CA6379 /* Distribution */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = E9ECF3C72CCBC475F304CD86 /* Pods-Astral.release.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Caspar Wylie (27QDUAD326)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = 27QDUAD326;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/Build/Products/Debug-iphoneos/CryptoSwift",
+				);
+				INFOPLIST_FILE = "$(SRCROOT)/Astral/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = casparwylie.casparwylie;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "Strands-Bridging-Header.h";
+				SWIFT_VERSION = 3.0;
+			};
+			name = Distribution;
+		};
+		B07944E91EBFB2EF00CA6379 /* Distribution */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				DEVELOPMENT_TEAM = 3WBLGY4N68;
+				INFOPLIST_FILE = StrandsTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = casparwylie.StrandsTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Astral.app/Astral";
+			};
+			name = Distribution;
+		};
+		B07944EA1EBFB2EF00CA6379 /* Distribution */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				DEVELOPMENT_TEAM = 3WBLGY4N68;
+				INFOPLIST_FILE = StrandsUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = casparwylie.StrandsUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+				TEST_TARGET_NAME = Strands;
+			};
+			name = Distribution;
+		};
 		B0E356021D995DBF0088EB10 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -503,9 +611,11 @@
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Caspar Wylie (27QDUAD326)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Caspar Wylie (27QDUAD326)";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 3WBLGY4N68;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -525,6 +635,8 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				PROVISIONING_PROFILE = "1411dd44-b6b1-4388-b49b-226f975a66b4";
+				PROVISIONING_PROFILE_SPECIFIER = AstRal;
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -554,9 +666,11 @@
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Caspar Wylie (27QDUAD326)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Caspar Wylie (27QDUAD326)";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 3WBLGY4N68;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -569,6 +683,8 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				PROVISIONING_PROFILE = "1411dd44-b6b1-4388-b49b-226f975a66b4";
+				PROVISIONING_PROFILE_SPECIFIER = AstRal;
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -583,15 +699,20 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				DEVELOPMENT_TEAM = 3WBLGY4N68;
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Caspar Wylie (27QDUAD326)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = 27QDUAD326;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/Build/Products/Debug-iphoneos/CryptoSwift",
 				);
 				INFOPLIST_FILE = "$(SRCROOT)/Astral/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = casparwylie.Strands;
+				PRODUCT_BUNDLE_IDENTIFIER = casparwylie.casparwylie;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Strands-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
@@ -605,15 +726,20 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				DEVELOPMENT_TEAM = 3WBLGY4N68;
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Caspar Wylie (27QDUAD326)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = 27QDUAD326;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/Build/Products/Debug-iphoneos/CryptoSwift",
 				);
 				INFOPLIST_FILE = "$(SRCROOT)/Astral/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = casparwylie.Strands;
+				PRODUCT_BUNDLE_IDENTIFIER = casparwylie.casparwylie;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Strands-Bridging-Header.h";
 				SWIFT_VERSION = 3.0;
 			};
@@ -685,6 +811,7 @@
 			buildConfigurations = (
 				B0E356021D995DBF0088EB10 /* Debug */,
 				B0E356031D995DBF0088EB10 /* Release */,
+				B07944E71EBFB2EF00CA6379 /* Distribution */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -694,6 +821,7 @@
 			buildConfigurations = (
 				B0E356051D995DBF0088EB10 /* Debug */,
 				B0E356061D995DBF0088EB10 /* Release */,
+				B07944E81EBFB2EF00CA6379 /* Distribution */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -703,6 +831,7 @@
 			buildConfigurations = (
 				B0E356081D995DBF0088EB10 /* Debug */,
 				B0E356091D995DBF0088EB10 /* Release */,
+				B07944E91EBFB2EF00CA6379 /* Distribution */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -712,6 +841,7 @@
 			buildConfigurations = (
 				B0E3560B1D995DBF0088EB10 /* Debug */,
 				B0E3560C1D995DBF0088EB10 /* Release */,
+				B07944EA1EBFB2EF00CA6379 /* Distribution */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

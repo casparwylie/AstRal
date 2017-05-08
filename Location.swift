@@ -28,6 +28,7 @@ class Location: NSObject, CLLocationManagerDelegate{
     var currentHeading: CLHeading?;
     var dataString: String!;
     var delegateLoc : LocationDelegate?;
+    var ui: UserInterface1!;
     
     //MARK: setup location service and request permission
     func initLocation() -> Bool{
@@ -128,7 +129,7 @@ class Location: NSObject, CLLocationManagerDelegate{
         return distMetres;
     }
     
-    func collectFocalToUserData(_ point1X: Double, point1Y:  Double, point2X:  Double, point2Y: Double) -> (Int, Int){
+    func collectFocalToUserData(_ point1X: Double, point1Y:  Double, point2X:  Double, point2Y: Double) -> (distance: Int, bearing: Int){
         
         let lineBetweenBearing = getBearingFromTwo2dPoints(point1X, point1Y: point1Y, point2X: point2X, point2Y: point2Y);
         
@@ -149,6 +150,7 @@ class Location: NSObject, CLLocationManagerDelegate{
     @objc func locationManager(_ manager: CLLocationManager,didUpdateLocations locations: [CLLocation]) {
         
         if(currentHeading != nil){
+            
             currentLocation = locations.last;
             delegateLoc?.regionDataUpdate(currentLocation!, currentHeading: currentHeading!);
         }
