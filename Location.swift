@@ -109,7 +109,7 @@ class Location: NSObject, CLLocationManagerDelegate{
         let pxMidDiff = 160.0 - Double(tapX);
         let step = 320.0/54.0;
         let degDiff = pxMidDiff/step;
-        let bearingDegrees: Double = (currentHeading?.trueHeading)! - degDiff/2.0;
+        let bearingDegrees: Double = ((currentHeading?.trueHeading)! + 5) - degDiff/2.0;
         return bearingDegrees;
     }
     
@@ -125,7 +125,7 @@ class Location: NSObject, CLLocationManagerDelegate{
         let acc2 = 15.0;
         let acc3 = acc1/acc2 - Double(phonePitch-10);
         
-        let distMetres: Double = (acc2-(Double(yPos)/acc3))*5;
+        let distMetres: Double = (acc2-(Double(yPos)/acc3))*3;
         return distMetres;
     }
     
