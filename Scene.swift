@@ -24,6 +24,7 @@ class Scene{
     let lightNode = SCNNode();
     let cameraNode = SCNNode();
     let scene = SCNScene();
+    var floorNode: SCNNode!;
     var tempFocalNode: SCNNode!;
     var focals: [SCNNode] = [];
     var sceneView: SCNView!;
@@ -61,13 +62,24 @@ class Scene{
         return rad*57.2958;
     }
     
+    
     func renderCamera(){
         let cameraObj = SCNCamera();
         cameraNode.camera = cameraObj;
         cameraNode.camera!.zNear = 0.1;
         cameraNode.camera!.zFar = 1200.0;
         cameraNode.position = SCNVector3(x: 0.0, y: 15.0, z: 0.0);
-       
+        
+    }
+    
+    func renderFloor(){
+        let size: CGFloat = 700.0;
+        let floor = SCNCylinder(radius: size,height: 1.0);
+        floorNode = SCNNode(geometry: floor);
+        floorNode.position = SCNVector3(x: 0,y: 0, z: 0);
+        floorNode.opacity = 0.001;
+        floorNode.name = "floor";
+        
     }
     
     //MARK: rotate virtual 3D atmosphere around current coordinates
@@ -86,48 +98,48 @@ class Scene{
         let singNodeArray = localScene!.rootNode.childNodes;
         let midText = ((focalDisplayInfo.author != " ") ? " \n\n By " : "");
         let displayText = focalDisplayInfo.comment + midText + focalDisplayInfo.author;
-        let textRenderFront = SCNText(string: displayText, extrusionDepth:1);
-        let textRenderBack = SCNText(string: displayText, extrusionDepth:1);
+        //let textRenderFront = SCNText(string: displayText, extrusionDepth:1);
+        //let textRenderBack = SCNText(string: displayText, extrusionDepth:1);
         
         //attribute option setting
-        let textContainerFrame = CGRect(x: 0,y: 0, width: 270, height: 100);
-        let textIsWrapped = true;
-        let textColor = UIColor.black;
-        _ = SCNVector3(0.07,0.07,0.07);
+        //let textContainerFrame = CGRect(x: 0,y: 0, width: 270, height: 100);
+        //let textIsWrapped = true;
+        //let textColor = UIColor.black;
+        //_ = SCNVector3(0.07,0.07,0.07);
         
         //setting attributes
-        textRenderFront.isWrapped = textIsWrapped;
-        textRenderFront.firstMaterial?.diffuse.contents = textColor;
-        textRenderFront.containerFrame = textContainerFrame;
-        textRenderFront.alignmentMode = kCAAlignmentCenter;
-        textRenderBack.isWrapped = textIsWrapped;
-        textRenderBack.firstMaterial?.diffuse.contents = textColor;
-        textRenderBack.containerFrame = textContainerFrame;
-        textRenderBack.alignmentMode = kCAAlignmentCenter;
+        /*textRenderFront.isWrapped = textIsWrapped;
+         textRenderFront.firstMaterial?.diffuse.contents = textColor;
+         textRenderFront.containerFrame = textContainerFrame;
+         textRenderFront.alignmentMode = kCAAlignmentCenter;
+         textRenderBack.isWrapped = textIsWrapped;
+         textRenderBack.firstMaterial?.diffuse.contents = textColor;
+         textRenderBack.containerFrame = textContainerFrame;
+         textRenderBack.alignmentMode = kCAAlignmentCenter;*/
         
         //build DAE scene as node by each component
         for childNode in singNodeArray {
             /*
-            let textNodeFront = SCNNode(geometry: textRenderFront);
-            let textNodeBack = SCNNode(geometry: textRenderBack);
-            
-            textNodeFront.scale = textNodeScale;
-            textNodeFront.position = SCNVector3(x: 1, y: 23, z: -4); //x = depth , z = lateral
-            textNodeFront.eulerAngles = SCNVector3(x: 0, y: 1.5708, z: 0);
-            
-            textNodeBack.scale = textNodeScale;
-            textNodeBack.position = SCNVector3(x: -1.5, y: 23, z: -23);
-            textNodeBack.eulerAngles = SCNVector3(x: 0, y: -1.5708, z: 0);
-            
-            singNode.addChildNode(textNodeFront);
-            singNode.addChildNode(textNodeBack);*/
+             let textNodeFront = SCNNode(geometry: textRenderFront);
+             let textNodeBack = SCNNode(geometry: textRenderBack);
+             
+             textNodeFront.scale = textNodeScale;
+             textNodeFront.position = SCNVector3(x: 1, y: 23, z: -4); //x = depth , z = lateral
+             textNodeFront.eulerAngles = SCNVector3(x: 0, y: 1.5708, z: 0);
+             
+             textNodeBack.scale = textNodeScale;
+             textNodeBack.position = SCNVector3(x: -1.5, y: 23, z: -23);
+             textNodeBack.eulerAngles = SCNVector3(x: 0, y: -1.5708, z: 0);
+             
+             singNode.addChildNode(textNodeFront);
+             singNode.addChildNode(textNodeBack);*/
             singNode.addChildNode(childNode as SCNNode);
             
         }
         return singNode;
     }
     
-    func renderSingleFocal(_ renderID: Int, mapPoint: MKMapPoint, currMapPoint: MKMapPoint, focalDisplayInfo: (String, String), render: Bool, tempFocal: Bool){
+    func renderSingleFocal(_ renderID: Int, mapPoint: MKMapPoint, currMapPoint: MKMapPoint, focalDisplayInfo: (String, String), render: Bool, tempFocal: Bool, vec: SCNVector3){
         
         var focalCoord = (x: mapPoint.x - currMapPoint.x, y: mapPoint.y - currMapPoint.y);
         focalCoord = rotateAroundPoint(focalCoord, angle: -90);
@@ -143,7 +155,7 @@ class Scene{
             }else{
                 tempFocalNode = DAEtoSCNNodeWithText("focalpost.dae", focalDisplayInfo: focalDisplayInfo);
                 tempFocalNode.name = "f_" + String(renderID);
-                tempFocalNode.position = SCNVector3(x: Float(focalCoord.x), y: 0, z:  Float(focalCoord.y));
+                tempFocalNode.position = vec//SCNVector3(x: Float(focalCoord.x), y: 0, z:  Float(focalCoord.y));
                 self.scene.rootNode.addChildNode(tempFocalNode);
             }
             
@@ -155,7 +167,7 @@ class Scene{
                 let moveToAction = SCNAction.move(to: newPos, duration: 1);
                 focals[renderID].runAction(moveToAction);
             }else{
-                tempFocalNode.position = newPos;
+                tempFocalNode.position = vec;
             }
         }
     }
@@ -165,7 +177,7 @@ class Scene{
     }
     //MARK: render or update focal within 3D atmosphere
     func renderFocals(_ mapPoints: [MKMapPoint], currMapPoint: MKMapPoint,
-                       render: Bool, currentHeading: CLHeading, toHide: String, comments: JSON, tempFocalMapPoint: MKMapPoint){
+                      render: Bool, currentHeading: CLHeading, toHide: String, comments: JSON, tempFocalMapPoint: MKMapPoint){
         
         let toHideAsArr = toHide.components(separatedBy: ",");
         
@@ -180,20 +192,20 @@ class Scene{
         }
         if(tempFocalMapPoint.x != 0.0){
             let tempFocalDisplayInfo = (comment: " ", author: " ");
-            renderSingleFocal(-1,mapPoint: tempFocalMapPoint, currMapPoint: currMapPoint, focalDisplayInfo: tempFocalDisplayInfo, render: false, tempFocal: true);
-
+            renderSingleFocal(-1,mapPoint: tempFocalMapPoint, currMapPoint: currMapPoint, focalDisplayInfo: tempFocalDisplayInfo, render: false, tempFocal: true, vec: SCNVector3Zero);
+            
         }
-
+        
         //render or move new focals
         var i = 0;
         for mPoint in mapPoints{
             let focalDisplayInfo = (comment: comments[i]["c_text"].rawString()!, author: comments[i]["c_u_uname"].rawString()!);
             
-            renderSingleFocal(i,mapPoint: mPoint, currMapPoint: currMapPoint, focalDisplayInfo: focalDisplayInfo, render: render, tempFocal: false);
+            renderSingleFocal(i,mapPoint: mPoint, currMapPoint: currMapPoint, focalDisplayInfo: focalDisplayInfo, render: render, tempFocal: false, vec: SCNVector3Zero);
             //hide non-street visible focals
             for hideID in toHideAsArr{
                 if (hideID == String(i)){
-                    focals[i].isHidden = true;
+                    //focals[i].isHidden = true;
                     break;
                 }else{
                     focals[i].isHidden = false;
@@ -213,17 +225,19 @@ class Scene{
         let attitudePitch = atan2((2 * qData.x * qData.w) - (2 * qData.y * qData.z),
                                   1 - (2 * qData.x * qData.x) - (2 * qData.z * qData.z) );
         let attitudeYaw = asin((2 * qData.x * qData.y) + (2 * qData.z * qData.w));
-
-       cameraNode.eulerAngles = SCNVector3(x: Float(attitudePitch - 1.5708),y: Float(attitudeYaw),z: Float(-attitudeRoll));
+        
+        cameraNode.eulerAngles = SCNVector3(x: Float(attitudePitch - 1.5708),y: Float(attitudeYaw),z: Float(-attitudeRoll));
     }
-
+    
     //MARK: Add all nodes to scene
     func renderSceneEssentials(){
         renderLight();
         renderCamera();
-
+        renderFloor();
+        
         scene.rootNode.addChildNode(lightNode);
         scene.rootNode.addChildNode(cameraNode);
+        scene.rootNode.addChildNode(floorNode);
     }
-
+    
 }

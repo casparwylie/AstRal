@@ -14,6 +14,7 @@ import MapKit
 import Starscream
 import SwiftyJSON
 import CryptoSwift
+import SceneKit
 
 class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapActionDelegate, NetworkResponseDelegate{
     
@@ -71,21 +72,21 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
         let pxVals = self.map.collectPXfromMapPoints(mapPoints, currMapPoint: currMapPoint);
         var currPointPX = pxVals.currPointPX;
         var focalValsPX = pxVals.focalValsPX;
-    
+        
         
         self.map.getMapAsIMG({(image) in
             
             let toHideAsSTR = OpenCVWrapper.buildingDetect( &focalValsPX, image: image, currPoint: &currPointPX, pxLength: Int32(pxVals.pxLength),forTapLimit: false, forBuildingTap: false);
             
             self.scene.renderFocals(self.mapPoints, currMapPoint: self.currMapPoint,
-                                     render: newRender, currentHeading: self.currentHeading, toHide: toHideAsSTR!, comments: self.focalFirstComments, tempFocalMapPoint: self.tempFocalMapPoint);
+                                    render: newRender, currentHeading: self.currentHeading, toHide: toHideAsSTR!, comments: self.focalFirstComments, tempFocalMapPoint: self.tempFocalMapPoint);
         });
     }
     
     //MARK: region data updating requests and response middleware process
     func regionDataUpdate(_ currentLocation: CLLocation, currentHeading: CLHeading){
-
-       // let currentLocation = CLLocation(latitude: CLLocationDegrees(51.776701), longitude: CLLocationDegrees(-1.265575));
+        
+        // let currentLocation = CLLocation(latitude: CLLocationDegrees(51.776701), longitude: CLLocationDegrees(-1.265575));
         self.currentLocation = currentLocation;
         self.currMapPoint = MKMapPointForCoordinate(currentLocation.coordinate);
         self.currentHeading = currentHeading;
@@ -99,7 +100,7 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
         
         if(gotKeyData == false){
             networkRequest.getKeyData(self.networkWebSocket);
-           // networkRequest.getUserKnowsFocals(self.networkWebSocket, uuid: uuid);
+            // networkRequest.getUserKnowsFocals(self.networkWebSocket, uuid: uuid);
         }
         
         
@@ -115,34 +116,34 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
             self.focalDistAndBearingsFromUser.append(distAndBearing);
             count += 1;
         }
-       
         
-       /* var focalsToNotify: [Int] = [];
-        if(userKnownFocals != nil){
-            for focalID in focalsClose{
-                var found = false;
-                for knownFocalID in userKnownFocals{
-                    if(knownFocalID.1["f_id"].int! == focalID){
-                        found = true;
-                        break;
-                    }
-                }
-                if(found == false){
-                    focalsToNotify.append(focalID);
-                    networkRequest.userKnowsFocal(networkWebSocket, focalID: focalID, uuid: uuid);
-                }
-            }
-            networkRequest.getUserKnowsFocals(self.networkWebSocket, uuid: uuid);
-            if(focalsToNotify.count > 0 && UIApplication.shared.applicationState != .active){
-                print("BG");
-                let notificationMsg = (focalsToNotify.count > 1 ? "There are " + String(focalsToNotify.count) + " nearby!" : "There is a focal nearby!");
-                let notification = UILocalNotification();
-                notification.alertBody = notificationMsg;
-                notification.soundName = "Default";
-                UIApplication.shared.presentLocalNotificationNow(notification);
-                
-            }
-        }*/
+        
+        /* var focalsToNotify: [Int] = [];
+         if(userKnownFocals != nil){
+         for focalID in focalsClose{
+         var found = false;
+         for knownFocalID in userKnownFocals{
+         if(knownFocalID.1["f_id"].int! == focalID){
+         found = true;
+         break;
+         }
+         }
+         if(found == false){
+         focalsToNotify.append(focalID);
+         networkRequest.userKnowsFocal(networkWebSocket, focalID: focalID, uuid: uuid);
+         }
+         }
+         networkRequest.getUserKnowsFocals(self.networkWebSocket, uuid: uuid);
+         if(focalsToNotify.count > 0 && UIApplication.shared.applicationState != .active){
+         print("BG");
+         let notificationMsg = (focalsToNotify.count > 1 ? "There are " + String(focalsToNotify.count) + " nearby!" : "There is a focal nearby!");
+         let notification = UILocalNotification();
+         notification.alertBody = notificationMsg;
+         notification.soundName = "Default";
+         UIApplication.shared.presentLocalNotificationNow(notification);
+         
+         }
+         }*/
         
         let coordinateRegion: MKCoordinateRegion = self.map.centerToLocationRegion(currentLocation);
         self.map.mapView.setRegion(coordinateRegion, animated: false);
@@ -174,7 +175,7 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
         self.mapPoints = self.map.getCoordsAsMapPoints(coordsAsCLLocation);
         self.map.updatePins(coordsAsCLLocation);
         self.coordPoints = coordsAsCLLocation;
-    
+        
         
         self.oldRenderPosition = self.currentLocation;
         self.focalFirstComments = responseJSON[focalFirstCommentsKey];
@@ -186,7 +187,7 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
         }
         
     }
-
+    
     //MARK: new focal request and response middleware process
     var addTempFirst = true;
     var phonePitch = 0;
@@ -217,28 +218,40 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
         if(newFocalDistMetres < 0){
             newFocalDistMetres = 3;
         }
-
+        
         bearingDegreesTap = self.location.getBearingFromHorizontalTap(Double(tapX));
         var focalLocation = location.getPolarCoords(newFocalDistMetres, bearingDegrees: bearingDegreesTap);
-    
         
-        let pxVals = self.map.collectPXfromMapPoints([MKMapPointForCoordinate(focalLocation.coordinate)], currMapPoint: MKMapPointForCoordinate(currentLocation.coordinate));
         
-        var currentPointPX = pxVals.currPointPX;
-        var focalDesValPX = pxVals.focalValsPX;
+        let positionsFound = scene.sceneView.hitTest(CGPoint(x: tapX, y: tapY), options: nil);
         
-        self.map.getMapAsIMG({(image) in
-            
-            let distLimitPX = Int(OpenCVWrapper.buildingDetect(&focalDesValPX, image: image, currPoint: &currentPointPX, pxLength: Int32(pxVals.pxLength), forTapLimit: true, forBuildingTap: false)!)!;
-            
-            if(distLimitPX > -1){
-                let distLimitMetres = (distLimitPX / 2)-4;
-                focalLocation = self.location.getPolarCoords(Double(distLimitMetres), bearingDegrees: bearingDegreesTap);
+        /*  let pxVals = self.map.collectPXfromMapPoints([MKMapPointForCoordinate(focalLocation.coordinate)], currMapPoint: MKMapPointForCoordinate(currentLocation.coordinate));
+         
+         var currentPointPX = pxVals.currPointPX;
+         var focalDesValPX = pxVals.focalValsPX;
+         
+         self.map.getMapAsIMG({(image) in
+         
+         let distLimitPX = Int(OpenCVWrapper.buildingDetect(&focalDesValPX, image: image, currPoint: &currentPointPX, pxLength: Int32(pxVals.pxLength), forTapLimit: true, forBuildingTap: false)!)!;
+         
+         if(distLimitPX > -1){
+         let distLimitMetres = (distLimitPX / 2)-4;
+         focalLocation = self.location.getPolarCoords(Double(distLimitMetres), bearingDegrees: bearingDegreesTap);
+         }
+         
+         self.addFocalTemp(focalLocation);
+         
+         });*/
+        
+        if(positionsFound.count>0){
+            if(positionsFound.first?.node.name == "floor"){
+                let vecFound = positionsFound.first?.worldCoordinates;
+                self.scene.renderSingleFocal(0, mapPoint: tempFocalMapPoint, currMapPoint: currMapPoint, focalDisplayInfo: (" ", " "), render: self.addTempFirst, tempFocal: true, vec: vecFound!);
+                self.addTempFirst = false;
             }
-            
-            self.addFocalTemp(focalLocation);
-            
-        });
+        }
+        
+        
     }
     func addFocalTemp(_ focalLocation: CLLocation){
         
@@ -246,11 +259,11 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
         self.userInterface.showTapFinishedOptions();
         tempFocalMapPoint = MKMapPointForCoordinate(focalLocation.coordinate);
         let currentMapPoint = MKMapPointForCoordinate(currentLocation.coordinate);
-
+        
         map.updateSinglePin(focalLocation, temp: true);
-        self.scene.renderSingleFocal(0, mapPoint: tempFocalMapPoint, currMapPoint: currentMapPoint, focalDisplayInfo: (" ", " "), render: self.addTempFirst, tempFocal: true);
+        self.scene.renderSingleFocal(0, mapPoint: tempFocalMapPoint, currMapPoint: currentMapPoint, focalDisplayInfo: (" ", " "), render: self.addTempFirst, tempFocal: true, vec: SCNVector3Zero);
         self.addTempFirst = false;
-    
+        
     }
     
     func addFocalReady(_ comment: String){
@@ -271,7 +284,7 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
     }
     
     func addedFocalResponse(_ responseStr: String) {
-
+        
         let responseJSON = networkSocket.processResponseAsJSON(responseStr);
         let success: Bool = (responseJSON["success"]=="true" ? true: false);
         var responseMessage = "Unknown Error. Please try again later.";
@@ -287,7 +300,7 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
         self.map.cancelTempFocal();
         self.addTempFirst = true;
     }
-  
+    
     
     //MARK: retrieve user owned focals request and response middleware process
     func requestUserFocals() {
@@ -322,7 +335,7 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
         }
         self.userInterface.updateInfoLabel(responseJSON["errorMsg"].string!, show: true, hideAfter: 5);
     }
-
+    
     
     //MARK: User login request and response middleware process
     func loginRequest(_ username: String, password: String) {
@@ -367,14 +380,16 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
         let locationOfTap = CGPoint(x: tapX, y: tapY);
         var focalTapID = -1;
         let possFocalsFound = scene.sceneView.hitTest(locationOfTap, options: nil);
-        if let tappedFocal = possFocalsFound.first?.node.parent{
-            print(tappedFocal.name!)
-            let startIndex = tappedFocal.name?.index((tappedFocal.name?.startIndex)!, offsetBy: 2);
-            focalTapID = Int((tappedFocal.name?.substring(from: startIndex!))!)!;
-            viewingFocalID = focalTapID;
-            
+        if(possFocalsFound.first?.node.name != "floor"){
+            if let tappedFocal = possFocalsFound.first?.node.parent{
+                //print(tappedFocal.name!)
+                let startIndex = tappedFocal.name?.index((tappedFocal.name?.startIndex)!, offsetBy: 2);
+                focalTapID = Int((tappedFocal.name?.substring(from: startIndex!))!)!;
+                viewingFocalID = focalTapID;
+                
+            }
         }
-
+        
         if(focalTapID != -1){
             getFocalComments(focalTapID);
             focalTapID = -1;
@@ -401,7 +416,7 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
     
     //MARK: Vote focal comment request and response middleware process
     
-
+    
     func newVoteComment(_ vote: Int, cID: Int){
         networkRequest.newVoteComment(self.networkWebSocket, vote: vote, cID: cID, uID: loggedinUserData.id);
     }
@@ -432,10 +447,10 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
     }
     
     /*func userKnowsFocalsResponse(_ responseStr: String){
-        let userKnownFocalsJSON = networkSocket.processResponseAsJSON(responseStr);
-        userKnownFocals = userKnownFocalsJSON["focals"];
-    }*/
-
+     let userKnownFocalsJSON = networkSocket.processResponseAsJSON(responseStr);
+     userKnownFocals = userKnownFocalsJSON["focals"];
+     }*/
+    
     func connWebRetry(){
         networkWebSocket.connect();
     }
@@ -467,7 +482,7 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
         userInterface.actionDelegate = self;
         userInterface.updateInfoLabel("Please calibrate your phone by twisting it around", show: true, hideAfter: 4);
         location.ui = userInterface;
-    
+        
         //Initilize Motion Handler
         motionManager.deviceMotionUpdateInterval = 1.0 / 60.0;
         motionManager.startDeviceMotionUpdates(
@@ -497,14 +512,14 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
                 self.userInterface.updateInfoLabel("Successfully connected!", show: true, hideAfter: 2);
                 self.reconnectTimer.invalidate();
                 self.reconnectTimer = nil;
-               // self.firstRender = true;
-               // self.networkRequest.getRegionData(self.networkWebSocket, currLocation: self.currentLocation);
+                // self.firstRender = true;
+                // self.networkRequest.getRegionData(self.networkWebSocket, currLocation: self.currentLocation);
             }
             
         }
         
         
-
+        
         super.viewDidLoad();
     }
     
