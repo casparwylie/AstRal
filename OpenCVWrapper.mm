@@ -23,9 +23,9 @@ using namespace std;
 
 @implementation OpenCVWrapper
 
-int buildingFoundInLine(cv::Mat frame,cv::Mat testFrame, cv::Point point1, cv::Point point2,bool forBuildingTap,bool forTapLimit){
+int buildingFoundInLine(cv::Mat frame,cv::Mat testFrame, cv::Point point1, cv::Point point2,bool forBuildingTap){
     
-    bool testing = true;
+    bool testing = false;
     int buildingFoundAt = -1;
     vector<int>  buildingColorBounds = {231,236};
     
@@ -47,16 +47,13 @@ int buildingFoundInLine(cv::Mat frame,cv::Mat testFrame, cv::Point point1, cv::P
             buildingProb++;
             if(buildingDectectThicknessOffset <= buildingProb){
                 buildingFoundAt = i;
-                if(forTapLimit == true || forBuildingTap == true){
+                if(forBuildingTap == true){
                    break;
                 }
             }
-            
             if(testing == true){
                 circle(testFrame, lineIter.pos(), 1, cv::Scalar(0,255,0));
             }
-           
-            //visualisation of output
            
         }else{
             if(testing == true){
@@ -77,18 +74,17 @@ int buildingFoundInLine(cv::Mat frame,cv::Mat testFrame, cv::Point point1, cv::P
                     break;
                 }
             }
-           
         }
     }
     
-    if(forTapLimit == true || forBuildingTap == true){
+    if(forBuildingTap == true){
         return buildingFoundAt;
     }else{
         return focalBehindBuilding;
     }
 }
 
-+(NSString*) buildingDetect: (double[][2])pxVals image:(UIImage*)UIMap currPoint:(double[2])currPointPX pxLength:(int) pxLength forTapLimit:(bool)forTapLimit forBuildingTap:(bool)forBuildingTap {
++(NSString*) buildingDetect: (double[][2])pxVals image:(UIImage*)UIMap currPoint:(double[2])currPointPX pxLength:(int) pxLength forBuildingTap:(bool)forBuildingTap {
 
     //setup matrix
     cv::Mat orgFrame, taskFrame;
@@ -112,8 +108,8 @@ int buildingFoundInLine(cv::Mat frame,cv::Mat testFrame, cv::Point point1, cv::P
         int rowsY = pxVals[count][1] * frameHeight;
         cv::Point pointXY = cv::Point(colsX,rowsY);
         
-        buildingAt = buildingFoundInLine(taskFrame, orgFrame,currPoint, pointXY, forBuildingTap, forTapLimit);
-        if(buildingAt > -1 && forBuildingTap == false and forTapLimit == false){
+        buildingAt = buildingFoundInLine(taskFrame, orgFrame,currPoint, pointXY, forBuildingTap);
+        if(buildingAt > -1 && forBuildingTap == false){
             toHide += to_string(count) + ",";
         }
         count++;
@@ -123,7 +119,7 @@ int buildingFoundInLine(cv::Mat frame,cv::Mat testFrame, cv::Point point1, cv::P
 
     UIImage* new1IMG = MatToUIImage(orgFrame);
     
-    if(forTapLimit == false && forBuildingTap == false){
+    if(forBuildingTap == false){
         NSString* toHideReturn = [NSString stringWithUTF8String:toHide.c_str()];
         return toHideReturn;
     }else{

@@ -20,7 +20,34 @@ class Misc{
         }
     }
     
-    func sha512(string: String){
+    func objcStringToArray(string: String) ->[[(Int,Int)]] {
+        var vectors: [[(Int,Int)]] = [];
+        let sepGroups = string.components(separatedBy: " ");
+        for group in sepGroups{
+            var finalGroupVec: [(Int,Int)] = [];
+            let groupVec: [String] = group.components(separatedBy: "/");
+            for item in groupVec{
+                var finalItem: (Int,Int) = (0,0);
+                var itemVec = item.components(separatedBy: ",");
+                if(itemVec[0] != ""){
+                    let i1 = Int(itemVec[0]);
+                    let i2 = Int(itemVec[1]);
+                    finalItem.0 = i1!;
+                    finalItem.1 = i2!;
+                    finalGroupVec.append(finalItem);
+                }
+            }
+            vectors.append(finalGroupVec);
+        }
         
+        print(vectors);
+        return vectors;
+    }
+    
+    func rotateAroundPoint(_ pointXY: (x: Double,y: Double),angle: Double) -> (x: Double, y: Double){
+        let angle = angle * 0.0174533;
+        let pX = (pointXY.x * cos(angle)) + (pointXY.y * sin(angle));
+        let pY = -(pointXY.x * sin(angle)) + (pointXY.y * cos(angle));
+        return (x: pX, y: pY);
     }
 }

@@ -35,10 +35,6 @@
 	<string>So we know where to locate you in the virtual world.</string>
 	<key>NSMotionUsageDescription</key>
 	<string>So that your reality is augmented!</string>
-	<key>UIBackgroundModes</key>
-	<array>
-		<string>audio</string>
-	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>Launch Screen.storyboard</string>
 	<key>UIMainStoryboardFile</key>

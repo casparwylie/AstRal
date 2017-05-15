@@ -76,7 +76,7 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
         
         self.map.getMapAsIMG({(image) in
             
-            let toHideAsSTR = OpenCVWrapper.buildingDetect( &focalValsPX, image: image, currPoint: &currPointPX, pxLength: Int32(pxVals.pxLength),forTapLimit: false, forBuildingTap: false);
+            let toHideAsSTR = OpenCVWrapper.buildingDetect( &focalValsPX, image: image, currPoint: &currPointPX, pxLength: Int32(pxVals.pxLength), forBuildingTap: false);
             
             self.scene.renderFocals(self.mapPoints, currMapPoint: self.currMapPoint,
                                     render: newRender, currentHeading: self.currentHeading, toHide: toHideAsSTR!, comments: self.focalFirstComments, tempFocalMapPoint: self.tempFocalMapPoint);
@@ -116,7 +116,6 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
             self.focalDistAndBearingsFromUser.append(distAndBearing);
             count += 1;
         }
-        
         
         /* var focalsToNotify: [Int] = [];
          if(userKnownFocals != nil){
@@ -192,95 +191,81 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
     var addTempFirst = true;
     var phonePitch = 0;
     var latestDesiredFocalLocation: CLLocation!;
+    
     func renderTempFocalFromMap(_ mapTapCoord: CLLocationCoordinate2D){
         let focalLocation = CLLocation(latitude: mapTapCoord.latitude, longitude: mapTapCoord.longitude);
-        self.map.getMapAsIMG({(image) in
-            
-            let pxVals = self.map.collectPXfromMapPoints([MKMapPointForCoordinate(focalLocation.coordinate)], currMapPoint: MKMapPointForCoordinate(self.currentLocation.coordinate));
-            
-            var currentPointPX = pxVals.currPointPX;
-            var focalDesValPX = pxVals.focalValsPX;
-            
-            let distNoBuilding = Int(OpenCVWrapper.buildingDetect(&focalDesValPX, image: image, currPoint: &currentPointPX, pxLength: Int32(pxVals.pxLength), forTapLimit: true, forBuildingTap: true)!)!;
-            
-            if(distNoBuilding > 5 || distNoBuilding == -1){
-                self.addFocalTemp(focalLocation);
-            }else{
-                self.userInterface.updateInfoLabel("You cannot place a focal on a building.", show: true, hideAfter: 3);
-            }
-        });
+
+        self.latestDesiredFocalLocation = focalLocation;
+        self.tempFocalMapPoint = MKMapPointForCoordinate(focalLocation.coordinate);
+        chooseLatestTempPos(vec: SCNVector3Zero);
+        
     }
     
+    
     func renderTempFocalFromUI(_ tapX: Int, tapY: Int){
-        var newFocalDistMetres: Double = 0.0;
-        var bearingDegreesTap: Double = 0.0;
-        newFocalDistMetres = self.location.getDistFromVerticalTap(Double(tapX), tapY: Double(tapY), phonePitch: Double(self.phonePitch));
-        if(newFocalDistMetres < 0){
-            newFocalDistMetres = 3;
-        }
-        
-        bearingDegreesTap = self.location.getBearingFromHorizontalTap(Double(tapX));
-        var focalLocation = location.getPolarCoords(newFocalDistMetres, bearingDegrees: bearingDegreesTap);
-        
-        
+
         let positionsFound = scene.sceneView.hitTest(CGPoint(x: tapX, y: tapY), options: nil);
-        
-        /*  let pxVals = self.map.collectPXfromMapPoints([MKMapPointForCoordinate(focalLocation.coordinate)], currMapPoint: MKMapPointForCoordinate(currentLocation.coordinate));
-         
-         var currentPointPX = pxVals.currPointPX;
-         var focalDesValPX = pxVals.focalValsPX;
-         
-         self.map.getMapAsIMG({(image) in
-         
-         let distLimitPX = Int(OpenCVWrapper.buildingDetect(&focalDesValPX, image: image, currPoint: &currentPointPX, pxLength: Int32(pxVals.pxLength), forTapLimit: true, forBuildingTap: false)!)!;
-         
-         if(distLimitPX > -1){
-         let distLimitMetres = (distLimitPX / 2)-4;
-         focalLocation = self.location.getPolarCoords(Double(distLimitMetres), bearingDegrees: bearingDegreesTap);
-         }
-         
-         self.addFocalTemp(focalLocation);
-         
-         });*/
         
         if(positionsFound.count>0){
             if(positionsFound.first?.node.name == "floor"){
+
                 let vecFound = positionsFound.first?.worldCoordinates;
-                self.scene.renderSingleFocal(0, mapPoint: tempFocalMapPoint, currMapPoint: currMapPoint, focalDisplayInfo: (" ", " "), render: self.addTempFirst, tempFocal: true, vec: vecFound!);
-                self.addTempFirst = false;
+                var vecRotate = (x: Double((vecFound?.x)!), y: Double((vecFound?.z)!));
+                vecRotate = misc.rotateAroundPoint(vecRotate, angle: 90);
+                let mapPointT = (x: vecRotate.x + currMapPoint.x, y: vecRotate.y + currMapPoint.y);
+                let mapPoint = MKMapPoint(x: mapPointT.x, y: mapPointT.y);
+                self.tempFocalMapPoint = mapPoint;
+                let coordPoint2d = MKCoordinateForMapPoint(mapPoint);
+                let coordLocation = CLLocation(latitude: coordPoint2d.latitude, longitude: coordPoint2d.longitude);
+                self.latestDesiredFocalLocation = coordLocation;
+                chooseLatestTempPos(vec: vecFound!);
             }
         }
         
-        
-    }
-    func addFocalTemp(_ focalLocation: CLLocation){
-        
-        self.latestDesiredFocalLocation = focalLocation;
-        self.userInterface.showTapFinishedOptions();
-        tempFocalMapPoint = MKMapPointForCoordinate(focalLocation.coordinate);
-        let currentMapPoint = MKMapPointForCoordinate(currentLocation.coordinate);
-        
-        map.updateSinglePin(focalLocation, temp: true);
-        self.scene.renderSingleFocal(0, mapPoint: tempFocalMapPoint, currMapPoint: currentMapPoint, focalDisplayInfo: (" ", " "), render: self.addTempFirst, tempFocal: true, vec: SCNVector3Zero);
-        self.addTempFirst = false;
-        
     }
     
+    
+    //render temp focal visually
+    func chooseLatestTempPos(vec: SCNVector3){
+        self.map.updateSinglePin(self.latestDesiredFocalLocation, temp: true);
+        self.userInterface.showTapFinishedOptions();
+        self.scene.renderSingleFocal(0, mapPoint: tempFocalMapPoint, currMapPoint: currMapPoint, focalDisplayInfo: (" ", " "), render: self.addTempFirst, tempFocal: true, vec: vec);
+        self.addTempFirst = false;
+    }
+
     func addFocalReady(_ comment: String){
         
-        self.addTempFirst = true;
-        tempFocalMapPoint = MKMapPoint();
-        self.scene.removeTempFocal();
-        CLGeocoder().reverseGeocodeLocation(self.latestDesiredFocalLocation, completionHandler: {(placemarks,err) in
-            var areaName = "N/A";
-            if((placemarks?.count)!>0){
-                let placemark = (placemarks?[0])! as CLPlacemark;
-                areaName = placemark.thoroughfare! + ", " + placemark.locality!;
-            }
-            
-            let focalInfo = (comment: comment, author: self.loggedinUserData.username, userID: self.loggedinUserData.id, areaName: areaName);
-            self.networkRequest.addFocal(self.networkWebSocket, focalLocation: self.latestDesiredFocalLocation,focalDisplayInfo: focalInfo);
-        });
+     self.map.getMapAsIMG({(image) in
+     
+        let pxVals = self.map.collectPXfromMapPoints([self.tempFocalMapPoint], currMapPoint: self.currMapPoint);
+        
+        var currentPointPX = pxVals.currPointPX;
+        var focalDesValPX = pxVals.focalValsPX;
+        
+        let distNoBuilding = Int(OpenCVWrapper.buildingDetect(&focalDesValPX, image: image, currPoint: &currentPointPX, pxLength: Int32(pxVals.pxLength),  forBuildingTap: true)!)!;
+        
+        if(distNoBuilding > 5 || distNoBuilding == -1){
+
+            self.addTempFirst = true;
+            self.tempFocalMapPoint = MKMapPoint();
+            self.scene.removeTempFocal();
+            CLGeocoder().reverseGeocodeLocation(self.latestDesiredFocalLocation, completionHandler: {(placemarks,err) in
+                var areaName = "N/A";
+                if((placemarks?.count)!>0){
+                    let placemark = (placemarks?[0])! as CLPlacemark;
+                    areaName = placemark.thoroughfare! + ", " + placemark.locality!;
+                }
+                
+                let focalInfo = (comment: comment, author: self.loggedinUserData.username, userID: self.loggedinUserData.id, areaName: areaName);
+                self.networkRequest.addFocal(self.networkWebSocket, focalLocation: self.latestDesiredFocalLocation,focalDisplayInfo: focalInfo);
+            });
+
+        }else{
+            self.userInterface.updateInfoLabel("You cannot post a focal within a building. Try again.", show: true, hideAfter: 4);
+        }
+        
+     });
+        
     }
     
     func addedFocalResponse(_ responseStr: String) {
@@ -473,6 +458,7 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
         //Initilize Map component
         map.renderMap(self.view);
         map.mapActionDelegate = self;
+        map.scene = scene;
         self.view.viewWithTag(3)?.isHidden = true;
         
         appDelegate.viewController = self;

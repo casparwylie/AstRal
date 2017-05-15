@@ -28,6 +28,7 @@ class Scene{
     var tempFocalNode: SCNNode!;
     var focals: [SCNNode] = [];
     var sceneView: SCNView!;
+    var misc = Misc();
     
     //MARK: Add scene view to view
     func renderSceneLayer(_ frameView: UIView) -> Void{
@@ -82,13 +83,6 @@ class Scene{
         
     }
     
-    //MARK: rotate virtual 3D atmosphere around current coordinates
-    func rotateAroundPoint(_ pointXY: (x: Double,y: Double),angle: Double) -> (x: Double, y: Double){
-        let angle = angle * 0.0174533;
-        let pX = (pointXY.x * cos(angle)) + (pointXY.y * sin(angle));
-        let pY = -(pointXY.x * sin(angle)) + (pointXY.y * cos(angle));
-        return (x: pX, y: pY);
-    }
     
     func DAEtoSCNNodeWithText(_ filepath:String, focalDisplayInfo: (comment: String, author: String)) -> SCNNode {
         
@@ -141,33 +135,38 @@ class Scene{
     
     func renderSingleFocal(_ renderID: Int, mapPoint: MKMapPoint, currMapPoint: MKMapPoint, focalDisplayInfo: (String, String), render: Bool, tempFocal: Bool, vec: SCNVector3){
         
-        var focalCoord = (x: mapPoint.x - currMapPoint.x, y: mapPoint.y - currMapPoint.y);
-        focalCoord = rotateAroundPoint(focalCoord, angle: -90);
+        var focalVec: SCNVector3!;
+        if(vec.x + vec.z + vec.y == 0){
+            var focalCoord = (x: mapPoint.x - currMapPoint.x, y: mapPoint.y - currMapPoint.y);
+            focalCoord = misc.rotateAroundPoint(focalCoord, angle: -90);
+            focalVec = SCNVector3(x: Float(focalCoord.x), y: 0, z:  Float(focalCoord.y));
+        }else{
+            focalVec = vec;
+        }
         
         if(render==true){
             //initiate focals
             if(tempFocal == false){
                 let focal = DAEtoSCNNodeWithText("focalpost.dae", focalDisplayInfo: focalDisplayInfo);
                 focal.name = "f_" + String(renderID);
-                focal.position = SCNVector3(x: Float(focalCoord.x), y: 0, z:  Float(focalCoord.y));
+                focal.position = focalVec;
                 focals.append(focal);
                 self.scene.rootNode.addChildNode(focals.last!);
             }else{
                 tempFocalNode = DAEtoSCNNodeWithText("focalpost.dae", focalDisplayInfo: focalDisplayInfo);
                 tempFocalNode.name = "f_" + String(renderID);
-                tempFocalNode.position = vec//SCNVector3(x: Float(focalCoord.x), y: 0, z:  Float(focalCoord.y));
+                tempFocalNode.position = focalVec;
                 self.scene.rootNode.addChildNode(tempFocalNode);
             }
             
         }else{
             //update focal position
-            let newPos = SCNVector3(x: Float(focalCoord.x), y: 0.0, z:  Float(focalCoord.y));
             if(tempFocal == false){
                 //print(focals);
-                let moveToAction = SCNAction.move(to: newPos, duration: 1);
+                let moveToAction = SCNAction.move(to: focalVec, duration: 1);
                 focals[renderID].runAction(moveToAction);
             }else{
-                tempFocalNode.position = vec;
+                tempFocalNode.position = focalVec;
             }
         }
     }
@@ -190,7 +189,7 @@ class Scene{
                 focals = [];
             }
         }
-        if(tempFocalMapPoint.x != 0.0){
+        if(tempFocalNode != nil){
             let tempFocalDisplayInfo = (comment: " ", author: " ");
             renderSingleFocal(-1,mapPoint: tempFocalMapPoint, currMapPoint: currMapPoint, focalDisplayInfo: tempFocalDisplayInfo, render: false, tempFocal: true, vec: SCNVector3Zero);
             
@@ -214,6 +213,8 @@ class Scene{
             i += 1;
         }
     }
+    
+
     //MARK: gyro to scene camera mapping, on new gyro/motion data (delegated call from ViewController)
     func rotateCamera(_ gyroData: CMAttitude){
         

@@ -67,7 +67,6 @@ class Location: NSObject, CLLocationManagerDelegate{
                                              cos(distanceByER)-sin(latitude)*sin(newLatitude));
         
         return CLLocation(latitude: newLatitude * (180 / M_PI), longitude: newLongitude * (180 / M_PI));
-        
     }
     
     func getBearingFromTwoCoords(_ location1: CLLocation, location2: CLLocation) -> Int{
@@ -82,7 +81,6 @@ class Location: NSObject, CLLocationManagerDelegate{
         let pointY = cos(latitude1) * sin(latitude2)-sin(latitude1) * cos(latitude2) * cos(diff);
         let bearing = atan2(pointX, pointY)*(180.0 / M_PI);
         return Int(bearing);
-        
     }
     
     func getBearingFromTwo2dPoints(_ point1X: Double, point1Y: Double, point2X: Double, point2Y: Double) -> Int{
@@ -93,7 +91,6 @@ class Location: NSObject, CLLocationManagerDelegate{
         }
         let bearing = (180 / M_PI) * theta;
         return Int(bearing);
-        
     }
     
     func getDistanceBetweenTwo2dPoints(_ point1X: Double, point1Y: Double, point2X: Double, point2Y: Double) -> Int{
@@ -103,30 +100,6 @@ class Location: NSObject, CLLocationManagerDelegate{
         let toRoot = xLength*xLength + yLength*yLength
         let distance = Int(sqrt(Double(toRoot)));
         return distance;
-    }
-    
-    func getBearingFromHorizontalTap(_ tapX: Double) -> Double{
-        let pxMidDiff = 160.0 - Double(tapX);
-        let step = 320.0/54.0;
-        let degDiff = pxMidDiff/step;
-        let bearingDegrees: Double = ((currentHeading?.trueHeading)! + 5) - degDiff/2.0;
-        return bearingDegrees;
-    }
-    
-    func getDistFromVerticalTap(_ tapX: Double, tapY: Double, phonePitch: Double) -> Double{
-        
-        let hozPx: Double = 230;
-        var yPos = tapY;
-        if(tapY < hozPx){
-            yPos = hozPx;
-        }
-        
-        let acc1 = 500.0;
-        let acc2 = 15.0;
-        let acc3 = acc1/acc2 - Double(phonePitch-10);
-        
-        let distMetres: Double = (acc2-(Double(yPos)/acc3))*3;
-        return distMetres;
     }
     
     func collectFocalToUserData(_ point1X: Double, point1Y:  Double, point2X:  Double, point2Y: Double) -> (distance: Int, bearing: Int){

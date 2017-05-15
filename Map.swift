@@ -9,6 +9,7 @@
 import Foundation
 import MapKit
 import Darwin
+import SceneKit
 
 /*
  
@@ -28,7 +29,8 @@ class Map: NSObject, MKMapViewDelegate{
     var tapMapToPost = false;
     var tempPin: MKPointAnnotation!;
     var tapRec: UITapGestureRecognizer!;
-    
+    var misc = Misc();
+    var scene: Scene!;
     //MARK: setup map
     func renderMap(_ view: UIView){
         mapView.frame = CGRect(x: 0, y: 0, width: view.frame.size.width, height: view.frame.size.height);
@@ -159,8 +161,7 @@ class Map: NSObject, MKMapViewDelegate{
         
             return (focalValsPX: pixelsXY, currPointPX: resultsCurrPointXY, pxLength: mapPoints.count);
     }
-    
-    
+
     //MARK: convert coordinate data to 2D map points
     func getCoordsAsMapPoints(_ coords: [CLLocation]) -> [MKMapPoint]{
         var mapPoints: [MKMapPoint] = [];

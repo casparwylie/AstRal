@@ -242,14 +242,22 @@ class UserInterface1{
         singleFocalInfoView.isHidden = true;
     }
     
-    @objc func wrapTapped(_ touch: UITapGestureRecognizer){
-        let tapPoint = touch.location(in: self.view);
-        
+    @objc func wrapPanned(_ sender: UIPanGestureRecognizer){
+        let tapPoint = sender.location(in: view);
         if(mapShowing == false){
             if(self.tapToPost == true ){
                 actionDelegate?.renderTempFocalFromUI!(Int(tapPoint.x), tapY: Int(tapPoint.y));
-            }else{
+            }
+        }
+    }
+    
+    @objc func wrapTapped(_ sender: UITapGestureRecognizer){
+        let tapPoint = sender.location(in: view);
+        if(mapShowing == false){
+            if(self.tapToPost == false ){
                 actionDelegate?.chooseFocalComments!(Int(tapPoint.x), tapY: Int(tapPoint.y));
+            }else{
+                actionDelegate?.renderTempFocalFromUI!(Int(tapPoint.x), tapY: Int(tapPoint.y));
             }
         }
     }
@@ -798,6 +806,14 @@ class UserInterface1{
         self.view.addGestureRecognizer(tapRec);
         
     }
+    
+    func addFocalPanRecognizer(){
+        
+        let panRec = UIPanGestureRecognizer(target: self, action: #selector(wrapPanned));
+        self.view.addGestureRecognizer(panRec);
+        
+    }
+    
 
     func processBlurEffect(_ bounds: CGRect, cornerRadiusVal: CGFloat, light: Bool) -> UIVisualEffectView {
         
@@ -951,9 +967,6 @@ class UserInterface1{
         }
     }
     
-    @objc func removeEditing(){
-        self.view.endEditing(true);
-    }
     
     //MARK: Render all items
     func renderAll(_ view: UIView){
@@ -963,12 +976,11 @@ class UserInterface1{
         viewPageWidth = Int(screenSize.width)-10;
         viewPageX = Int(screenSize.width/2)-viewPageWidth/2;
         
-        tapAnywhere = UITapGestureRecognizer(target: self.view, action: #selector(removeEditing));
-        self.view.addGestureRecognizer(tapAnywhere);
         
         renderLabel();
         renderMenu(false);
         renderGeneralButtons();
+        addFocalPanRecognizer();
         addFocalTapRecognizer();
         renderLoginForm();
         renderSignUpForm();
