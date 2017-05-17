@@ -146,6 +146,7 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
         
         let coordinateRegion: MKCoordinateRegion = self.map.centerToLocationRegion(currentLocation);
         self.map.mapView.setRegion(coordinateRegion, animated: false);
+        self.userInterface.locationFocused = true;
         let distFromPrevPos = currentLocation.distance(from: self.oldRenderPosition);
         if((distFromPrevPos>thresholdDistRerender)||firstRender==true){
             self.networkRequest.getRegionData(self.networkWebSocket, currLocation: currentLocation);
@@ -439,6 +440,16 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
     func connWebRetry(){
         networkWebSocket.connect();
     }
+    
+    var checkLocatedTimer: Timer!;
+    func locatingDeviceMessage(){
+        if(self.userInterface.locationFocused == false){
+            self.userInterface.updateInfoLabel("Locating your device, please wait...", show: true, hideAfter: 3);
+        }else{
+            self.checkLocatedTimer.invalidate();
+            self.checkLocatedTimer = nil;
+        }
+    }
     //MARK: Main stem
     override func viewDidLoad() {
         
@@ -505,6 +516,7 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
         }
         
         
+        checkLocatedTimer = Timer.scheduledTimer(timeInterval: 2, target: self, selector: #selector(self.locatingDeviceMessage), userInfo: nil, repeats: true);
         
         super.viewDidLoad();
     }

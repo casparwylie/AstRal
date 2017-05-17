@@ -79,6 +79,7 @@ class UserInterface1{
     var helpView: UIView!;
     var singleFocalInfoView: UIView!;
     var userScrollFocalListView: UIScrollView!;
+    var helpScrollView: UIScrollView!;
     var focalCommentsListScrollView: UIScrollView!;
     var upVoteCommentIcons: [Int: UIImageView] = [:];
     var downVoteCommentIcons: [Int: UIImageView] = [:];
@@ -113,6 +114,7 @@ class UserInterface1{
     var screenSize: CGRect = UIScreen.main.bounds;
     var singleFocalTapRecs: [UITapGestureRecognizer] = [];
     var intentToSignUp = true;
+    var locationFocused = false;
     
     //MARK: UI constants
     let mainTypeFace = "Futura";
@@ -158,14 +160,18 @@ class UserInterface1{
             loginForm.isHidden = false;
             
         case "Post Focal":
-            hideAnyViews();
-            if(mapShowing==true){
-                actionDelegate?.toggleMap!(true);
+            if(self.locationFocused == true){
+                hideAnyViews();
+                if(mapShowing==true){
+                    actionDelegate?.toggleMap!(true);
+                }
+                updateInfoLabel("Tap wherever you want to post it (from camera or map)", show: true, hideAfter: 0);
+                cancelChoosingButton.isHidden = false;
+                toggleMenu(false);
+                self.tapToPost = true;
+            }else{
+                updateInfoLabel("You can't a post focal until your location is found.", show: true, hideAfter: 3);
             }
-            updateInfoLabel("Tap wherever you want to post it (from camera or map)", show: true, hideAfter: 0);
-            cancelChoosingButton.isHidden = false;
-            toggleMenu(false);
-            self.tapToPost = true;
             
         case "Sign Up":
             intentToSignUp = true;
@@ -609,9 +615,7 @@ class UserInterface1{
         passwordLoginField = addTextFieldProperties(CGRect(x: 5, y: 55, width: textWidthLogin, height: textFieldSize.height));
         passwordLoginField.placeholder = "Password";
         passwordLoginField.isSecureTextEntry = true;
-        
-        
-        
+    
         let loginSubmitButtonRect = CGRect(x: 5, y: 130, width: buttonWidthLogin, height: textFieldSize.height);
         loginSubmitButton = addButtonProperties("Login", hidden: false, pos: loginSubmitButtonRect, cornerRadius: buttonCornerRadius, blurLight: true);
         loginSubmitButton.addTarget(self, action: #selector(loginSubmitWrapper), for: .touchUpInside);
@@ -762,26 +766,31 @@ class UserInterface1{
         let viewHeight = 370;
         helpView = UIView(frame: CGRect(x:viewPageX,y: defaultFormY + buttonSpace,width: viewPageWidth, height: viewHeight));
         helpView.insertSubview(processBlurEffect(helpView.bounds, cornerRadiusVal: buttonCornerRadius, light: true), at: 0);
+        helpScrollView = UIScrollView(frame: CGRect(x:5,y: 25,width: viewPageWidth, height: viewHeight-20));
+        helpScrollView.contentSize = CGSize(width: CGFloat(viewPageWidth), height: CGFloat(viewHeight));
         helpView.isHidden = true;
-        
         
         let closeHelpViewRect = CGRect(x: viewPageWidth-(closeButtonWidth+5), y: 5, width: closeButtonWidth, height: closeButtonHeight);
         closeHelpView = addButtonProperties("Close", hidden: false, pos:closeHelpViewRect, cornerRadius: buttonCornerRadius, blurLight: true);
         closeHelpView.addTarget(self, action: #selector(hideAnyViews), for: .touchUpInside);
         
-        self.view.addSubview(helpView);
+        
         helpView.addSubview(closeHelpView);
+        helpView.addSubview(helpScrollView);
+        self.view.addSubview(helpView);
     
     }
     
     func renderHelpText(text: String){
-        helpTextLabel = UILabel(frame: CGRect(x: 5, y: 10, width: 280, height: 360));
-        helpTextLabel.lineBreakMode = NSLineBreakMode.byWordWrapping;
-        helpTextLabel.text = text;
         let labelTextHeight = getHeightForField(text, font: mainFont, width: CGFloat(200));
+        helpTextLabel = UILabel(frame: CGRect(x: 5, y: 10, width: 280, height: labelTextHeight));
+        helpTextLabel.lineBreakMode = NSLineBreakMode.byWordWrapping;
+        helpTextLabel.textAlignment = .center;
+        helpTextLabel.text = text;
+        helpScrollView.contentSize = CGSize(width: CGFloat(viewPageWidth), height: CGFloat(labelTextHeight+20));
         helpTextLabel.numberOfLines = Int(labelTextHeight/20)+1;
         helpTextLabel.font = mainFont;
-        helpView.addSubview(helpTextLabel);
+        helpScrollView.addSubview(helpTextLabel);
         
     }
     

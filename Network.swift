@@ -92,6 +92,7 @@ class NetworkSocketHandler{
                     self.networkResponseDelegate?.votedCommentResponse!(responseString);
                 case "keyData":
                     self.networkResponseDelegate?.keyDataResponse!(responseString);
+                
                 case "userKnowsFocals":
                     self.networkResponseDelegate?.userKnowsFocalsResponse!(responseString);
                 default:

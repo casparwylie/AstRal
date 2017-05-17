@@ -32,13 +32,6 @@ class Location: NSObject, CLLocationManagerDelegate{
     
     //MARK: setup location service and request permission
     func initLocation() -> Bool{
-        
-        //Check location permission
-        locManager.requestWhenInUseAuthorization();
-        if( CLLocationManager.authorizationStatus() == CLAuthorizationStatus.authorizedAlways ||
-            CLLocationManager.authorizationStatus() == CLAuthorizationStatus.authorizedWhenInUse){
-            
-            //Location header data
             locManager.distanceFilter = 3;
             locManager.desiredAccuracy = kCLLocationAccuracyBest;
             locManager.startUpdatingLocation();
@@ -46,9 +39,6 @@ class Location: NSObject, CLLocationManagerDelegate{
             locManager.startUpdatingHeading();
             locManager.delegate = self;
             return true;
-        }else{
-            return false;
-        }
     }
     
     
@@ -113,6 +103,28 @@ class Location: NSObject, CLLocationManagerDelegate{
         
     }
     
+    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+        switch status {
+            case .authorizedWhenInUse:
+                locManager.startUpdatingLocation();
+                break;
+            case .notDetermined:
+                locManager.requestWhenInUseAuthorization();
+                break;
+            case .authorizedAlways:
+                locManager.startUpdatingLocation();
+                break;
+            case .restricted:
+                self.ui.updateInfoLabel("You will need to allow location services.", show: true, hideAfter: 10);
+                break;
+            case .denied:
+                self.ui.updateInfoLabel("You will need to allow location services.", show: true, hideAfter: 10);
+                break;
+            default:
+                break;
+        }
+    }
+    
     //MARK: Automatic delegation call on heading update, update heading data.
     @objc func locationManager(_ manager: CLLocationManager, didUpdateHeading newHeading: CLHeading){
         currentHeading = newHeading;
@@ -123,9 +135,8 @@ class Location: NSObject, CLLocationManagerDelegate{
     @objc func locationManager(_ manager: CLLocationManager,didUpdateLocations locations: [CLLocation]) {
         
         if(currentHeading != nil){
-            
-            currentLocation = locations.last;
-            delegateLoc?.regionDataUpdate(currentLocation!, currentHeading: currentHeading!);
+            self.currentLocation = locations.last;
+            self.delegateLoc?.regionDataUpdate(self.currentLocation!, currentHeading: self.currentHeading!);
         }
         
     }
