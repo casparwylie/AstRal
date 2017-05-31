@@ -25,7 +25,7 @@ using namespace std;
 
 int buildingFoundInLine(cv::Mat frame,cv::Mat testFrame, cv::Point point1, cv::Point point2,bool forBuildingTap){
     
-    bool testing = false;
+    bool testing = true;
     int buildingFoundAt = -1;
     vector<int>  buildingColorBounds = {231,236};
     
@@ -36,9 +36,14 @@ int buildingFoundInLine(cv::Mat frame,cv::Mat testFrame, cv::Point point1, cv::P
         cv::Point pointTemp1 = point1;
         point1 = point2;
         point2 = pointTemp1;
+        
+        if(point1 == point2){
+            point2 = cv::Point(0,0);
+        }
     }//even blue
     
     int backFromBuilding = 0;
+    
     cv::LineIterator lineIter(frame, point1, point2);
     int buildingProb = 0;
     for(int i = 0; i < lineIter.count; i++, lineIter++){

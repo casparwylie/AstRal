@@ -1,0 +1,10 @@
+framework module SwiftyJSON {
+  umbrella header "SwiftyJSON-umbrella.h"
+
+  export *
+  module * { export * }
+}
+
+module SwiftyJSON.__Swift {
+    exclude header "SwiftyJSON-Swift.h"
+}

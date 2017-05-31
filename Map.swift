@@ -22,6 +22,7 @@ import SceneKit
     @objc optional func renderTempFocalFromMap(_ mapTapCoord: CLLocationCoordinate2D);
 }
 
+
 class Map: NSObject, MKMapViewDelegate{
     
     var mapView = MKMapView();
@@ -31,6 +32,8 @@ class Map: NSObject, MKMapViewDelegate{
     var tapRec: UITapGestureRecognizer!;
     var misc = Misc();
     var scene: Scene!;
+    var currTempLocation: CLLocation!;
+    var location = Location();
     //MARK: setup map
     func renderMap(_ view: UIView){
         mapView.frame = CGRect(x: 0, y: 0, width: view.frame.size.width, height: view.frame.size.height);
@@ -75,6 +78,7 @@ class Map: NSObject, MKMapViewDelegate{
         if(tempPin != nil){
             mapView.removeAnnotation(tempPin);
             tapRec.isEnabled = false;
+            tempPin = nil;
         }
     }
     
@@ -89,8 +93,10 @@ class Map: NSObject, MKMapViewDelegate{
                 mapView.removeAnnotation(tempPin);
             }
             tempPin = MKPointAnnotation();
+            tempPin.title = "temp";
             tempPin?.coordinate = CLLCoordType;
             mapView.addAnnotation(tempPin);
+            currTempLocation = coord;
         }else{
             let pin = MKPointAnnotation();
             pin.title = String(pcount);
@@ -104,6 +110,9 @@ class Map: NSObject, MKMapViewDelegate{
         mapView.removeAnnotations(mapView.annotations);
         for coord in coords{
             updateSinglePin(coord, temp: false);
+        }
+        if(tempPin != nil){
+            updateSinglePin(currTempLocation, temp: true);
         }
     }
     
@@ -145,6 +154,19 @@ class Map: NSObject, MKMapViewDelegate{
     }
     
     
+    //MARK: check focals apart
+    func focalIsolated(mapPoint: MKMapPoint, mapPoints: [MKMapPoint]) -> Bool{
+        var isolated = true;
+        for existingPoint in mapPoints{
+            let distanceBetweenPoints = location.getDistanceBetweenTwo2dPoints(mapPoint.x, point1Y: mapPoint.y, point2X: existingPoint.x, point2Y: existingPoint.y);
+            if(distanceBetweenPoints < 40){
+                isolated = false;
+                break;
+            }
+        }
+        return isolated;
+    }
+    
     
     //MARK: get all map points as px in preparation for openCV wrapper
     func collectPXfromMapPoints(_ mapPoints: [MKMapPoint], currMapPoint: MKMapPoint)
@@ -177,14 +199,11 @@ class Map: NSObject, MKMapViewDelegate{
             return nil;
         }else{
             let pinIdent = "Pin";
-            var pinView: MKPinAnnotationView;
-            if let dequeuedView = mapView.dequeueReusableAnnotationView(withIdentifier: pinIdent) as? MKPinAnnotationView {
-                dequeuedView.annotation = annotation;
-                pinView = dequeuedView;
-            }else{
-                pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: pinIdent);
-                
-            }
+            var pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: pinIdent);
+                if(annotation.title! == "temp"){
+                    pinView.pinTintColor = UIColor(red: 0.6275, green: 0, blue: 0, alpha: 1.0);
+                }
+            
             return pinView;
         }
     }

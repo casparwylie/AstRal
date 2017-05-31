@@ -1,0 +1,206 @@
+### Swift dependencies file v0 ###
+provides-top-level:
+- "RandomBytesSequence"
+provides-nominal:
+- "V11CryptoSwift19RandomBytesSequence"
+provides-member:
+- ["V11CryptoSwift19RandomBytesSequence", ""]
+provides-dynamic-lookup:
+depends-top-level:
+- "RandomBytesSequence"
+- !private "AssignmentPrecedence"
+- "UInt8"
+- "Int"
+- "Sequence"
+- !private "IntegerLiteralType"
+- "AnyIterator"
+- !private "UInt32"
+- !private "FloatLiteralType"
+- !private "arc4random_uniform"
+- !private "+"
+- !private ">="
+depends-member:
+- ["Vs11AnyIterator", "Element"]
+- ["Vs11AnyIterator", "deinit"]
+- !private ["Vs11AnyIterator", "init"]
+- ["Vs11AnySequence", "Iterator"]
+- ["Vs11AnySequence", "SubSequence"]
+- !private ["P11CryptoSwift22BitshiftOperationsType", "init"]
+- !private ["P11CryptoSwift22BitshiftOperationsType", "max"]
+- !private ["Ps17BitwiseOperations", "init"]
+- !private ["Ps17BitwiseOperations", "max"]
+- !private ["Sb", "_getBuiltinLogicValue"]
+- !private ["Sb", "deinit"]
+- !private ["P11CryptoSwift15ByteConvertible", "init"]
+- !private ["P11CryptoSwift15ByteConvertible", "max"]
+- !private ["Ps7CVarArg", "init"]
+- !private ["Ps7CVarArg", "max"]
+- !private ["Ps10Comparable", "init"]
+- !private ["Ps10Comparable", "max"]
+- !private ["Ps29CustomPlaygroundQuickLookable", "_getBuiltinLogicValue"]
+- !private ["Ps29CustomPlaygroundQuickLookable", "init"]
+- !private ["Ps29CustomPlaygroundQuickLookable", "max"]
+- !private ["Ps17CustomReflectable", "_getBuiltinLogicValue"]
+- !private ["Ps17CustomReflectable", "init"]
+- !private ["Ps17CustomReflectable", "max"]
+- !private ["Ps23CustomStringConvertible", "_getBuiltinLogicValue"]
+- !private ["Ps23CustomStringConvertible", "init"]
+- !private ["Ps23CustomStringConvertible", "max"]
+- !private ["Ps9Equatable", "_getBuiltinLogicValue"]
+- !private ["Ps9Equatable", "init"]
+- !private ["Ps9Equatable", "max"]
+- !private ["Ps27ExpressibleByBooleanLiteral", "_getBuiltinLogicValue"]
+- !private ["Ps27ExpressibleByIntegerLiteral", "init"]
+- !private ["Ps27ExpressibleByIntegerLiteral", "max"]
+- !private ["Ps8Hashable", "_getBuiltinLogicValue"]
+- !private ["Ps8Hashable", "init"]
+- !private ["Ps8Hashable", "max"]
+- !private ["P11CryptoSwift9Initiable", "init"]
+- !private ["P11CryptoSwift9Initiable", "max"]
+- ["Si", "deinit"]
+- !private ["Ps7Integer", "init"]
+- !private ["Ps7Integer", "max"]
+- !private ["Ps17IntegerArithmetic", "init"]
+- !private ["Ps17IntegerArithmetic", "max"]
+- ["Ps16IteratorProtocol", "Element"]
+- !private ["Ps16IteratorProtocol", "init"]
+- !private ["Ps25LosslessStringConvertible", "_getBuiltinLogicValue"]
+- !private ["Sq", "deinit"]
+- ["V11CryptoSwift19RandomBytesSequence", "AnyIterator"]
+- ["V11CryptoSwift19RandomBytesSequence", "Element"]
+- ["V11CryptoSwift19RandomBytesSequence", "Int"]
+- ["V11CryptoSwift19RandomBytesSequence", "Iterator"]
+- ["V11CryptoSwift19RandomBytesSequence", "SubSequence"]
+- !private ["V11CryptoSwift19RandomBytesSequence", "UInt32"]
+- ["V11CryptoSwift19RandomBytesSequence", "UInt8"]
+- ["V11CryptoSwift19RandomBytesSequence", "_copyContents"]
+- ["V11CryptoSwift19RandomBytesSequence", "_copyToContiguousArray"]
+- ["V11CryptoSwift19RandomBytesSequence", "_customContainsEquatableElement"]
+- ["V11CryptoSwift19RandomBytesSequence", "_preprocessingPass"]
+- !private ["V11CryptoSwift19RandomBytesSequence", "arc4random_uniform"]
+- ["V11CryptoSwift19RandomBytesSequence", "deinit"]
+- ["V11CryptoSwift19RandomBytesSequence", "dropFirst"]
+- ["V11CryptoSwift19RandomBytesSequence", "dropLast"]
+- ["V11CryptoSwift19RandomBytesSequence", "filter"]
+- ["V11CryptoSwift19RandomBytesSequence", "forEach"]
+- ["V11CryptoSwift19RandomBytesSequence", "init"]
+- ["V11CryptoSwift19RandomBytesSequence", "makeIterator"]
+- ["V11CryptoSwift19RandomBytesSequence", "map"]
+- ["V11CryptoSwift19RandomBytesSequence", "prefix"]
+- ["V11CryptoSwift19RandomBytesSequence", "size"]
+- ["V11CryptoSwift19RandomBytesSequence", "split"]
+- ["V11CryptoSwift19RandomBytesSequence", "suffix"]
+- ["V11CryptoSwift19RandomBytesSequence", "underestimatedCount"]
+- !private ["Ps8Sequence", "AnyIterator"]
+- ["Ps8Sequence", "Element"]
+- ["Ps8Sequence", "Iterator"]
+- ["Ps8Sequence", "SubSequence"]
+- !private ["Ps8Sequence", "UInt32"]
+- !private ["Ps8Sequence", "UInt8"]
+- ["Ps8Sequence", "_copyContents"]
+- ["Ps8Sequence", "_copyToContiguousArray"]
+- ["Ps8Sequence", "_customContainsEquatableElement"]
+- ["Ps8Sequence", "_preprocessingPass"]
+- !private ["Ps8Sequence", "arc4random_uniform"]
+- ["Ps8Sequence", "dropFirst"]
+- ["Ps8Sequence", "dropLast"]
+- ["Ps8Sequence", "filter"]
+- ["Ps8Sequence", "forEach"]
+- !private ["Ps8Sequence", "init"]
+- ["Ps8Sequence", "makeIterator"]
+- ["Ps8Sequence", "map"]
+- ["Ps8Sequence", "prefix"]
+- !private ["Ps8Sequence", "size"]
+- ["Ps8Sequence", "split"]
+- ["Ps8Sequence", "suffix"]
+- ["Ps8Sequence", "underestimatedCount"]
+- ["Ps8Sequence", ""]
+- !private ["Ps10Strideable", "init"]
+- !private ["Ps10Strideable", "max"]
+- !private ["Vs6UInt32", "deinit"]
+- !private ["Vs6UInt32", "init"]
+- !private ["Vs5UInt8", "deinit"]
+- !private ["Vs5UInt8", "init"]
+- !private ["Vs5UInt8", "max"]
+- !private ["Ps15UnsignedInteger", "init"]
+- !private ["Ps15UnsignedInteger", "max"]
+- !private ["Ps28_DisallowMixedSignArithmetic", "init"]
+- !private ["Ps28_DisallowMixedSignArithmetic", "max"]
+- !private ["Ps35_ExpressibleByBuiltinBooleanLiteral", "_getBuiltinLogicValue"]
+- !private ["Ps35_ExpressibleByBuiltinIntegerLiteral", "init"]
+- !private ["Ps35_ExpressibleByBuiltinIntegerLiteral", "max"]
+- !private ["Ps9_Hashable", "_getBuiltinLogicValue"]
+- !private ["Ps9_Hashable", "init"]
+- !private ["Ps9_Hashable", "max"]
+- !private ["Ps14_Incrementable", "init"]
+- !private ["Ps14_Incrementable", "max"]
+- !private ["Ps8_Integer", "init"]
+- !private ["Ps8_Integer", "max"]
+- !private ["Ps18_IntegerArithmetic", "init"]
+- !private ["Ps18_IntegerArithmetic", "max"]
+- !private ["Ps21_ObjectiveCBridgeable", "_getBuiltinLogicValue"]
+- !private ["Ps21_ObjectiveCBridgeable", "init"]
+- !private ["Ps21_ObjectiveCBridgeable", "max"]
+- !private ["Ps11_Strideable", "init"]
+- !private ["Ps11_Strideable", "max"]
+- !private ["Ps14_StringElement", "init"]
+- !private ["Ps14_StringElement", "max"]
+- !private ["P11CryptoSwift11_UInt32Type", "init"]
+- !private ["P11CryptoSwift10_UInt8Type", "init"]
+- !private ["P11CryptoSwift10_UInt8Type", "max"]
+depends-nominal:
+- "Vs11AnyIterator"
+- "Vs11AnySequence"
+- !private "P11CryptoSwift22BitshiftOperationsType"
+- !private "Ps17BitwiseOperations"
+- !private "Sb"
+- !private "P11CryptoSwift15ByteConvertible"
+- !private "Ps7CVarArg"
+- !private "Ps10Comparable"
+- !private "Ps29CustomPlaygroundQuickLookable"
+- !private "Ps17CustomReflectable"
+- !private "Ps23CustomStringConvertible"
+- !private "Ps9Equatable"
+- !private "Ps27ExpressibleByBooleanLiteral"
+- !private "Ps27ExpressibleByIntegerLiteral"
+- !private "Ps8Hashable"
+- !private "P11CryptoSwift9Initiable"
+- "Si"
+- !private "Ps7Integer"
+- !private "Ps17IntegerArithmetic"
+- "Ps16IteratorProtocol"
+- !private "Ps25LosslessStringConvertible"
+- !private "Sq"
+- "V11CryptoSwift19RandomBytesSequence"
+- "Ps8Sequence"
+- !private "Ps10Strideable"
+- !private "Vs6UInt32"
+- !private "Vs5UInt8"
+- !private "Ps15UnsignedInteger"
+- !private "Ps28_DisallowMixedSignArithmetic"
+- !private "Ps35_ExpressibleByBuiltinBooleanLiteral"
+- !private "Ps35_ExpressibleByBuiltinIntegerLiteral"
+- !private "Ps9_Hashable"
+- !private "Ps14_Incrementable"
+- !private "Ps8_Integer"
+- !private "Ps18_IntegerArithmetic"
+- !private "Ps21_ObjectiveCBridgeable"
+- !private "Ps11_Strideable"
+- !private "Ps14_StringElement"
+- !private "P11CryptoSwift11_UInt32Type"
+- !private "P11CryptoSwift10_UInt8Type"
+depends-dynamic-lookup:
+depends-external:
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/armv7/Swift.swiftmodule"
+- "/Users/casparwylie/Desktop/Local/Projects/Astral/Pods/Target Support Files/CryptoSwift/CryptoSwift-umbrella.h"
+- "/Users/casparwylie/Desktop/Local/Projects/Astral/Build/Intermediates/Pods.build/Debug-iphoneos/CryptoSwift.build/unextended-module.modulemap"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/armv7/UIKit.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/armv7/Foundation.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/armv7/Darwin.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/armv7/Dispatch.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/armv7/ObjectiveC.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/armv7/CoreGraphics.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/armv7/QuartzCore.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/armv7/CoreImage.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/armv7/SwiftOnoneSupport.swiftmodule"
+interface-hash: "ae01d75e9fddf13b521d15aa47ff12d3"

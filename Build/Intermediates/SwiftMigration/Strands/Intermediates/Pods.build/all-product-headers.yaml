@@ -1,0 +1,87 @@
+{
+  'version': 0,
+  'case-sensitive': 'false',
+  'roots': [
+    {
+      'type': 'directory',
+      'name': "/Users/casparwylie/Desktop/Local Stuff/Projects/Strands/Build/Intermediates/SwiftMigration/Strands/Products/Debug-iphonesimulator/Pods_Strands.framework/Headers",
+      'contents': [
+        {
+          'type': 'file',
+          'name': "Pods-Strands-umbrella.h",
+          'external-contents': "/Users/casparwylie/Desktop/Local Stuff/Projects/Strands/Pods/Target Support Files/Pods-Strands/Pods-Strands-umbrella.h"
+        },
+        {
+          'type': 'file',
+          'name': "Pods_Strands-Swift.h",
+          'external-contents': "/Users/casparwylie/Desktop/Local Stuff/Projects/Strands/Build/Intermediates/SwiftMigration/Strands/Products/Debug-iphonesimulator/Pods_Strands.framework/Headers/Pods_Strands-Swift.h"
+        }
+      ]
+    },
+    {
+      'type': 'directory',
+      'name': "/Users/casparwylie/Desktop/Local Stuff/Projects/Strands/Build/Intermediates/SwiftMigration/Strands/Products/Debug-iphonesimulator/Pods_Strands.framework/Modules",
+      'contents': [
+        {
+          'type': 'file',
+          'name': "module.modulemap",
+          'external-contents': "/Users/casparwylie/Desktop/Local Stuff/Projects/Strands/Build/Intermediates/SwiftMigration/Strands/Intermediates/Pods.build/Debug-iphonesimulator/Pods-Strands.build/module.modulemap"
+        }
+      ]
+    },
+    {
+      'type': 'directory',
+      'name': "/Users/casparwylie/Desktop/Local Stuff/Projects/Strands/Build/Intermediates/SwiftMigration/Strands/Products/Debug-iphonesimulator/Starscream/Starscream.framework/Headers",
+      'contents': [
+        {
+          'type': 'file',
+          'name': "Starscream-Swift.h",
+          'external-contents': "/Users/casparwylie/Desktop/Local Stuff/Projects/Strands/Build/Intermediates/SwiftMigration/Strands/Products/Debug-iphonesimulator/Starscream/Starscream.framework/Headers/Starscream-Swift.h"
+        },
+        {
+          'type': 'file',
+          'name': "Starscream-umbrella.h",
+          'external-contents': "/Users/casparwylie/Desktop/Local Stuff/Projects/Strands/Pods/Target Support Files/Starscream/Starscream-umbrella.h"
+        }
+      ]
+    },
+    {
+      'type': 'directory',
+      'name': "/Users/casparwylie/Desktop/Local Stuff/Projects/Strands/Build/Intermediates/SwiftMigration/Strands/Products/Debug-iphonesimulator/Starscream/Starscream.framework/Modules",
+      'contents': [
+        {
+          'type': 'file',
+          'name': "module.modulemap",
+          'external-contents': "/Users/casparwylie/Desktop/Local Stuff/Projects/Strands/Build/Intermediates/SwiftMigration/Strands/Intermediates/Pods.build/Debug-iphonesimulator/Starscream.build/module.modulemap"
+        }
+      ]
+    },
+    {
+      'type': 'directory',
+      'name': "/Users/casparwylie/Desktop/Local Stuff/Projects/Strands/Build/Intermediates/SwiftMigration/Strands/Products/Debug-iphonesimulator/SwiftyJSON/SwiftyJSON.framework/Headers",
+      'contents': [
+        {
+          'type': 'file',
+          'name': "SwiftyJSON-Swift.h",
+          'external-contents': "/Users/casparwylie/Desktop/Local Stuff/Projects/Strands/Build/Intermediates/SwiftMigration/Strands/Products/Debug-iphonesimulator/SwiftyJSON/SwiftyJSON.framework/Headers/SwiftyJSON-Swift.h"
+        },
+        {
+          'type': 'file',
+          'name': "SwiftyJSON-umbrella.h",
+          'external-contents': "/Users/casparwylie/Desktop/Local Stuff/Projects/Strands/Pods/Target Support Files/SwiftyJSON/SwiftyJSON-umbrella.h"
+        }
+      ]
+    },
+    {
+      'type': 'directory',
+      'name': "/Users/casparwylie/Desktop/Local Stuff/Projects/Strands/Build/Intermediates/SwiftMigration/Strands/Products/Debug-iphonesimulator/SwiftyJSON/SwiftyJSON.framework/Modules",
+      'contents': [
+        {
+          'type': 'file',
+          'name': "module.modulemap",
+          'external-contents': "/Users/casparwylie/Desktop/Local Stuff/Projects/Strands/Build/Intermediates/SwiftMigration/Strands/Intermediates/Pods.build/Debug-iphonesimulator/SwiftyJSON.build/module.modulemap"
+        }
+      ]
+    }
+  ]
+}

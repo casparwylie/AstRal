@@ -32,6 +32,9 @@ import CoreLocation
     @objc optional func chooseFocalComments(_ tapX: Int, tapY: Int);
     @objc optional func postNewComment(_ commentText: String);
     @objc optional func newVoteComment(_ vote: Int, cID: Int);
+    @objc optional func editComment(_ text: String, cID: Int);
+    @objc optional func deleteComment(_ cID: Int);
+    @objc optional func getFocalComments(_ focalID: Int, updateVisited: Bool);
     
 }
 
@@ -42,7 +45,6 @@ class UserInterface1{
     //UI Buttons
     var menuButtons: [UIButton] = [];
     var setPOIbutton: UIButton!;
-    var infoLabel: UIButton!;
     var doneChoosingTapPosButton: UIButton!;
     var cancelChoosingButton: UIButton!;
     var toggleMenuButton: UIButton!;
@@ -58,6 +60,8 @@ class UserInterface1{
     var closeFocalCommentsView: UIButton!;
     var deleteFocalButton: UIButton!;
     var newCommentButton: UIButton!;
+    var cancelEditingButton: UIButton!;
+    var viewOwnFocalCommentsButton: UIButton!;
     
     //UI Text Fields
     var usernameLoginField: UITextField!;
@@ -83,16 +87,22 @@ class UserInterface1{
     var focalCommentsListScrollView: UIScrollView!;
     var upVoteCommentIcons: [Int: UIImageView] = [:];
     var downVoteCommentIcons: [Int: UIImageView] = [:];
+    var editIcons: [Int: UIImageView] = [:];
+    var deleteIcons: [Int: UIImageView] = [:];
+    var infoMsgView: UIView!;
     
     //UI Labels
     var singleFocalFcommentTitle: UILabel!;
     var upVoteCommentLabels: [Int: UILabel] = [:];
     var downVoteCommentLabels: [Int: UILabel] = [:];
+    var commentTextLabels: [Int: UILabel] = [:];
     var helpTextLabel: UILabel!;
     var focalVisitCountLabel: UILabel!;
+    var noFocalsLabel: UILabel!;
+    var infoMsgLabels: [Int: UILabel] = [:];
     
     //General Presets
-    var loggedinUserData = (id: 0, username: "unknown user", fullname: "unknown user", email: "Unknown", password: "");
+    var loggedinUserData = (id: 0, username: "", fullname: "", email: "", password: "");
     var actionDelegate: UIActionDelegate?;
     var tapToPost = false;
     var view: UIView!;
@@ -105,7 +115,7 @@ class UserInterface1{
     var focalCommentListLabelYPos = 5;
     var tagsForBlur = 100;
     let focalIconDest = "focal_icon.png";
-    var posFocalToDeleteRealID = 0;
+    var ownFocalViewingInfoRealID = 0;
     var userFocalsJSON: JSON!;
     var userFocalFirstCommentsJSON: JSON!;
     var focalCommentsJSON: JSON!;
@@ -114,10 +124,15 @@ class UserInterface1{
     var screenSize: CGRect = UIScreen.main.bounds;
     var singleFocalTapRecs: [UITapGestureRecognizer] = [];
     var intentToSignUp = true;
+    var choosingFocalPosOptionsWidth = 81;
+    let newFocalOptionSpaceFromMid = 1;
+    var viewingFocalID = -1;
     var locationFocused = false;
+    var misc = Misc();
     
     //MARK: UI constants
-    let mainTypeFace = "Futura";
+    let mainTypeFace = "Heiti SC";
+    let mainTypeFaceBold = "STHeitiSC-Medium";//Gujarati Sangam MN";////Malayalam Sangam MN//iosfonts.com/
     var viewPageWidth: Int!;
     var viewPageX: Int!;
     var mainFont: UIFont!;
@@ -125,6 +140,7 @@ class UserInterface1{
     let mainFontColor = UIColor.black;
     let infoLabelYPos = 20;
     let buttonSpace = 2;
+    var yMenuPos: Int!;
     let singleFocalIconSize = (width: 60, height: 95);
     let userFocalLabelHeight = 18;
     let formWidth = 250;
@@ -136,6 +152,40 @@ class UserInterface1{
     let buttonCornerRadius = CGFloat(3.0);
     let generalButtonWidth = 40;
     let textFieldSize = (width: 190, height: 40);
+    let infoMessages: [String] = ["Hold up your phone, and tap/drag wherever you want to post it (from camera or map).",//0
+                                  "You can't a post focal until your location is found.",//1
+                                  "Tap 'Done' when you have chosen a position",//2
+                                  "Your password must be longer.",//3
+                                  "Your username must be longer.",//4
+                                  "You cannot post a focal within a building. You can check this by adding a focal via the map.",//5
+                                  "Successfully posted new focal!",//6
+                                  "Successfully Posted!",//7
+                                  "Successfully Deleted!",//8
+                                  "Locating your device, please wait...",//9
+                                  "Please calibrate your phone by twisting it around.",//10
+                                  "Disconnected. Trying to connect...",//11
+                                  "Successfully connected!",//12
+                                  "For the proper experience, go outside.",//13
+                                  "Locating Focals, please wait...",//14
+                                  "Unknown Error. Please try again later.",//15
+                                  "Successfully logged in!",//16
+                                  "Successfully logged out!",//17
+                                  "Successfully updated profile.",//18
+                                  "Successfully signed up. You can login now!",//19
+                                  "That username already exists.",//20
+                                  "That email already exists.",//21
+                                  "You will need to allow location services.",//22
+                                  "Incorrect username or password.", //23
+                                  "The focal must be on the ground.", //24
+                                  "That position is too close to another focal. Either comment on the existing one, or post further away.",//25
+                                  "Editing comment...",//26
+                                  "Successfully edited comment!",//27
+                                  "Successfully deleted comment!",//28
+                                  "Invalid email address.",//29
+                                  "Your internet connection is too weak.",//30
+                                  "UNKNOWN"];//31
+    
+    let colorLanguageMap: [String:[String]] = ["red":["disconnected", "error", "must be", "can't", "already exists", "cannot", "incorrect", "too", "invalid"], "green":["success"]];
     
     
    
@@ -165,12 +215,15 @@ class UserInterface1{
                 if(mapShowing==true){
                     actionDelegate?.toggleMap!(true);
                 }
-                updateInfoLabel("Tap wherever you want to post it (from camera or map)", show: true, hideAfter: 0);
+                updateInfoLabel(0, show: true, hideAfter: 0);
+                renderNewFocalOptions(onForm: false);
                 cancelChoosingButton.isHidden = false;
+                doneChoosingTapPosButton.isHidden = false;
                 toggleMenu(false);
+                menuButtons[0].isHidden = false;
                 self.tapToPost = true;
             }else{
-                updateInfoLabel("You can't a post focal until your location is found.", show: true, hideAfter: 3);
+                updateInfoLabel(1, show: true, hideAfter: 3);
             }
             
         case "Sign Up":
@@ -207,7 +260,9 @@ class UserInterface1{
             
             
         default:
-            toggleMenu(false);
+            if(doneChoosingTapPosButton.isHidden == true){
+                toggleMenu(false);
+            }
         }
     }
     
@@ -227,7 +282,6 @@ class UserInterface1{
                 }else{
                     button.isHidden = true;
                 }
-                
             }
         }
     }
@@ -278,18 +332,22 @@ class UserInterface1{
     
     @objc func signUpSubmitWrapper(_ sender: UIButton!){
         self.view.endEditing(true);
-        var error = "";
+        var error = -1;
         let pLength = signUpFields.password?.text?.characters.count;
         let uLength = signUpFields.username?.text?.characters.count;
         let minLength = 4;
         if(( pLength! < minLength && Int(loggedinUserData.id) == 0 )||(Int(loggedinUserData.id) > 0 && pLength! > 0 && pLength! < minLength )){
-            error = "Your password must be longer.";
+            error = 3;
         }
         if(uLength! < minLength){
-            error = "Your username must be longer.";
+            error = 4;
         }
         
-        if(error == ""){
+        if(misc.emailValid(email: (signUpFields.email?.text)!) == false){
+            error = 29;
+        }
+        
+        if(error == -1){
             actionDelegate?.updateUserDataRequest!((signUpFields.username?.text)!, password: (signUpFields.password?.text)!, fullname: (signUpFields.fullname?.text)!, email: (signUpFields.email?.text)!);
             
                 signUpFields.password?.text = "";
@@ -314,17 +372,19 @@ class UserInterface1{
         }
     }
 
-    
+    var hasChosenPosNewFocal = false;
     func showTapFinishedOptions(){
-        doneChoosingTapPosButton.isHidden = false;
-        updateInfoLabel("Tap 'Done' when you have choosen a position", show: true, hideAfter: 0);
+        hasChosenPosNewFocal = true;
+        removeInfoLabel(messageIDs: [0]);
+        updateInfoLabel(2, show: true, hideAfter: 0);
     }
-    
     
     @objc func cancelTap(){
         doneChoosingTapPosButton.isHidden = true;
-        updateInfoLabel(" ", show: false, hideAfter: 0);
+        removeInfoLabel(messageIDs: [0,2]);
+        hasChosenPosNewFocal = false;
         self.tapToPost = false;
+        menuButtons[0].isHidden = true;
         cancelChoosingButton.isHidden = true;
         commentForm.isHidden = true;
         actionDelegate?.cancelNewFocal!();
@@ -332,15 +392,72 @@ class UserInterface1{
     }
     
     @objc func newFocalComment(){
-        self.tapToPost = false;
-        updateInfoLabel(" ", show: false, hideAfter: 0);
-        doneChoosingTapPosButton.isHidden = true;
-        self.commentForm.isHidden = false;
+        if(hasChosenPosNewFocal == true){
+            hasChosenPosNewFocal = false;
+            self.tapToPost = false;
+            menuButtons[0].isHidden = true;
+            removeInfoLabel(messageIDs: [0,2]);
+            doneChoosingTapPosButton.isHidden = true;
+            renderNewFocalOptions(onForm: true);
+            cancelChoosingButton.isHidden = false;
+            self.commentForm.isHidden = false;
+        }
+    }
+    
+    func renderNewFocalOptions(onForm: Bool){
+        
+        var frameCancel: CGRect!;
+        var fdX = Int(screenSize.width*0.5)-choosingFocalPosOptionsWidth-newFocalOptionSpaceFromMid;
+        var fcX = (onForm == true ? 115 :  Int(screenSize.width*0.5)+newFocalOptionSpaceFromMid);
+        if(loggedinUserData.id != 0){
+            fdX += 33;
+            if(onForm == false){
+                fcX += 33;
+            }
+        }
+        var frameDone = CGRect(x: fdX,y:yMenuPos, width: choosingFocalPosOptionsWidth,height: buttonHeight);
+        if(onForm == true){
+            frameCancel = CGRect(x: fcX, y: 5+textFieldSize.height+10, width: 120, height: 40);
+        }else{
+            frameCancel = CGRect(x:fcX,y: yMenuPos, width: choosingFocalPosOptionsWidth,height: buttonHeight);
+        }
+        
+        if(cancelChoosingButton != nil){
+            cancelChoosingButton.removeFromSuperview();
+            
+        }
+        var light = (mapShowing == true) ? false : true;
+        
+        cancelChoosingButton = addButtonProperties("Cancel", hidden: false, pos: frameCancel,cornerRadius: buttonCornerRadius, blurLight: light);
+        cancelChoosingButton.addTarget(self, action: #selector(cancelTap), for: .touchUpInside);
+        cancelChoosingButton.isHidden = true;
+        
+        if(onForm == false){
+            doneChoosingTapPosButton = addButtonProperties("Done", hidden: true, pos: frameDone ,cornerRadius: buttonCornerRadius, blurLight: light);
+            doneChoosingTapPosButton.addTarget(self, action: #selector(newFocalComment), for: .touchUpInside);
+            self.view.addSubview(doneChoosingTapPosButton);
+            cancelChoosingButton.isHidden = true;
+        }
+        
+        if(onForm == true){
+            commentForm.addSubview(cancelChoosingButton);
+        }else{
+            self.view.addSubview(cancelChoosingButton);
+        }
     }
     
     @objc func newCommentFocal(){
-        self.view.endEditing(true);
-        actionDelegate?.postNewComment!(commentExistingFocalTextfield.text!);
+        let text = commentExistingFocalTextfield.text!;
+        if(text.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines) != ""){
+            self.view.endEditing(true);
+            if(editingComment == 0){
+                actionDelegate?.postNewComment!(text);
+                commentExistingFocalTextfield.text = "";
+            }else{
+                actionDelegate?.editComment!(text, cID: editingComment);
+                cancelEditingComment();
+            }
+        }
     }
     
     @objc func postFocal(){
@@ -350,7 +467,7 @@ class UserInterface1{
     }
     
     @objc func deleteFocalWrap(){
-        actionDelegate?.deleteFocalRequest!(posFocalToDeleteRealID);
+        actionDelegate?.deleteFocalRequest!(ownFocalViewingInfoRealID);
     }
     
     func addUserFocalLabel(_ text: String, areaName: String, localID: Int){
@@ -364,13 +481,16 @@ class UserInterface1{
         focalIconView.frame = CGRect(x: 0, y:  userFocalLabelYPos+12, width: 20, height: 30);
         
         focalTextLabel.text = text;
+        focalTextLabel.tag = localID;
         focalAreaLabel.text = "in " + areaName;
         
-        let uiImageTap = UITapGestureRecognizer(target: self, action: #selector(showSingleFocalInfo));
-        focalIconView.isUserInteractionEnabled = true;
-        focalIconView.addGestureRecognizer(uiImageTap);
+        let uiLabelTap = UITapGestureRecognizer(target: self, action: #selector(showSingleFocalInfo));
+        focalTextLabel.addGestureRecognizer(uiLabelTap);
+        
+        focalTextLabel.isUserInteractionEnabled = true;
+
         focalTextLabel.font = UIFont(name: mainTypeFace, size: 17);
-        focalAreaLabel.font = UIFont(name: mainTypeFace+"-Bold", size: 13);
+        focalAreaLabel.font = UIFont(name: mainTypeFaceBold, size: 13);
         
         userScrollFocalListView.addSubview(focalTextLabel);
         userScrollFocalListView.addSubview(focalAreaLabel);
@@ -380,10 +500,16 @@ class UserInterface1{
     
     @objc func showSingleFocalInfo(_ sender: UITapGestureRecognizer){
         let focalInfoLocalID = sender.view?.tag;
-        posFocalToDeleteRealID = userFocalsJSON[focalInfoLocalID!]["f_id"].int!;
+        ownFocalViewingInfoRealID = userFocalsJSON[focalInfoLocalID!]["f_id"].int!;
         let relTitleText = userFocalFirstCommentsJSON[focalInfoLocalID!]["c_text"].rawString()!;
         singleFocalFcommentTitle.text = relTitleText;
         singleFocalInfoView.isHidden = false;
+    }
+    
+    @objc func getOwnFocalComments(){
+        singleFocalInfoView.isHidden = true;
+        viewingFocalID = ownFocalViewingInfoRealID;
+        actionDelegate?.getFocalComments!(ownFocalViewingInfoRealID, updateVisited: false);
     }
     
     func populateUserFocals(_ focals: JSON, firstComments: JSON){
@@ -395,12 +521,17 @@ class UserInterface1{
         userFocalLabelYPos = 5;
         let labelHeight = 2*userFocalLabelHeight+10;
         userScrollFocalListView.contentSize = CGSize(width: CGFloat(viewPageWidth), height: CGFloat(5+(focals.count*labelHeight)));
-        var count = 0;
-        for focal in focals{
-            let areaName = focals[count]["f_area_name"].rawString()!;
-            self.addUserFocalLabel(firstComments[count]["c_text"].rawString()!, areaName: areaName, localID: count);
-            self.userFocalLabelYPos += 2*self.userFocalLabelHeight + 10;
-            count += 1;
+        if(focals.count == 0){
+            noFocalsLabel.isHidden = false;
+        }else{
+            var count = 0;
+            noFocalsLabel.isHidden = true;
+            for focal in focals{
+                let areaName = focals[count]["f_area_name"].rawString()!;
+                self.addUserFocalLabel(firstComments[count]["c_text"].rawString()!, areaName: areaName, localID: count);
+                self.userFocalLabelYPos += 2*self.userFocalLabelHeight + 10;
+                count += 1;
+            }
         }
     }
     
@@ -416,29 +547,59 @@ class UserInterface1{
     
     var lastCommentHeight = 0;
     var commentInfoHeight = 40;
-    func addFocalCommentLabel(_ text: String, infoString: String, cID: String, downVotes: String, upVotes: String, canVote: Bool){
+    func addFocalCommentLabel(_ text: String, infoString: String, cID: String, downVotes: String, upVotes: String, canVote: Bool, authorName: String, isFirst: Bool){
         let cID = Int(cID);
         let labelWidth = viewPageWidth-20;
-        let labelTextHeight =  getHeightForField(text, font: mainFont, width: CGFloat(labelWidth));
-        lastCommentHeight = Int(labelTextHeight);
-        let commentTextLabel: UILabel  = UILabel(frame: CGRect(x: 5, y: focalCommentListLabelYPos+10, width: labelWidth, height: Int(labelTextHeight)));
+        let commentFont = UIFont(name: mainTypeFaceBold, size: 14);
+        let labelTextHeight =  1 + Int(getHeightForField(text, font: commentFont!, width: CGFloat(labelWidth)));
+        lastCommentHeight = labelTextHeight;
         
-        commentTextLabel.text = text;
-        commentTextLabel.lineBreakMode = NSLineBreakMode.byWordWrapping;
-        commentTextLabel.numberOfLines = Int(labelTextHeight/20)+1;
-        commentTextLabel.font = mainFont;
+        commentTextLabels[cID!] = UILabel(frame: CGRect(x: 5, y: focalCommentListLabelYPos+10, width: labelWidth, height: labelTextHeight));
         
-        let commentInfoLabel: UILabel  = UILabel(frame: CGRect(x: 5, y: focalCommentListLabelYPos+Int(labelTextHeight), width: labelWidth, height: commentInfoHeight));
+        commentTextLabels[cID!]?.text = text;
+        commentTextLabels[cID!]?.numberOfLines = 0;
+        commentTextLabels[cID!]?.lineBreakMode = .byWordWrapping;
+        commentTextLabels[cID!]?.font = commentFont!;
+
+        let commentInfoLabel: UILabel  = UILabel(frame: CGRect(x: 5, y: focalCommentListLabelYPos+labelTextHeight, width: labelWidth, height: commentInfoHeight));
     
         commentInfoLabel.text = infoString;
-        commentInfoLabel.font = UIFont(name: mainTypeFace+"-Bold", size: 11);
+        commentInfoLabel.font = UIFont(name: mainTypeFace, size: 10);
+        
+        
+        let commentOptionY = focalCommentListLabelYPos+Int(labelTextHeight) + 30;
+        
+        if(authorName == loggedinUserData.username && loggedinUserData.id > 0){
+            let editIconX = 60;
+            let editIconSize = 13;
+            
+            let editIcon = UIImage(named: "edit_comment_icon.png");
+            editIcons[cID!] = UIImageView(image: editIcon!);
+            editIcons[cID!]?.tag = cID!;
+            editIcons[cID!]?.frame = CGRect(x: editIconX, y: commentOptionY, width: editIconSize, height: editIconSize);
+            let editTap = UITapGestureRecognizer(target: self, action: #selector(editComment));
+            editIcons[cID!]?.isUserInteractionEnabled = true;
+            editIcons[cID!]?.addGestureRecognizer(editTap);
+            focalCommentsListScrollView.addSubview(editIcons[cID!]!);
+            if(isFirst == false){
+                let deleteIconX = editIconX + editIconSize + 15;
+                
+                let deleteIcon = UIImage(named: "del_comment_icon.png");
+                deleteIcons[cID!] = UIImageView(image: deleteIcon!);
+                deleteIcons[cID!]?.tag = cID!;
+                deleteIcons[cID!]?.frame = CGRect(x: deleteIconX , y: commentOptionY, width: editIconSize, height: editIconSize);
+                let deleteTap = UITapGestureRecognizer(target: self, action: #selector(deleteComment));
+                deleteIcons[cID!]?.isUserInteractionEnabled = true;
+                deleteIcons[cID!]?.addGestureRecognizer(deleteTap);
+                focalCommentsListScrollView.addSubview(deleteIcons[cID!]!);
+            }
+        }
+
         
         let voteIconNamePrefix = canVote ? "v" : "vd";
         let vUpIconDest = voteIconNamePrefix + "_up_icon.png";
         let vDownIconDest = voteIconNamePrefix + "_down_icon.png";
-        
-        
-        let voteIconY = focalCommentListLabelYPos+Int(labelTextHeight) + 30;
+
         let voteIconX = 160;
         let voteIconHeight = 13;
         let voteIconWidth = 18;
@@ -447,12 +608,12 @@ class UserInterface1{
         let vUpIcon = UIImage(named: vUpIconDest);
         upVoteCommentIcons[cID!] = UIImageView(image: vUpIcon!);
         upVoteCommentIcons[cID!]?.tag = cID!;
-        upVoteCommentIcons[cID!]?.frame = CGRect(x: voteIconX+10, y: voteIconY, width: voteIconWidth, height: voteIconHeight);
+        upVoteCommentIcons[cID!]?.frame = CGRect(x: voteIconX+10, y: commentOptionY, width: voteIconWidth, height: voteIconHeight);
         let vUpTap = UITapGestureRecognizer(target: self, action: #selector(voteCommentUp));
         upVoteCommentIcons[cID!]?.isUserInteractionEnabled = canVote;
         upVoteCommentIcons[cID!]?.addGestureRecognizer(vUpTap);
         
-        upVoteCommentLabels[cID!] = UILabel(frame: CGRect(x: voteIconX-30, y: voteIconY, width: 40, height: 10));
+        upVoteCommentLabels[cID!] = UILabel(frame: CGRect(x: voteIconX-30, y: commentOptionY, width: 40, height: 10));
         upVoteCommentLabels[cID!]?.text = upVotes;
         upVoteCommentLabels[cID!]?.font = UIFont(name: mainTypeFace, size: voteCountFontSize);
         upVoteCommentLabels[cID!]?.textAlignment = .right;
@@ -462,28 +623,28 @@ class UserInterface1{
         let vDownIcon = UIImage(named: vDownIconDest);
         downVoteCommentIcons[cID!] = UIImageView(image: vDownIcon!);
         downVoteCommentIcons[cID!]?.tag = cID!;
-        downVoteCommentIcons[cID!]?.frame = CGRect(x: voteIconX+30, y: voteIconY, width: voteIconWidth, height: voteIconHeight);
+        downVoteCommentIcons[cID!]?.frame = CGRect(x: voteIconX+30, y: commentOptionY, width: voteIconWidth, height: voteIconHeight);
         let vDownTap = UITapGestureRecognizer(target: self, action: #selector(voteCommentDown));
         downVoteCommentIcons[cID!]?.isUserInteractionEnabled = canVote;
         downVoteCommentIcons[cID!]?.addGestureRecognizer(vDownTap);
         
-        downVoteCommentLabels[cID!] = UILabel(frame: CGRect(x: voteIconX+50, y: voteIconY, width: 40, height: 10));
+        downVoteCommentLabels[cID!] = UILabel(frame: CGRect(x: voteIconX+50, y: commentOptionY, width: 40, height: 10));
         downVoteCommentLabels[cID!]?.text = downVotes;
         downVoteCommentLabels[cID!]?.font = UIFont(name: mainTypeFace, size: voteCountFontSize);
         downVoteCommentLabels[cID!]?.textAlignment = .left;
         downVoteCommentLabels[cID!]?.textColor = UIColor(red: 0.7882, green: 0.3373, blue: 0.2353, alpha: 1.0);
         
-        let cSeparator = UIView(frame: CGRect(x:0,y:voteIconY+15, width: viewPageWidth-10, height: 1));
+        let cSeparator = UIView(frame: CGRect(x:0,y:commentOptionY+15, width: viewPageWidth-10, height: 1));
         
         cSeparator.layer.borderColor = UIColor.gray.cgColor;
         cSeparator.layer.borderWidth = 1;
         
-        focalCommentsListScrollView.addSubview(commentTextLabel);
-        focalCommentsListScrollView.addSubview(commentInfoLabel);
-        focalCommentsListScrollView.addSubview(upVoteCommentIcons[cID!]!);
-        focalCommentsListScrollView.addSubview(downVoteCommentIcons[cID!]!);
         focalCommentsListScrollView.addSubview(upVoteCommentLabels[cID!]!);
         focalCommentsListScrollView.addSubview(downVoteCommentLabels[cID!]!);
+        focalCommentsListScrollView.addSubview(upVoteCommentIcons[cID!]!);
+        focalCommentsListScrollView.addSubview(downVoteCommentIcons[cID!]!);
+        focalCommentsListScrollView.addSubview(commentTextLabels[cID!]!);
+        focalCommentsListScrollView.addSubview(commentInfoLabel);
         focalCommentsListScrollView.addSubview(cSeparator);
     }
     
@@ -510,6 +671,32 @@ class UserInterface1{
         actionDelegate?.newVoteComment!(vote, cID: cID);
     }
     
+    @objc func deleteComment(_ sender: UITapGestureRecognizer){
+        let cID = sender.view?.tag;
+        actionDelegate?.deleteComment!(cID!);
+        if(editingComment>0){
+            cancelEditingComment();
+        }
+    }
+    
+    var editingComment = 0;
+    @objc func editComment(_ sender: UITapGestureRecognizer){
+        let cID = sender.view?.tag;
+        editingComment = cID!;
+        updateInfoLabel(26, show: true, hideAfter: 4);
+        commentExistingFocalTextfield.text = commentTextLabels[cID!]?.text;
+        newCommentButton.setTitle("Edit", for: UIControlState());
+        cancelEditingButton.isHidden = false;
+    }
+    
+    @objc func cancelEditingComment(){
+        editingComment = 0;
+        removeInfoLabel(messageIDs: [26]);
+        cancelEditingButton.isHidden = true;
+        commentExistingFocalTextfield.text = "";
+        newCommentButton.setTitle("Post", for: UIControlState());
+    }
+    
     func populateFocalCommentsView(_ focalComments: JSON, userCommentVotes: JSON, focalVisitCount: JSON){
         focalCommentsView.isHidden = false;
         lastCommentHeight = 0;
@@ -525,6 +712,7 @@ class UserInterface1{
         var count = 0;
         var nextYPosCalc = 0;
         for _ in focalComments{
+            var isFirst = ( count==focalComments.count-1 ? true : false);
             var canVote = true;
             let userVotes = userCommentVotes[count];
             if(Int(loggedinUserData.id) != 0){
@@ -542,10 +730,14 @@ class UserInterface1{
             let timestamp = focalComments[count]["c_time"].rawString()!;
             let timestampDate = NSDate(timeIntervalSince1970: Double(timestamp)!);
             let dateFormatter = DateFormatter();
-            dateFormatter.dateFormat = " HH:mm dd/mm/yyyy";
+            let currentYear = Calendar.current.component(.year, from: Date());
+            let commentYear = Calendar.current.component(.year, from: timestampDate as Date);
+            let yearString = ( currentYear != commentYear ? "/yyyy": "" );
+            dateFormatter.dateFormat = "HH:mm, dd/MM"+yearString;
             let colloquialTime = dateFormatter.string(from: timestampDate as Date);
-            let infoString = "By " + focalComments[count]["c_u_uname"].rawString()! + ", at " + colloquialTime;
-            addFocalCommentLabel(commentText, infoString: infoString, cID: focalComments[count]["c_id"].rawString()!, downVotes:focalComments[count]["c_v_down"].rawString()!,upVotes:focalComments[count]["c_v_up"].rawString()!, canVote: canVote);
+            let authorName = focalComments[count]["c_u_uname"].rawString()!;
+            let infoString = "By " + authorName + ", at " + colloquialTime;
+            addFocalCommentLabel(commentText, infoString: infoString, cID: focalComments[count]["c_id"].rawString()!, downVotes:focalComments[count]["c_v_down"].rawString()!,upVotes:focalComments[count]["c_v_up"].rawString()!, canVote: canVote, authorName: authorName, isFirst: isFirst);
             nextYPosCalc = lastCommentHeight + commentInfoHeight;
             focalCommentListLabelYPos += nextYPosCalc;
             count += 1;
@@ -684,11 +876,16 @@ class UserInterface1{
         closeSingleFocalInfoView = addButtonProperties("Close", hidden: false, pos: closeSingleFocalInfoRect, cornerRadius: buttonCornerRadius, blurLight: true);
         closeSingleFocalInfoView.addTarget(self, action: #selector(closeSingleFocalInfoViewWrap), for: .touchUpInside);
         
-        let deleteButtonWidth = 70;
-        let deleteFocalButtonRect = CGRect(x: viewPageWidth/2-(deleteButtonWidth/2), y: viewHeight-(buttonHeight+5), width: deleteButtonWidth, height: buttonHeight);
+        let deleteButtonWidth = 130;
+        let deleteFocalButtonRect = CGRect(x: viewPageWidth/2-(deleteButtonWidth)-2, y: viewHeight-(buttonHeight+5), width: deleteButtonWidth, height: buttonHeight);
         
         deleteFocalButton = addButtonProperties("Delete", hidden: false, pos: deleteFocalButtonRect, cornerRadius: buttonCornerRadius, blurLight: true);
         deleteFocalButton.addTarget(self, action: #selector(deleteFocalWrap), for: .touchUpInside);
+        
+        let viewOwnFocalCommentsRect = CGRect(x: (viewPageWidth/2)+2, y: viewHeight-(buttonHeight+5), width: deleteButtonWidth, height: buttonHeight);
+        
+        viewOwnFocalCommentsButton = addButtonProperties("View Comments", hidden: false, pos: viewOwnFocalCommentsRect, cornerRadius: buttonCornerRadius, blurLight: true);
+        viewOwnFocalCommentsButton.addTarget(self, action: #selector(getOwnFocalComments), for: .touchUpInside);
 
     
         let focalIcon = UIImage(named: focalIconDest);
@@ -706,6 +903,7 @@ class UserInterface1{
         singleFocalInfoView.addSubview(closeSingleFocalInfoView);
         singleFocalInfoView.addSubview(deleteFocalButton);
         singleFocalInfoView.addSubview(focalIconView);
+        singleFocalInfoView.addSubview(viewOwnFocalCommentsButton);
         
         self.view.addSubview(singleFocalInfoView);
         
@@ -723,8 +921,14 @@ class UserInterface1{
         closeFocalCommentsView = addButtonProperties("Close", hidden: false, pos: closefocalCommentsViewRect, cornerRadius: buttonCornerRadius, blurLight: true);
         closeFocalCommentsView.addTarget(self, action: #selector(hideAnyViews), for: .touchUpInside);
         
+        let cancelEditingWidth = 130;
+        let cancelEditingRect = CGRect(x: viewPageWidth-(closeButtonWidth+5)-cancelEditingWidth-5, y: 5, width: cancelEditingWidth, height: closeButtonHeight);
+        cancelEditingButton = addButtonProperties("Cancel Editing...", hidden: false, pos:cancelEditingRect, cornerRadius: buttonCornerRadius, blurLight: true);
+        cancelEditingButton.addTarget(self, action: #selector(cancelEditingComment), for: .touchUpInside);
+        cancelEditingButton.isHidden = true;
+        
         focalVisitCountLabel = UILabel(frame: CGRect(x: 5, y: 5, width: 250, height: 25));
-        focalVisitCountLabel.font = UIFont(name: mainTypeFace+"-Bold", size: 11);
+        focalVisitCountLabel.font = UIFont(name: mainTypeFaceBold, size: 14);
         
         let commentExistingFocalTFWidth = viewPageWidth-55;
         commentExistingFocalTextfield = addTextFieldProperties(CGRect(x: 5, y: closeButtonHeight+10, width: commentExistingFocalTFWidth, height: textFieldSize.height));
@@ -739,12 +943,11 @@ class UserInterface1{
         focalCommentsView.addSubview(commentExistingFocalTextfield);
         focalCommentsView.addSubview(closeFocalCommentsView);
         focalCommentsView.addSubview(focalCommentsListScrollView);
+        focalCommentsView.addSubview(cancelEditingButton);
         self.view.addSubview(focalCommentsView);
         
     }
-    
 
-    
     func renderUserFocalsView(){
         let viewHeight = 370;
         userFocalListView = UIView(frame: CGRect(x:viewPageX,y: defaultFormY + buttonSpace,width: viewPageWidth, height: viewHeight));
@@ -753,12 +956,20 @@ class UserInterface1{
         userScrollFocalListView.contentSize = CGSize(width: CGFloat(viewPageWidth), height: CGFloat(viewHeight));
         userFocalListView.insertSubview(processBlurEffect(userFocalListView.bounds, cornerRadiusVal: buttonCornerRadius, light: true), at: 0);
 
+        noFocalsLabel = UILabel(frame: CGRect(x: 0, y: 130, width: viewPageWidth, height: buttonHeight));
+        noFocalsLabel.text = "You have no focals.";
+        noFocalsLabel.isHidden = true;
+        noFocalsLabel.textAlignment = .center;
+        noFocalsLabel.font = UIFont(name: mainTypeFace, size: 19);
+        noFocalsLabel.textColor = UIColor.gray;
+        
         let closeUserFocalViewRect = CGRect(x: viewPageWidth-(closeButtonWidth+5), y: 5, width: closeButtonWidth, height: closeButtonHeight);
         closeUserFocalView = addButtonProperties("Close", hidden: false, pos: closeUserFocalViewRect, cornerRadius: buttonCornerRadius, blurLight: true);
         closeUserFocalView.addTarget(self, action: #selector(hideAnyViews), for: .touchUpInside);
 
         userFocalListView.addSubview(closeUserFocalView);
         userFocalListView.addSubview(userScrollFocalListView);
+        userFocalListView.addSubview(noFocalsLabel);
         self.view.addSubview(userFocalListView);
     }
     
@@ -766,7 +977,7 @@ class UserInterface1{
         let viewHeight = 370;
         helpView = UIView(frame: CGRect(x:viewPageX,y: defaultFormY + buttonSpace,width: viewPageWidth, height: viewHeight));
         helpView.insertSubview(processBlurEffect(helpView.bounds, cornerRadiusVal: buttonCornerRadius, light: true), at: 0);
-        helpScrollView = UIScrollView(frame: CGRect(x:5,y: 25,width: viewPageWidth, height: viewHeight-20));
+        helpScrollView = UIScrollView(frame: CGRect(x:5,y: 25,width: viewPageWidth, height: viewHeight-40));
         helpScrollView.contentSize = CGSize(width: CGFloat(viewPageWidth), height: CGFloat(viewHeight));
         helpView.isHidden = true;
         
@@ -783,7 +994,7 @@ class UserInterface1{
     
     func renderHelpText(text: String){
         let labelTextHeight = getHeightForField(text, font: mainFont, width: CGFloat(200));
-        helpTextLabel = UILabel(frame: CGRect(x: 5, y: 10, width: 280, height: labelTextHeight));
+        helpTextLabel = UILabel(frame: CGRect(x: 5, y: -80, width: viewPageWidth-25, height: Int(labelTextHeight)));
         helpTextLabel.lineBreakMode = NSLineBreakMode.byWordWrapping;
         helpTextLabel.textAlignment = .center;
         helpTextLabel.text = text;
@@ -809,21 +1020,16 @@ class UserInterface1{
     }
     
     func addFocalTapRecognizer(){
-        
         let tapRec: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(wrapTapped));
         tapRec.numberOfTapsRequired = 1;
         self.view.addGestureRecognizer(tapRec);
-        
     }
     
     func addFocalPanRecognizer(){
-        
         let panRec = UIPanGestureRecognizer(target: self, action: #selector(wrapPanned));
         self.view.addGestureRecognizer(panRec);
-        
     }
     
-
     func processBlurEffect(_ bounds: CGRect, cornerRadiusVal: CGFloat, light: Bool) -> UIVisualEffectView {
         
         var style = UIBlurEffectStyle.light;
@@ -840,12 +1046,6 @@ class UserInterface1{
         blurEffect.tag = tagsForBlur;
         tagsForBlur += 1;
         return blurEffect;
-    }
-    
-    func renderLabel(){
-        let infoLabelRect = CGRect(x: 5,y: 20,width: Int(screenSize.width)-10,height: buttonHeight);
-        infoLabel = addButtonProperties(" ", hidden: true, pos: infoLabelRect, cornerRadius: buttonCornerRadius, blurLight: true);
-        self.view.addSubview(infoLabel);
     }
     
     func addButtonProperties(_ title: String, hidden: Bool, pos: CGRect, cornerRadius: CGFloat, blurLight: Bool) ->UIButton{
@@ -872,20 +1072,6 @@ class UserInterface1{
         return textField;
     }
     
-    func renderGeneralButtons(){
-        
-        let doneChoosingTapPosButtonRect = CGRect(x: Int(screenSize.width)-buttonSpace - (2*generalButtonWidth + 5),y: infoLabelYPos + buttonHeight + buttonSpace,width: generalButtonWidth, height: buttonHeight);
-        doneChoosingTapPosButton = addButtonProperties("Done", hidden: true, pos: doneChoosingTapPosButtonRect,cornerRadius: buttonCornerRadius, blurLight: true);
-        doneChoosingTapPosButton.addTarget(self, action: #selector(newFocalComment), for: .touchUpInside);
-        self.view.addSubview(doneChoosingTapPosButton);
-        
-        
-        let cancelChoosingButtonRect = CGRect(x: Int(screenSize.width-5) - generalButtonWidth,y: infoLabelYPos + buttonHeight + buttonSpace,width: generalButtonWidth, height: buttonHeight);
-        cancelChoosingButton = addButtonProperties("Cancel", hidden: true, pos: cancelChoosingButtonRect,cornerRadius: buttonCornerRadius, blurLight: true);
-        cancelChoosingButton.addTarget(self, action: #selector(cancelTap), for: .touchUpInside);
-        self.view.addSubview(cancelChoosingButton);
-    }
-    
     //MARK:  menu setups
     func renderMenu(_ loggedin: Bool){
         if(menuButtons.count>0){
@@ -903,11 +1089,10 @@ class UserInterface1{
             blurLight = false;
         }
         
-        
-        let yPos = Int(screenSize.height) - buttonHeight - 60;
+        let yPos = yMenuPos;
         let toggleWidth = 50;
         let halfTW = toggleWidth/2;
-        let toggleMenuRect  = CGRect(x: Int(screenSize.width*0.5)-halfTW,y: yPos+toggleWidth-7, width: toggleWidth,height: toggleWidth);
+        let toggleMenuRect  = CGRect(x: Int(screenSize.width*0.5)-halfTW,y: yPos!+toggleWidth-7, width: toggleWidth,height: toggleWidth);
         toggleMenuButton = addButtonProperties(" ", hidden: false, pos: toggleMenuRect, cornerRadius: CGFloat(halfTW), blurLight: blurLight);
         toggleMenuButton.addTarget(self, action: #selector(buttonAction), for: .touchUpInside);
         self.view.addSubview(toggleMenuButton);
@@ -942,11 +1127,11 @@ class UserInterface1{
                 useXPos = 172;
                 buttonWidthUse = 82;
                 hidden = true;
-                useYPos = useYPos + vertYPos;
+                useYPos = useYPos! + vertYPos;
             }else{
                 
             }
-            let buttonRect = CGRect(x: useXPos,y: useYPos, width: buttonWidthUse,height: buttonHeight);
+            let buttonRect = CGRect(x: useXPos,y: useYPos!, width: buttonWidthUse,height: buttonHeight);
             
             
             menuButtons.append(addButtonProperties(buttonTitle, hidden: hidden, pos: buttonRect, cornerRadius: buttonCornerRadius, blurLight: blurLight));
@@ -958,24 +1143,107 @@ class UserInterface1{
 
     }
     
+    func renderMsgLabel(){
+        let infoMsgViewRect = CGRect(x:0,y: 0,width: Int(screenSize.width),height: buttonHeight);
+        infoMsgView = UIView(frame: infoMsgViewRect);
+        let closeTap = UITapGestureRecognizer(target:self,action: #selector(wrapCloseInfoMsg));
+        infoMsgView.addGestureRecognizer(closeTap);
+        infoMsgView.isHidden = true;
+        self.view.addSubview(infoMsgView);
+    }
+    
+    @objc func wrapCloseInfoMsg(){
+        infoMsgView.isHidden = true;
+    }
+    
     //MARK: Update label contents
-    func updateInfoLabel(_ newText: String, show: Bool, hideAfter: Int){
+    /*func updateInfoLabel(_ newText: String, show: Bool, hideAfter: Int){
 
-        infoLabel.setTitle(newText, for: UIControlState());
-        
-        if(show == false){
-            infoLabel.isHidden = true;
+        if((infoMsgLabel.text?.characters.count)! > 0){
+            infoMsgLabel.text = infoMsgLabel.text! + "; " + newText;
         }else{
-            infoLabel.isHidden = false;
+            infoMsgLabel.text = newText;
+        }
+        if(show == false){
+            infoMsgView.isHidden = true;
+        }else{
+            infoMsgView.isHidden = false;
         }
         if(hideAfter != 0){
             let timeToHide = DispatchTime.now() + .seconds(hideAfter)
             DispatchQueue.main.asyncAfter(deadline: timeToHide, execute: {
-                self.infoLabel.isHidden = true;
+                self.infoMsgView.isHidden = true;
             })
+        }
+    }*/
+
+    func updateInfoLabel(_ messageID: Int, show: Bool, hideAfter: Int){
+        if(infoMsgLabels[messageID] == nil){
+            infoMsgView.isHidden = false;
+            var totalHeight = buttonHeight*(infoMsgLabels.count);
+            infoMsgLabels[messageID] = UILabel(frame: CGRect(x: 0, y: 20+totalHeight, width: Int(screenSize.width), height: buttonHeight));
+            infoMsgLabels[messageID]?.lineBreakMode = NSLineBreakMode.byWordWrapping;
+            infoMsgLabels[messageID]?.textAlignment = .center;
+            infoMsgLabels[messageID]?.text = infoMessages[messageID];
+            infoMsgLabels[messageID]?.font = mainFont;
+            infoMsgLabels[messageID]?.numberOfLines = 2;
+            
+            let actualColors: [String:UIColor] = ["red": UIColor(red: 0.9294, green: 0.3843, blue: 0.2863, alpha: 1.0), "green": UIColor(red: 0.4745, green:0.847, blue:0.5568, alpha: 1.0),"none": UIColor(red: 0.7098, green: 0.9059, blue: 1, alpha: 1.0)];
+            
+            
+            var colorFound = false;
+            for color in colorLanguageMap{
+                for val in colorLanguageMap[color.key]!{
+                    if((infoMessages[messageID].lowercased().range(of:val)) != nil){
+                        infoMsgLabels[messageID]?.backgroundColor = actualColors[color.key];
+                        colorFound = true;
+                        break;
+                    }
+                }
+            }
+            if(colorFound == false){
+                infoMsgLabels[messageID]?.backgroundColor = actualColors["none"];
+            }
+ 
+            infoMsgView.addSubview(infoMsgLabels[messageID]!);
+            let labelToRemoveByMsgID = messageID;
+            totalHeight = buttonHeight*(infoMsgLabels.count);
+            
+            changeInfoMsgHeight(totalHeight: totalHeight);
+            
+            if(hideAfter != 0){
+                let timeToHide = DispatchTime.now() + .seconds(hideAfter);
+                DispatchQueue.main.asyncAfter(deadline: timeToHide, execute: {
+                    self.removeInfoLabel(messageIDs: [labelToRemoveByMsgID]);
+                });
+            }
         }
     }
     
+    func changeInfoMsgHeight(totalHeight: Int){
+        infoMsgView.backgroundColor = infoMsgLabels.first?.value.backgroundColor;
+        infoMsgView.frame = CGRect(x: 0,y:0,width: Int(screenSize.width),height: totalHeight);
+    }
+
+    func removeInfoLabel(messageIDs: [Int]){
+        for m in messageIDs{
+            if(infoMsgLabels[m] != nil){
+                infoMsgLabels[m]?.removeFromSuperview();
+                infoMsgLabels.removeValue(forKey: m);
+                var totalHeight = buttonHeight*(infoMsgLabels.count);
+                changeInfoMsgHeight(totalHeight: totalHeight);
+                if(infoMsgLabels.count == 0){
+                    infoMsgView.isHidden = true;
+                }
+                var yCount = 20;
+                for l in infoMsgLabels{
+                    infoMsgLabels[l.key]?.frame = CGRect(x: 0, y: yCount, width: Int(screenSize.width), height: buttonHeight);
+                    yCount = yCount + buttonHeight;
+                }
+            }
+        }
+    }
+
     
     //MARK: Render all items
     func renderAll(_ view: UIView){
@@ -984,21 +1252,21 @@ class UserInterface1{
         textFieldFont = UIFont(name: mainTypeFace, size: 15);
         viewPageWidth = Int(screenSize.width)-10;
         viewPageX = Int(screenSize.width/2)-viewPageWidth/2;
+        yMenuPos = Int(screenSize.height) - buttonHeight - 60;
         
-        
-        renderLabel();
         renderMenu(false);
-        renderGeneralButtons();
         addFocalPanRecognizer();
         addFocalTapRecognizer();
         renderLoginForm();
         renderSignUpForm();
-        renderFocalCommentsView();
         renderPostCommentForm();
         renderProfileView();
         renderHelpView();
         renderUserFocalsView();
         renderSingleFocalInfoView();
+        renderFocalCommentsView();
+        renderMsgLabel();
+        renderNewFocalOptions(onForm: false);
     }
     
 }

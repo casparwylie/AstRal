@@ -31,6 +31,9 @@ import SwiftyJSON
     @objc optional func votedCommentResponse(_ responseStr: String);
     @objc optional func keyDataResponse(_ responseStr: String);
     @objc optional func userKnowsFocalsResponse(_ responseStr: String);
+    @objc optional func editCommentResponse(_ responseStr: String);
+    @objc optional func deletedCommentResponse(_ responseStr: String);
+    @objc optional func saveBackgroundCoordsResponse(_ responseStr: String);
     
 }
 
@@ -92,9 +95,14 @@ class NetworkSocketHandler{
                     self.networkResponseDelegate?.votedCommentResponse!(responseString);
                 case "keyData":
                     self.networkResponseDelegate?.keyDataResponse!(responseString);
-                
                 case "userKnowsFocals":
                     self.networkResponseDelegate?.userKnowsFocalsResponse!(responseString);
+                case "editedComment":
+                    self.networkResponseDelegate?.editCommentResponse!(responseString);
+                case "deletedComment":
+                    self.networkResponseDelegate?.deletedCommentResponse!(responseString);
+                case "backgroundCoords":
+                    self.networkResponseDelegate?.saveBackgroundCoordsResponse!(responseString);
                 default:
                     print("No response");
 
@@ -161,9 +169,9 @@ class NetworkRequestHandler{
 
     }
     
-    func getFocalComments(_ socket: WebSocket, focalID: Int){
+    func getFocalComments(_ socket: WebSocket, focalID: Int, updateVisited: Bool){
 
-        let organisedRelevantData = ["focalID": String(focalID)];
+        let organisedRelevantData = ["focalID": String(focalID), "updateVisited": String(updateVisited)];
         NetworkSocketHandler().sendRelevantJsonRequest(socket,requestName: "focalCommentsRequest", relevantData: organisedRelevantData);
     }
     
@@ -183,15 +191,15 @@ class NetworkRequestHandler{
         let organisedRelevantData  = ["":""];
         NetworkSocketHandler().sendRelevantJsonRequest(socket,requestName: "keyDataRequest", relevantData:organisedRelevantData);
     }
-    /*func userKnowsFocal(_ socket: WebSocket, focalID: Int, uuid: String){
-        print(uuid);
-        let organisedRelevantData  = ["focalID":String(focalID), "uuid":uuid];
-        NetworkSocketHandler().sendRelevantJsonRequest(socket,requestName: "newFocalNotifiedRequest", relevantData:organisedRelevantData);
+    
+    func editComment(_ socket: WebSocket, text: String, cID: Int){
+        let organisedRelevantData  = ["newText":text,"commentID":String(cID)];
+        NetworkSocketHandler().sendRelevantJsonRequest(socket,requestName: "editCommentRequest", relevantData:organisedRelevantData);
     }
     
-    func getUserKnowsFocals(_ socket: WebSocket, uuid: String){
-        let organisedRelevantData  = ["uuid":uuid];
-        NetworkSocketHandler().sendRelevantJsonRequest(socket,requestName: "userKnowsFocalsRequest", relevantData:organisedRelevantData);
-    }*/
+    func deleteComment(_ socket: WebSocket, cID: Int){
+        let organisedRelevantData  = ["commentID":String(cID)];
+        NetworkSocketHandler().sendRelevantJsonRequest(socket,requestName: "deleteCommentRequest", relevantData:organisedRelevantData);
+    }
     
 }

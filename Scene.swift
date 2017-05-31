@@ -37,7 +37,6 @@ class Scene{
         sceneView = SCNView(frame: frameRect);
         sceneView.backgroundColor = UIColor(white: 1, alpha: 0.0);
         frameView.addSubview(sceneView);
-        
         sceneView.scene = scene;
         sceneView.audioEngine.mainMixerNode.outputVolume = 0.0;
     }
@@ -83,57 +82,88 @@ class Scene{
         
     }
     
-    
+    var limCheckParentCount = 0;
+    var focalTapID = -1;
+    func checkCorrectParentNodeFocal(node: SCNNode){
+        if(node.name?.characters.first == "f"){
+            let startIndex = node.name?.index((node.name?.startIndex)!, offsetBy: 2);
+            focalTapID = Int((node.name?.substring(from: startIndex!))!)!;
+        }else{
+            if(limCheckParentCount > 4){
+                limCheckParentCount = 0;
+                focalTapID = -1;
+            }else{
+                checkCorrectParentNodeFocal(node: node.parent!);
+            }
+            limCheckParentCount += 1;
+        }
+    }
     func DAEtoSCNNodeWithText(_ filepath:String, focalDisplayInfo: (comment: String, author: String)) -> SCNNode {
         
+        var fontSize = 0;
+        let chars = focalDisplayInfo.comment.characters.count;
+        if(chars > 200){
+            fontSize = 16;
+        }else if(chars >= 100 && chars <= 200){
+            fontSize = 20;
+        }else if(chars >= 50 && chars <= 100){
+            fontSize = 25;
+        }else if(chars >= 10 && chars <= 50){
+            fontSize = 30;
+        }else if(chars < 10){
+            fontSize = 35;
+        }
+        
         //setup text nodes
+        
         let singNode = SCNNode();
         let localScene = SCNScene(named: filepath);
         let singNodeArray = localScene!.rootNode.childNodes;
-        let midText = ((focalDisplayInfo.author != " ") ? " \n\n By " : "");
-        let displayText = focalDisplayInfo.comment + midText + focalDisplayInfo.author;
-        //let textRenderFront = SCNText(string: displayText, extrusionDepth:1);
-        //let textRenderBack = SCNText(string: displayText, extrusionDepth:1);
+        let displayText = focalDisplayInfo.comment;
+        let textRenderFront = SCNText(string: displayText, extrusionDepth:1);
+        let textRenderBack = SCNText(string: displayText, extrusionDepth:1);
+        textRenderBack.font = UIFont(name: "STHeitiSC-Medium", size: CGFloat(fontSize));
+        textRenderFront.font = UIFont(name: "STHeitiSC-Medium", size: CGFloat(fontSize));
         
         //attribute option setting
-        //let textContainerFrame = CGRect(x: 0,y: 0, width: 270, height: 100);
-        //let textIsWrapped = true;
-        //let textColor = UIColor.black;
-        //_ = SCNVector3(0.07,0.07,0.07);
+        let textContainerFrame = CGRect(x: 0,y: 0, width: 230, height: 150);
+        let textIsWrapped = true;
+        let textColor = UIColor.black;
+        let textNodeScale = SCNVector3(0.07,0.07,0.07);
         
         //setting attributes
-        /*textRenderFront.isWrapped = textIsWrapped;
+        textRenderFront.isWrapped = textIsWrapped;
          textRenderFront.firstMaterial?.diffuse.contents = textColor;
          textRenderFront.containerFrame = textContainerFrame;
          textRenderFront.alignmentMode = kCAAlignmentCenter;
          textRenderBack.isWrapped = textIsWrapped;
          textRenderBack.firstMaterial?.diffuse.contents = textColor;
          textRenderBack.containerFrame = textContainerFrame;
-         textRenderBack.alignmentMode = kCAAlignmentCenter;*/
+         textRenderBack.alignmentMode = kCAAlignmentCenter;
         
         //build DAE scene as node by each component
         for childNode in singNodeArray {
-            /*
+            
              let textNodeFront = SCNNode(geometry: textRenderFront);
              let textNodeBack = SCNNode(geometry: textRenderBack);
              
              textNodeFront.scale = textNodeScale;
-             textNodeFront.position = SCNVector3(x: 1, y: 23, z: -4); //x = depth , z = lateral
+             textNodeFront.position = SCNVector3(x: 1.9, y: 17, z: -4); //x = depth , z = lateral
              textNodeFront.eulerAngles = SCNVector3(x: 0, y: 1.5708, z: 0);
              
              textNodeBack.scale = textNodeScale;
-             textNodeBack.position = SCNVector3(x: -1.5, y: 23, z: -23);
+             textNodeBack.position = SCNVector3(x: -0.9, y: 17, z: -21);
              textNodeBack.eulerAngles = SCNVector3(x: 0, y: -1.5708, z: 0);
              
              singNode.addChildNode(textNodeFront);
-             singNode.addChildNode(textNodeBack);*/
+             singNode.addChildNode(textNodeBack);
             singNode.addChildNode(childNode as SCNNode);
             
         }
         return singNode;
     }
     
-    func renderSingleFocal(_ renderID: Int, mapPoint: MKMapPoint, currMapPoint: MKMapPoint, focalDisplayInfo: (String, String), render: Bool, tempFocal: Bool, vec: SCNVector3){
+    func renderSingleFocal(_ renderID: Int, mapPoint: MKMapPoint, currMapPoint: MKMapPoint, focalDisplayInfo: (String, String), render: Bool, tempFocal: Bool, vec: SCNVector3, tapMoveTemp: Bool){
         
         var focalVec: SCNVector3!;
         if(vec.x + vec.z + vec.y == 0){
@@ -153,7 +183,7 @@ class Scene{
                 focals.append(focal);
                 self.scene.rootNode.addChildNode(focals.last!);
             }else{
-                tempFocalNode = DAEtoSCNNodeWithText("focalpost.dae", focalDisplayInfo: focalDisplayInfo);
+                tempFocalNode = DAEtoSCNNodeWithText("tempfocalpost.dae", focalDisplayInfo: focalDisplayInfo);
                 tempFocalNode.name = "f_" + String(renderID);
                 tempFocalNode.position = focalVec;
                 self.scene.rootNode.addChildNode(tempFocalNode);
@@ -161,12 +191,20 @@ class Scene{
             
         }else{
             //update focal position
+            let moveToAction = SCNAction.move(to: focalVec, duration: 1);
             if(tempFocal == false){
                 //print(focals);
-                let moveToAction = SCNAction.move(to: focalVec, duration: 1);
-                focals[renderID].runAction(moveToAction);
+                if(focals.count > 0){
+                    if(focals.indices.contains(renderID) == true){
+                        focals[renderID].runAction(moveToAction);
+                    }
+                }
             }else{
-                tempFocalNode.position = focalVec;
+                if(tapMoveTemp == true){
+                    tempFocalNode.position = focalVec;
+                }else{
+                    tempFocalNode.runAction(moveToAction);
+                }
             }
         }
     }
@@ -179,7 +217,6 @@ class Scene{
                       render: Bool, currentHeading: CLHeading, toHide: String, comments: JSON, tempFocalMapPoint: MKMapPoint){
         
         let toHideAsArr = toHide.components(separatedBy: ",");
-        
         //remove previous area / region data
         if(render==true){
             if (focals.count != 0) {
@@ -191,8 +228,7 @@ class Scene{
         }
         if(tempFocalNode != nil){
             let tempFocalDisplayInfo = (comment: " ", author: " ");
-            renderSingleFocal(-1,mapPoint: tempFocalMapPoint, currMapPoint: currMapPoint, focalDisplayInfo: tempFocalDisplayInfo, render: false, tempFocal: true, vec: SCNVector3Zero);
-            
+            renderSingleFocal(-1,mapPoint: tempFocalMapPoint, currMapPoint: currMapPoint, focalDisplayInfo: tempFocalDisplayInfo, render: false, tempFocal: true, vec: SCNVector3Zero,tapMoveTemp: false);
         }
         
         //render or move new focals
@@ -200,7 +236,7 @@ class Scene{
         for mPoint in mapPoints{
             let focalDisplayInfo = (comment: comments[i]["c_text"].rawString()!, author: comments[i]["c_u_uname"].rawString()!);
             
-            renderSingleFocal(i,mapPoint: mPoint, currMapPoint: currMapPoint, focalDisplayInfo: focalDisplayInfo, render: render, tempFocal: false, vec: SCNVector3Zero);
+            renderSingleFocal(i,mapPoint: mPoint, currMapPoint: currMapPoint, focalDisplayInfo: focalDisplayInfo, render: render, tempFocal: false, vec: SCNVector3Zero,tapMoveTemp: false);
             //hide non-street visible focals
             for hideID in toHideAsArr{
                 if (hideID == String(i)){
@@ -213,7 +249,6 @@ class Scene{
             i += 1;
         }
     }
-    
 
     //MARK: gyro to scene camera mapping, on new gyro/motion data (delegated call from ViewController)
     func rotateCamera(_ gyroData: CMAttitude){

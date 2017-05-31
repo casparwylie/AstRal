@@ -31,14 +31,13 @@ class Location: NSObject, CLLocationManagerDelegate{
     var ui: UserInterface1!;
     
     //MARK: setup location service and request permission
-    func initLocation() -> Bool{
+    func initLocation(){
             locManager.distanceFilter = 3;
             locManager.desiredAccuracy = kCLLocationAccuracyBest;
             locManager.startUpdatingLocation();
             //todo : check headingAvaliable
             locManager.startUpdatingHeading();
             locManager.delegate = self;
-            return true;
     }
     
     
@@ -115,10 +114,10 @@ class Location: NSObject, CLLocationManagerDelegate{
                 locManager.startUpdatingLocation();
                 break;
             case .restricted:
-                self.ui.updateInfoLabel("You will need to allow location services.", show: true, hideAfter: 10);
+                self.ui.updateInfoLabel(22, show: true, hideAfter: 10);
                 break;
             case .denied:
-                self.ui.updateInfoLabel("You will need to allow location services.", show: true, hideAfter: 10);
+                self.ui.updateInfoLabel(22, show: true, hideAfter: 10);
                 break;
             default:
                 break;

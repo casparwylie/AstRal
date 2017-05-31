@@ -1,0 +1,250 @@
+### Swift dependencies file v0 ###
+provides-top-level:
+- "CipherOperationOnBlock"
+- "BlockMode"
+- "=="
+provides-nominal:
+- "O11CryptoSwift9BlockMode"
+provides-member:
+- ["O11CryptoSwift9BlockMode", ""]
+provides-dynamic-lookup:
+depends-top-level:
+- "BlockMode"
+- !private "PCBCModeWorker"
+- "BlockModeWorker"
+- !private "CFBModeWorker"
+- !private "ECBModeWorker"
+- !private "??"
+- !private "CTRModeWorker"
+- "=="
+- "UInt8"
+- "CipherOperationOnBlock"
+- "Array"
+- "BlockModeOptions"
+- !private "OFBModeWorker"
+- !private "CBCModeWorker"
+depends-member:
+- !private ["Sa", "Element"]
+- ["Sa", "deinit"]
+- !private ["Ps23BidirectionalCollection", "Element"]
+- !private ["Ps22BidirectionalIndexable", "Element"]
+- !private ["P11CryptoSwift22BitshiftOperationsType", "hashValue"]
+- !private ["Ps17BitwiseOperations", "hashValue"]
+- ["O11CryptoSwift9BlockMode", "=="]
+- ["O11CryptoSwift9BlockMode", "Array"]
+- ["O11CryptoSwift9BlockMode", "BlockModeOptions"]
+- ["O11CryptoSwift9BlockMode", "BlockModeWorker"]
+- ["O11CryptoSwift9BlockMode", "CBC"]
+- !private ["O11CryptoSwift9BlockMode", "CBCModeWorker"]
+- ["O11CryptoSwift9BlockMode", "CFB"]
+- !private ["O11CryptoSwift9BlockMode", "CFBModeWorker"]
+- ["O11CryptoSwift9BlockMode", "CTR"]
+- !private ["O11CryptoSwift9BlockMode", "CTRModeWorker"]
+- ["O11CryptoSwift9BlockMode", "CipherOperationOnBlock"]
+- ["O11CryptoSwift9BlockMode", "ECB"]
+- !private ["O11CryptoSwift9BlockMode", "ECBModeWorker"]
+- ["O11CryptoSwift9BlockMode", "OFB"]
+- !private ["O11CryptoSwift9BlockMode", "OFBModeWorker"]
+- ["O11CryptoSwift9BlockMode", "PCBC"]
+- !private ["O11CryptoSwift9BlockMode", "PCBCModeWorker"]
+- ["O11CryptoSwift9BlockMode", "UInt8"]
+- ["O11CryptoSwift9BlockMode", "_toAnyHashable"]
+- ["O11CryptoSwift9BlockMode", "deinit"]
+- ["O11CryptoSwift9BlockMode", "hashValue"]
+- ["O11CryptoSwift9BlockMode", "options"]
+- ["O11CryptoSwift9BlockMode", "worker"]
+- !private ["V11CryptoSwift16BlockModeOptions", "Element"]
+- !private ["V11CryptoSwift16BlockModeOptions", "InitializationVectorRequired"]
+- !private ["V11CryptoSwift16BlockModeOptions", "PaddingRequired"]
+- ["V11CryptoSwift16BlockModeOptions", "deinit"]
+- !private ["P11CryptoSwift15BlockModeWorker", "init"]
+- !private ["P11CryptoSwift15ByteConvertible", "hashValue"]
+- ["V11CryptoSwift13CBCModeWorker", "deinit"]
+- !private ["V11CryptoSwift13CBCModeWorker", "init"]
+- ["V11CryptoSwift13CFBModeWorker", "deinit"]
+- !private ["V11CryptoSwift13CFBModeWorker", "init"]
+- !private ["P11CryptoSwift11CSArrayType", "Element"]
+- ["V11CryptoSwift13CTRModeWorker", "deinit"]
+- !private ["V11CryptoSwift13CTRModeWorker", "init"]
+- !private ["Ps7CVarArg", "Element"]
+- !private ["Ps7CVarArg", "hashValue"]
+- !private ["Ps10Collection", "Element"]
+- !private ["Ps10Comparable", "hashValue"]
+- !private ["Ps28CustomDebugStringConvertible", "Element"]
+- !private ["Ps29CustomPlaygroundQuickLookable", "hashValue"]
+- !private ["Ps17CustomReflectable", "Element"]
+- !private ["Ps17CustomReflectable", "hashValue"]
+- !private ["Ps23CustomStringConvertible", "Element"]
+- !private ["Ps23CustomStringConvertible", "hashValue"]
+- ["V11CryptoSwift13ECBModeWorker", "deinit"]
+- !private ["V11CryptoSwift13ECBModeWorker", "init"]
+- ["Ps9Equatable", "CBC"]
+- !private ["Ps9Equatable", "CBCModeWorker"]
+- ["Ps9Equatable", "CFB"]
+- !private ["Ps9Equatable", "CFBModeWorker"]
+- ["Ps9Equatable", "CTR"]
+- !private ["Ps9Equatable", "CTRModeWorker"]
+- ["Ps9Equatable", "ECB"]
+- !private ["Ps9Equatable", "ECBModeWorker"]
+- !private ["Ps9Equatable", "Element"]
+- !private ["Ps9Equatable", "InitializationVectorRequired"]
+- ["Ps9Equatable", "OFB"]
+- !private ["Ps9Equatable", "OFBModeWorker"]
+- ["Ps9Equatable", "PCBC"]
+- !private ["Ps9Equatable", "PCBCModeWorker"]
+- !private ["Ps9Equatable", "PaddingRequired"]
+- ["Ps9Equatable", "_toAnyHashable"]
+- ["Ps9Equatable", "hashValue"]
+- ["Ps9Equatable", ""]
+- !private ["Ps25ExpressibleByArrayLiteral", "Element"]
+- !private ["Ps25ExpressibleByArrayLiteral", "InitializationVectorRequired"]
+- !private ["Ps25ExpressibleByArrayLiteral", "PaddingRequired"]
+- !private ["Ps27ExpressibleByIntegerLiteral", "hashValue"]
+- ["Ps8Hashable", "CBC"]
+- !private ["Ps8Hashable", "CBCModeWorker"]
+- ["Ps8Hashable", "CFB"]
+- !private ["Ps8Hashable", "CFBModeWorker"]
+- ["Ps8Hashable", "CTR"]
+- !private ["Ps8Hashable", "CTRModeWorker"]
+- ["Ps8Hashable", "ECB"]
+- !private ["Ps8Hashable", "ECBModeWorker"]
+- ["Ps8Hashable", "OFB"]
+- !private ["Ps8Hashable", "OFBModeWorker"]
+- ["Ps8Hashable", "PCBC"]
+- !private ["Ps8Hashable", "PCBCModeWorker"]
+- ["Ps8Hashable", "_toAnyHashable"]
+- ["Ps8Hashable", "hashValue"]
+- ["Ps8Hashable", ""]
+- !private ["Ps9Indexable", "Element"]
+- !private ["Ps13IndexableBase", "Element"]
+- !private ["P11CryptoSwift9Initiable", "hashValue"]
+- ["Si", "deinit"]
+- !private ["Si", "hashValue"]
+- !private ["Ps7Integer", "hashValue"]
+- !private ["Ps17IntegerArithmetic", "hashValue"]
+- !private ["Ps10MirrorPath", "hashValue"]
+- !private ["Ps17MutableCollection", "Element"]
+- !private ["Ps16MutableIndexable", "Element"]
+- ["V11CryptoSwift13OFBModeWorker", "deinit"]
+- !private ["V11CryptoSwift13OFBModeWorker", "init"]
+- !private ["Ps9OptionSet", "Element"]
+- !private ["Ps9OptionSet", "InitializationVectorRequired"]
+- !private ["Ps9OptionSet", "PaddingRequired"]
+- ["Sq", "deinit"]
+- ["V11CryptoSwift14PCBCModeWorker", "deinit"]
+- !private ["V11CryptoSwift14PCBCModeWorker", "init"]
+- !private ["P11CryptoSwift27RandomAccessBlockModeWorker", "init"]
+- !private ["Ps22RandomAccessCollection", "Element"]
+- !private ["Ps21RandomAccessIndexable", "Element"]
+- !private ["Ps26RangeReplaceableCollection", "Element"]
+- !private ["Ps25RangeReplaceableIndexable", "Element"]
+- !private ["Ps16RawRepresentable", "Element"]
+- !private ["Ps16RawRepresentable", "InitializationVectorRequired"]
+- !private ["Ps16RawRepresentable", "PaddingRequired"]
+- !private ["Ps8Sequence", "Element"]
+- !private ["Ps10SetAlgebra", "Element"]
+- !private ["Ps10SetAlgebra", "InitializationVectorRequired"]
+- !private ["Ps10SetAlgebra", "PaddingRequired"]
+- !private ["Ps13SignedInteger", "hashValue"]
+- !private ["Ps12SignedNumber", "hashValue"]
+- !private ["Ps10Strideable", "hashValue"]
+- !private ["Ps14_ArrayProtocol", "Element"]
+- !private ["Ps24_DestructorSafeContainer", "Element"]
+- !private ["Ps35_ExpressibleByBuiltinIntegerLiteral", "hashValue"]
+- ["Ps9_Hashable", "CBC"]
+- !private ["Ps9_Hashable", "CBCModeWorker"]
+- ["Ps9_Hashable", "CFB"]
+- !private ["Ps9_Hashable", "CFBModeWorker"]
+- ["Ps9_Hashable", "CTR"]
+- !private ["Ps9_Hashable", "CTRModeWorker"]
+- ["Ps9_Hashable", "ECB"]
+- !private ["Ps9_Hashable", "ECBModeWorker"]
+- ["Ps9_Hashable", "OFB"]
+- !private ["Ps9_Hashable", "OFBModeWorker"]
+- ["Ps9_Hashable", "PCBC"]
+- !private ["Ps9_Hashable", "PCBCModeWorker"]
+- ["Ps9_Hashable", "_toAnyHashable"]
+- ["Ps9_Hashable", "hashValue"]
+- ["Ps9_Hashable", ""]
+- !private ["Ps14_Incrementable", "hashValue"]
+- !private ["Ps8_Integer", "hashValue"]
+- !private ["Ps18_IntegerArithmetic", "hashValue"]
+- !private ["Ps21_ObjectiveCBridgeable", "Element"]
+- !private ["Ps21_ObjectiveCBridgeable", "hashValue"]
+- !private ["Ps14_SignedInteger", "hashValue"]
+- !private ["Ps11_Strideable", "hashValue"]
+depends-nominal:
+- "Sa"
+- !private "Ps23BidirectionalCollection"
+- !private "Ps22BidirectionalIndexable"
+- !private "P11CryptoSwift22BitshiftOperationsType"
+- !private "Ps17BitwiseOperations"
+- "O11CryptoSwift9BlockMode"
+- "V11CryptoSwift16BlockModeOptions"
+- !private "P11CryptoSwift15BlockModeWorker"
+- !private "P11CryptoSwift15ByteConvertible"
+- "V11CryptoSwift13CBCModeWorker"
+- "V11CryptoSwift13CFBModeWorker"
+- !private "P11CryptoSwift11CSArrayType"
+- "V11CryptoSwift13CTRModeWorker"
+- !private "Ps7CVarArg"
+- !private "Ps10Collection"
+- !private "Ps10Comparable"
+- !private "Ps28CustomDebugStringConvertible"
+- !private "Ps29CustomPlaygroundQuickLookable"
+- !private "Ps17CustomReflectable"
+- !private "Ps23CustomStringConvertible"
+- "V11CryptoSwift13ECBModeWorker"
+- "Ps9Equatable"
+- !private "Ps25ExpressibleByArrayLiteral"
+- !private "Ps27ExpressibleByIntegerLiteral"
+- "Ps8Hashable"
+- !private "Ps9Indexable"
+- !private "Ps13IndexableBase"
+- !private "P11CryptoSwift9Initiable"
+- "Si"
+- !private "Ps7Integer"
+- !private "Ps17IntegerArithmetic"
+- !private "Ps10MirrorPath"
+- !private "Ps17MutableCollection"
+- !private "Ps16MutableIndexable"
+- "V11CryptoSwift13OFBModeWorker"
+- !private "Ps9OptionSet"
+- "Sq"
+- "V11CryptoSwift14PCBCModeWorker"
+- !private "P11CryptoSwift27RandomAccessBlockModeWorker"
+- !private "Ps22RandomAccessCollection"
+- !private "Ps21RandomAccessIndexable"
+- !private "Ps26RangeReplaceableCollection"
+- !private "Ps25RangeReplaceableIndexable"
+- !private "Ps16RawRepresentable"
+- !private "Ps8Sequence"
+- !private "Ps10SetAlgebra"
+- !private "Ps13SignedInteger"
+- !private "Ps12SignedNumber"
+- !private "Ps10Strideable"
+- !private "Ps14_ArrayProtocol"
+- !private "Ps24_DestructorSafeContainer"
+- !private "Ps35_ExpressibleByBuiltinIntegerLiteral"
+- "Ps9_Hashable"
+- !private "Ps14_Incrementable"
+- !private "Ps8_Integer"
+- !private "Ps18_IntegerArithmetic"
+- !private "Ps21_ObjectiveCBridgeable"
+- !private "Ps14_SignedInteger"
+- !private "Ps11_Strideable"
+depends-dynamic-lookup:
+depends-external:
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/arm64/Swift.swiftmodule"
+- "/Users/casparwylie/Desktop/Local/Projects/Astral/Pods/Target Support Files/CryptoSwift/CryptoSwift-umbrella.h"
+- "/Users/casparwylie/Desktop/Local/Projects/Astral/Build/Intermediates/Pods.build/Debug-iphoneos/CryptoSwift.build/unextended-module.modulemap"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/arm64/UIKit.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/arm64/Foundation.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/arm64/Darwin.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/arm64/Dispatch.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/arm64/ObjectiveC.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/arm64/CoreGraphics.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/arm64/QuartzCore.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/arm64/CoreImage.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/arm64/SwiftOnoneSupport.swiftmodule"
+interface-hash: "0b9d09bec25f42849b2d7952fac10925"

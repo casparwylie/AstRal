@@ -38,7 +38,7 @@ class Camera{
         return capDevice!;
     }
     
-    func startCameraFeed(_ capDevice: AVCaptureDevice, view: UIView) -> Bool {
+    func startCameraFeed(_ capDevice: AVCaptureDevice, view: UIView){
         
         //setup device data input, or error
         let getInput: AVCaptureDeviceInput?;
@@ -56,6 +56,5 @@ class Camera{
         previewLayer?.frame = view.layer.frame;
         captureSession.startRunning();
         
-        return true;
     }
 }

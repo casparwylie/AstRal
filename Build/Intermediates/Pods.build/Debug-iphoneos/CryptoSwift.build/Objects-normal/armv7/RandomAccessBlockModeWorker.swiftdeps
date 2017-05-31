@@ -1,0 +1,37 @@
+### Swift dependencies file v0 ###
+provides-top-level:
+- "RandomAccessBlockModeWorker"
+provides-nominal:
+- "P11CryptoSwift27RandomAccessBlockModeWorker"
+provides-member:
+- ["P11CryptoSwift27RandomAccessBlockModeWorker", ""]
+provides-dynamic-lookup:
+depends-top-level:
+- "BlockModeWorker"
+- "UInt"
+- "RandomAccessBlockModeWorker"
+depends-member:
+- ["P11CryptoSwift15BlockModeWorker", "UInt"]
+- ["P11CryptoSwift15BlockModeWorker", "counter"]
+- ["P11CryptoSwift15BlockModeWorker", ""]
+- ["P11CryptoSwift27RandomAccessBlockModeWorker", "UInt"]
+- ["P11CryptoSwift27RandomAccessBlockModeWorker", "counter"]
+- ["P11CryptoSwift27RandomAccessBlockModeWorker", ""]
+depends-nominal:
+- "P11CryptoSwift15BlockModeWorker"
+- "P11CryptoSwift27RandomAccessBlockModeWorker"
+depends-dynamic-lookup:
+depends-external:
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/armv7/Swift.swiftmodule"
+- "/Users/casparwylie/Desktop/Local/Projects/Astral/Pods/Target Support Files/CryptoSwift/CryptoSwift-umbrella.h"
+- "/Users/casparwylie/Desktop/Local/Projects/Astral/Build/Intermediates/Pods.build/Debug-iphoneos/CryptoSwift.build/unextended-module.modulemap"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/armv7/UIKit.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/armv7/Foundation.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/armv7/Darwin.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/armv7/Dispatch.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/armv7/ObjectiveC.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/armv7/CoreGraphics.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/armv7/QuartzCore.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/armv7/CoreImage.swiftmodule"
+- "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/armv7/SwiftOnoneSupport.swiftmodule"
+interface-hash: "b6a464de2c2076c012f77cded1d8c786"

@@ -1,0 +1,114 @@
+{
+  'version': 0,
+  'case-sensitive': 'false',
+  'roots': [
+    {
+      'type': 'directory',
+      'name': "/Users/casparwylie/Desktop/Local/Projects/Astral/Build/Intermediates/ArchiveIntermediates/Astral/BuildProductsPath/Release-iphoneos/CryptoSwift/CryptoSwift.framework/Headers",
+      'contents': [
+        {
+          'type': 'file',
+          'name': "CryptoSwift-Swift.h",
+          'external-contents': "/Users/casparwylie/Desktop/Local/Projects/Astral/Build/Intermediates/ArchiveIntermediates/Astral/BuildProductsPath/Release-iphoneos/CryptoSwift/CryptoSwift.framework/Headers/CryptoSwift-Swift.h"
+        },
+        {
+          'type': 'file',
+          'name': "CryptoSwift-umbrella.h",
+          'external-contents': "/Users/casparwylie/Desktop/Local/Projects/Astral/Pods/Target Support Files/CryptoSwift/CryptoSwift-umbrella.h"
+        }
+      ]
+    },
+    {
+      'type': 'directory',
+      'name': "/Users/casparwylie/Desktop/Local/Projects/Astral/Build/Intermediates/ArchiveIntermediates/Astral/BuildProductsPath/Release-iphoneos/CryptoSwift/CryptoSwift.framework/Modules",
+      'contents': [
+        {
+          'type': 'file',
+          'name': "module.modulemap",
+          'external-contents': "/Users/casparwylie/Desktop/Local/Projects/Astral/Build/Intermediates/ArchiveIntermediates/Astral/IntermediateBuildFilesPath/Pods.build/Release-iphoneos/CryptoSwift.build/module.modulemap"
+        }
+      ]
+    },
+    {
+      'type': 'directory',
+      'name': "/Users/casparwylie/Desktop/Local/Projects/Astral/Build/Intermediates/ArchiveIntermediates/Astral/BuildProductsPath/Release-iphoneos/Pods_Astral.framework/Headers",
+      'contents': [
+        {
+          'type': 'file',
+          'name': "Pods-Astral-umbrella.h",
+          'external-contents': "/Users/casparwylie/Desktop/Local/Projects/Astral/Pods/Target Support Files/Pods-Astral/Pods-Astral-umbrella.h"
+        },
+        {
+          'type': 'file',
+          'name': "Pods_Astral-Swift.h",
+          'external-contents': "/Users/casparwylie/Desktop/Local/Projects/Astral/Build/Intermediates/ArchiveIntermediates/Astral/BuildProductsPath/Release-iphoneos/Pods_Astral.framework/Headers/Pods_Astral-Swift.h"
+        }
+      ]
+    },
+    {
+      'type': 'directory',
+      'name': "/Users/casparwylie/Desktop/Local/Projects/Astral/Build/Intermediates/ArchiveIntermediates/Astral/BuildProductsPath/Release-iphoneos/Pods_Astral.framework/Modules",
+      'contents': [
+        {
+          'type': 'file',
+          'name': "module.modulemap",
+          'external-contents': "/Users/casparwylie/Desktop/Local/Projects/Astral/Build/Intermediates/ArchiveIntermediates/Astral/IntermediateBuildFilesPath/Pods.build/Release-iphoneos/Pods-Astral.build/module.modulemap"
+        }
+      ]
+    },
+    {
+      'type': 'directory',
+      'name': "/Users/casparwylie/Desktop/Local/Projects/Astral/Build/Intermediates/ArchiveIntermediates/Astral/BuildProductsPath/Release-iphoneos/Starscream/Starscream.framework/Headers",
+      'contents': [
+        {
+          'type': 'file',
+          'name': "Starscream-Swift.h",
+          'external-contents': "/Users/casparwylie/Desktop/Local/Projects/Astral/Build/Intermediates/ArchiveIntermediates/Astral/BuildProductsPath/Release-iphoneos/Starscream/Starscream.framework/Headers/Starscream-Swift.h"
+        },
+        {
+          'type': 'file',
+          'name': "Starscream-umbrella.h",
+          'external-contents': "/Users/casparwylie/Desktop/Local/Projects/Astral/Pods/Target Support Files/Starscream/Starscream-umbrella.h"
+        }
+      ]
+    },
+    {
+      'type': 'directory',
+      'name': "/Users/casparwylie/Desktop/Local/Projects/Astral/Build/Intermediates/ArchiveIntermediates/Astral/BuildProductsPath/Release-iphoneos/Starscream/Starscream.framework/Modules",
+      'contents': [
+        {
+          'type': 'file',
+          'name': "module.modulemap",
+          'external-contents': "/Users/casparwylie/Desktop/Local/Projects/Astral/Build/Intermediates/ArchiveIntermediates/Astral/IntermediateBuildFilesPath/Pods.build/Release-iphoneos/Starscream.build/module.modulemap"
+        }
+      ]
+    },
+    {
+      'type': 'directory',
+      'name': "/Users/casparwylie/Desktop/Local/Projects/Astral/Build/Intermediates/ArchiveIntermediates/Astral/BuildProductsPath/Release-iphoneos/SwiftyJSON/SwiftyJSON.framework/Headers",
+      'contents': [
+        {
+          'type': 'file',
+          'name': "SwiftyJSON-Swift.h",
+          'external-contents': "/Users/casparwylie/Desktop/Local/Projects/Astral/Build/Intermediates/ArchiveIntermediates/Astral/BuildProductsPath/Release-iphoneos/SwiftyJSON/SwiftyJSON.framework/Headers/SwiftyJSON-Swift.h"
+        },
+        {
+          'type': 'file',
+          'name': "SwiftyJSON-umbrella.h",
+          'external-contents': "/Users/casparwylie/Desktop/Local/Projects/Astral/Pods/Target Support Files/SwiftyJSON/SwiftyJSON-umbrella.h"
+        }
+      ]
+    },
+    {
+      'type': 'directory',
+      'name': "/Users/casparwylie/Desktop/Local/Projects/Astral/Build/Intermediates/ArchiveIntermediates/Astral/BuildProductsPath/Release-iphoneos/SwiftyJSON/SwiftyJSON.framework/Modules",
+      'contents': [
+        {
+          'type': 'file',
+          'name': "module.modulemap",
+          'external-contents': "/Users/casparwylie/Desktop/Local/Projects/Astral/Build/Intermediates/ArchiveIntermediates/Astral/IntermediateBuildFilesPath/Pods.build/Release-iphoneos/SwiftyJSON.build/module.modulemap"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+version: "Apple Swift version 3.0.2 (swiftlang-800.0.63 clang-800.0.42.1)"
+options: "51b2ab675a9263d01ee891fdfa880b69"
+build_time: [549275523, 442236000]
+inputs:
+  "/Users/casparwylie/Desktop/Local/Projects/Astral/Astral/AppDelegate.swift": [547498973, 0]
+  "/Users/casparwylie/Desktop/Local/Projects/Astral/Network.swift": [549058338, 0]
+  "/Users/casparwylie/Desktop/Local/Projects/Astral/Map.swift": [549049042, 0]
+  "/Users/casparwylie/Desktop/Local/Projects/Astral/Astral/ViewController.swift": [549198204, 0]
+  "/Users/casparwylie/Desktop/Local/Projects/Astral/Misc.swift": [548153920, 0]
+  "/Users/casparwylie/Desktop/Local/Projects/Astral/Scene.swift": [549049738, 0]
+  "/Users/casparwylie/Desktop/Local/Projects/Astral/Location.swift": [548878826, 0]
+  "/Users/casparwylie/Desktop/Local/Projects/Astral/UserInterface.swift": [549060373, 0]
+  "/Users/casparwylie/Desktop/Local/Projects/Astral/Camera.swift": [548949900, 0]

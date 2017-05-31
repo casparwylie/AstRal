@@ -31,7 +31,8 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
     let appDelegate = UIApplication.shared.delegate as! AppDelegate;
     
     //MARK: general data
-    var loggedinUserData = (id: 0, username: "Unknown", fullname: "Unknown", email: "Unknown", password: "");
+    var loggedinUserData = (id: 0, username: "", fullname: "", email: "", password: "");
+    var loggedOutUserData = (id: 0, username: "", fullname: "", email: "", password: "");
     var firstRender = true;
     var thresholdDistRerender = 25.0;
     var oldRenderPosition: CLLocation!;
@@ -51,7 +52,15 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
     var focalsNotifiedAlready: [Int] = [];
     let uuid = String(describing: UIDevice.current.identifierForVendor!);
     var focalDistAndBearingsFromUser: [(distance: Int, bearing: Int)] = [];
-    
+    var uniqueUsername: String!;
+    var isStationary = false;
+    var renderCount = 0;
+    var regionReqCount = 0;
+    let firstAppLaunch = UserDefaults.standard.string(forKey: "firstAppLaunch");
+    let userSavedLoggedinData = UserDefaults.standard.array(forKey: "savedUser");
+    let backgroundCoords = UserDefaults.standard.array(forKey: "backgroundCoords");
+    let ignoredBackgroundCoords = UserDefaults.standard.array(forKey: "ignoreBackgroundCoords");
+    var lastBackCoordPos = UserDefaults.standard.array(forKey: "lastBackCoordPos");
     
     func toggleMap(_ isAddingFocal: Bool) {
         map.tapMapToPost = isAddingFocal;
@@ -68,25 +77,36 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
     
     //MARK: network request and response middleware functionality
     func renderRelFocals(_ newRender: Bool){
-        
-        let pxVals = self.map.collectPXfromMapPoints(mapPoints, currMapPoint: currMapPoint);
-        var currPointPX = pxVals.currPointPX;
-        var focalValsPX = pxVals.focalValsPX;
-        
-        
-        self.map.getMapAsIMG({(image) in
+        renderCount += 1;
+        if(isStationary == false || renderCount < 3){
+            let pxVals = self.map.collectPXfromMapPoints(mapPoints, currMapPoint: currMapPoint);
+            var currPointPX = pxVals.currPointPX;
+            var focalValsPX = pxVals.focalValsPX;
             
-            let toHideAsSTR = OpenCVWrapper.buildingDetect( &focalValsPX, image: image, currPoint: &currPointPX, pxLength: Int32(pxVals.pxLength), forBuildingTap: false);
+            let pxValsForUserInBuilding = self.map.collectPXfromMapPoints([currMapPoint], currMapPoint: currMapPoint);
+            var currValPX = pxValsForUserInBuilding.focalValsPX;
             
-            self.scene.renderFocals(self.mapPoints, currMapPoint: self.currMapPoint,
-                                    render: newRender, currentHeading: self.currentHeading, toHide: toHideAsSTR!, comments: self.focalFirstComments, tempFocalMapPoint: self.tempFocalMapPoint);
-        });
+            self.map.getMapAsIMG({(image) in
+        
+                let distNoBuilding = Int(OpenCVWrapper.buildingDetect( &currValPX, image: image, currPoint: &currPointPX, pxLength: Int32(pxValsForUserInBuilding.pxLength), forBuildingTap: true));
+                
+                if(distNoBuilding! <= 2 && distNoBuilding! >= 0){
+                    self.userInterface.updateInfoLabel(13, show: true, hideAfter: 5);
+                }
+                
+                let toHideAsSTR = OpenCVWrapper.buildingDetect( &focalValsPX, image: image, currPoint: &currPointPX, pxLength: Int32(pxVals.pxLength), forBuildingTap: false);
+                
+                self.scene.renderFocals(self.mapPoints, currMapPoint: self.currMapPoint,
+                                        render: newRender, currentHeading: self.currentHeading, toHide: toHideAsSTR!, comments: self.focalFirstComments, tempFocalMapPoint: self.tempFocalMapPoint);
+            });
+        }
     }
     
     //MARK: region data updating requests and response middleware process
     func regionDataUpdate(_ currentLocation: CLLocation, currentHeading: CLHeading){
         
-        // let currentLocation = CLLocation(latitude: CLLocationDegrees(51.776701), longitude: CLLocationDegrees(-1.265575));
+        
+        //let currentLocation = CLLocation(latitude: CLLocationDegrees(51.776701), longitude: CLLocationDegrees(-1.265575));
         self.currentLocation = currentLocation;
         self.currMapPoint = MKMapPointForCoordinate(currentLocation.coordinate);
         self.currentHeading = currentHeading;
@@ -95,14 +115,13 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
         }
         
         if(self.currentLocation.horizontalAccuracy > 10){
-            self.userInterface.updateInfoLabel("Locating Focals, please wait...", show: true, hideAfter: 3);
+            self.userInterface.updateInfoLabel(14, show: true, hideAfter: 3);
         }
         
         if(gotKeyData == false){
             networkRequest.getKeyData(self.networkWebSocket);
             // networkRequest.getUserKnowsFocals(self.networkWebSocket, uuid: uuid);
         }
-        
         
         self.focalDistAndBearingsFromUser = [];
         var count = 0;
@@ -117,32 +136,6 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
             count += 1;
         }
         
-        /* var focalsToNotify: [Int] = [];
-         if(userKnownFocals != nil){
-         for focalID in focalsClose{
-         var found = false;
-         for knownFocalID in userKnownFocals{
-         if(knownFocalID.1["f_id"].int! == focalID){
-         found = true;
-         break;
-         }
-         }
-         if(found == false){
-         focalsToNotify.append(focalID);
-         networkRequest.userKnowsFocal(networkWebSocket, focalID: focalID, uuid: uuid);
-         }
-         }
-         networkRequest.getUserKnowsFocals(self.networkWebSocket, uuid: uuid);
-         if(focalsToNotify.count > 0 && UIApplication.shared.applicationState != .active){
-         print("BG");
-         let notificationMsg = (focalsToNotify.count > 1 ? "There are " + String(focalsToNotify.count) + " nearby!" : "There is a focal nearby!");
-         let notification = UILocalNotification();
-         notification.alertBody = notificationMsg;
-         notification.soundName = "Default";
-         UIApplication.shared.presentLocalNotificationNow(notification);
-         
-         }
-         }*/
         
         let coordinateRegion: MKCoordinateRegion = self.map.centerToLocationRegion(currentLocation);
         self.map.mapView.setRegion(coordinateRegion, animated: false);
@@ -153,6 +146,7 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
         }else if(self.scene.focals.count>0){
             renderRelFocals(false);
         }
+        regionReqCount += 1;
         
     }
     
@@ -196,13 +190,10 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
     func renderTempFocalFromMap(_ mapTapCoord: CLLocationCoordinate2D){
         let focalLocation = CLLocation(latitude: mapTapCoord.latitude, longitude: mapTapCoord.longitude);
 
-        self.latestDesiredFocalLocation = focalLocation;
-        self.tempFocalMapPoint = MKMapPointForCoordinate(focalLocation.coordinate);
-        chooseLatestTempPos(vec: SCNVector3Zero);
-        
+        let mapPoint = MKMapPointForCoordinate(focalLocation.coordinate);
+        chooseLatestTempPos(vec: SCNVector3Zero, coordLocation: focalLocation, mapPoint: mapPoint);
     }
-    
-    
+
     func renderTempFocalFromUI(_ tapX: Int, tapY: Int){
 
         let positionsFound = scene.sceneView.hitTest(CGPoint(x: tapX, y: tapY), options: nil);
@@ -215,23 +206,26 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
                 vecRotate = misc.rotateAroundPoint(vecRotate, angle: 90);
                 let mapPointT = (x: vecRotate.x + currMapPoint.x, y: vecRotate.y + currMapPoint.y);
                 let mapPoint = MKMapPoint(x: mapPointT.x, y: mapPointT.y);
-                self.tempFocalMapPoint = mapPoint;
                 let coordPoint2d = MKCoordinateForMapPoint(mapPoint);
                 let coordLocation = CLLocation(latitude: coordPoint2d.latitude, longitude: coordPoint2d.longitude);
-                self.latestDesiredFocalLocation = coordLocation;
-                chooseLatestTempPos(vec: vecFound!);
+                
+                chooseLatestTempPos(vec: vecFound!, coordLocation: coordLocation, mapPoint: mapPoint);
             }
+        }else if(addTempFirst == true){
+            userInterface.updateInfoLabel(24, show: true, hideAfter: 2);
         }
         
     }
-    
-    
     //render temp focal visually
-    func chooseLatestTempPos(vec: SCNVector3){
-        self.map.updateSinglePin(self.latestDesiredFocalLocation, temp: true);
-        self.userInterface.showTapFinishedOptions();
-        self.scene.renderSingleFocal(0, mapPoint: tempFocalMapPoint, currMapPoint: currMapPoint, focalDisplayInfo: (" ", " "), render: self.addTempFirst, tempFocal: true, vec: vec);
-        self.addTempFirst = false;
+    func chooseLatestTempPos(vec: SCNVector3, coordLocation: CLLocation, mapPoint: MKMapPoint){
+        if(map.focalIsolated(mapPoint: mapPoint, mapPoints: mapPoints)){
+            self.tempFocalMapPoint = mapPoint;
+            self.latestDesiredFocalLocation = coordLocation;
+            self.map.updateSinglePin(self.latestDesiredFocalLocation, temp: true);
+            self.userInterface.showTapFinishedOptions();
+            self.scene.renderSingleFocal(0, mapPoint: tempFocalMapPoint, currMapPoint: currMapPoint, focalDisplayInfo: (" ", " "), render: self.addTempFirst, tempFocal: true, vec: vec, tapMoveTemp: true);
+            self.addTempFirst = false;
+        }
     }
 
     func addFocalReady(_ comment: String){
@@ -253,16 +247,18 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
             CLGeocoder().reverseGeocodeLocation(self.latestDesiredFocalLocation, completionHandler: {(placemarks,err) in
                 var areaName = "N/A";
                 if((placemarks?.count)!>0){
-                    let placemark = (placemarks?[0])! as CLPlacemark;
-                    areaName = placemark.thoroughfare! + ", " + placemark.locality!;
+                    if(placemarks?[0] != nil){
+                        let placemark = (placemarks?[0])! as CLPlacemark;
+                        areaName = placemark.thoroughfare! + ", " + placemark.locality!;
+                    }
                 }
                 
-                let focalInfo = (comment: comment, author: self.loggedinUserData.username, userID: self.loggedinUserData.id, areaName: areaName);
+                let focalInfo = (comment: comment, author: self.userInterface.loggedinUserData.username, userID: self.userInterface.loggedinUserData.id, areaName: areaName);
                 self.networkRequest.addFocal(self.networkWebSocket, focalLocation: self.latestDesiredFocalLocation,focalDisplayInfo: focalInfo);
             });
 
         }else{
-            self.userInterface.updateInfoLabel("You cannot post a focal within a building. Try again.", show: true, hideAfter: 4);
+            self.userInterface.updateInfoLabel(5, show: true, hideAfter: 4);
         }
         
      });
@@ -273,9 +269,9 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
         
         let responseJSON = networkSocket.processResponseAsJSON(responseStr);
         let success: Bool = (responseJSON["success"]=="true" ? true: false);
-        var responseMessage = "Unknown Error. Please try again later.";
+        var responseMessage = 15;
         if(success == true){
-            responseMessage = "Successfully posted new focal!";
+            responseMessage = 6;
         }
         self.networkRequest.getRegionData(self.networkWebSocket, currLocation: currentLocation);
         self.userInterface.updateInfoLabel(responseMessage, show: true, hideAfter: 4);
@@ -290,7 +286,7 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
     
     //MARK: retrieve user owned focals request and response middleware process
     func requestUserFocals() {
-        networkRequest.getUserFocals(self.networkWebSocket, userID: self.loggedinUserData.id);
+        networkRequest.getUserFocals(self.networkWebSocket, userID: self.userInterface.loggedinUserData.id);
     }
     
     func userFocalsResponse(_ responseStr: String) {
@@ -301,9 +297,13 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
     
     //MARK: new user sign up / profile edit request and response middleware process
     func updateUserDataRequest(_ username: String, password: String, fullname: String, email: String) {
-        let pass = password.sha512();
-        print(pass);
-        networkRequest.updateUserDataRequest(self.networkWebSocket, username: username, password: pass, fullname: fullname, email: email, userID: loggedinUserData.id);
+        var pass: String!;
+        if(password != ""){
+            pass = password.sha512();
+        }else{
+            pass = "";
+        }
+        networkRequest.updateUserDataRequest(self.networkWebSocket, username: username, password: pass, fullname: fullname, email: email, userID: userInterface.loggedinUserData.id);
     }
     
     
@@ -312,72 +312,94 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
         let success: Bool = (responseJSON["success"]=="true" ? true: false);
         if(success==true){
             userInterface.hideAnyViews();
-            if(loggedinUserData.id > 0){
-                loggedinUserData.username = responseJSON["dataUsed"]["username"].string!;
-                loggedinUserData.fullname = responseJSON["dataUsed"]["fullname"].string!;
-                loggedinUserData.email = responseJSON["dataUsed"]["email"].string!;
-                userInterface.loggedinUserData = self.loggedinUserData;
+            if(userInterface.loggedinUserData.id > 0){
+                userInterface.loggedinUserData.username = responseJSON["dataUsed"]["username"].string!;
+                userInterface.loggedinUserData.fullname = responseJSON["dataUsed"]["fullname"].string!;
+                userInterface.loggedinUserData.email = responseJSON["dataUsed"]["email"].string!;
             }
         }
-        self.userInterface.updateInfoLabel(responseJSON["errorMsg"].string!, show: true, hideAfter: 5);
+        let responseMessage = responseJSON["errorMsg"].int! + 17;
+        self.userInterface.updateInfoLabel(responseMessage, show: true, hideAfter: 5);
     }
     
     
     //MARK: User login request and response middleware process
     func loginRequest(_ username: String, password: String) {
         let pass = password.sha512();
-        print(pass);
         networkRequest.loginUserRequest(self.networkWebSocket, username: username, password: pass);
     }
     
     func userLoggedinResponse(_ responseStr: String) {
         let responseJSON = networkSocket.processResponseAsJSON(responseStr);
-        var responseMessage = "Incorrect username or password.";
         if(responseJSON["success"].rawString()! == "true"){
             
             userInterface.hideAnyViews();
             userInterface.renderMenu(true);
-            loggedinUserData.id = Int(responseJSON["result"]["u_id"].rawString()!)!;
-            loggedinUserData.username = responseJSON["result"]["u_uname"].string!;
-            loggedinUserData.fullname = responseJSON["result"]["u_fullname"].string!;
-            loggedinUserData.email = responseJSON["result"]["u_email"].string!;
-            userInterface.loggedinUserData = self.loggedinUserData;
-            responseMessage = "Welcome " + loggedinUserData.fullname.components(separatedBy: " ")[0] + "!";
+            userInterface.loggedinUserData.id = Int(responseJSON["result"]["u_id"].rawString()!)!;
+            userInterface.loggedinUserData.username = responseJSON["result"]["u_uname"].string!;
+            userInterface.loggedinUserData.fullname = responseJSON["result"]["u_fullname"].string!;
+            userInterface.loggedinUserData.email = responseJSON["result"]["u_email"].string!;
             
+            let defaultsSavedUserObj = [userInterface.loggedinUserData.id, userInterface.loggedinUserData.username, userInterface.loggedinUserData.fullname,userInterface.loggedinUserData.email] as [Any];
+            UserDefaults.standard.set(defaultsSavedUserObj, forKey: "savedUser");
+            userInterface.updateInfoLabel(16, show: true, hideAfter: 5);
+        }else{
+            userInterface.updateInfoLabel(23, show: true, hideAfter: 5);
         }
         
-        userInterface.updateInfoLabel(responseMessage, show: true, hideAfter: 5);
     }
     
     
     func logoutUser() {
-        loggedinUserData = (id: 0, username: "Unknown", fullname: "Unknown", email: "Unknown", password: "");
-        self.userInterface.loggedinUserData = self.loggedinUserData;
-        self.userInterface.updateInfoLabel("You are logged out!", show: true, hideAfter: 2);
+        UserDefaults.standard.set(nil, forKey: "savedUser");
+        self.userInterface.updateInfoLabel(17, show: true, hideAfter: 2);
+        initlizeUser();
     }
     
+    func initlizeUser(){
+        let savedUser = UserDefaults.standard.array(forKey: "savedUser");
+        if(savedUser != nil){
+            let uID = savedUser?[0] as! Int;
+            if(uID > 0){
+                userInterface.loggedinUserData = (id: uID, username:"",fullname:"", email:"", password: "");
+                userInterface.loggedinUserData.username = savedUser?[1] as! String;
+                userInterface.loggedinUserData.fullname = savedUser?[2] as! String;
+                userInterface.loggedinUserData.email = savedUser?[3] as! String;
+                userInterface.renderMenu(true);
+            }
+        }else{
+            let uuidHash = uuid.sha512();
+            let index = uuid.index(uuid.startIndex, offsetBy: 5);
+            let unqiueCode = uuidHash.substring(to: index);
+            uniqueUsername = "user"+unqiueCode;
+            loggedOutUserData = (id: 0, username: uniqueUsername, fullname: "", email: "", password: "");
+            userInterface.loggedinUserData = loggedOutUserData;
+        }
+    }
+
     
     //MARK: Retrieve focal comments request and response middleware process
-    func getFocalComments(_ focalID: Int){
-        networkRequest.getFocalComments(self.networkWebSocket, focalID: realFocalIDs[focalID]);
+    func getFocalComments(_ focalID: Int, updateVisited: Bool){
+
+        networkRequest.getFocalComments(self.networkWebSocket, focalID: focalID, updateVisited: updateVisited);
     }
-    var viewingFocalID = -1;
+    
     func chooseFocalComments(_ tapX: Int, tapY: Int){
         let locationOfTap = CGPoint(x: tapX, y: tapY);
         var focalTapID = -1;
         let possFocalsFound = scene.sceneView.hitTest(locationOfTap, options: nil);
         if(possFocalsFound.first?.node.name != "floor"){
-            if let tappedFocal = possFocalsFound.first?.node.parent{
-                //print(tappedFocal.name!)
-                let startIndex = tappedFocal.name?.index((tappedFocal.name?.startIndex)!, offsetBy: 2);
-                focalTapID = Int((tappedFocal.name?.substring(from: startIndex!))!)!;
-                viewingFocalID = focalTapID;
-                
+            if let nodeTapped = possFocalsFound.first?.node{
+                scene.checkCorrectParentNodeFocal(node: nodeTapped);
+                focalTapID = scene.focalTapID;
+                if(focalTapID != -1){
+                    userInterface.viewingFocalID = realFocalIDs[focalTapID];
+                }
             }
         }
         
         if(focalTapID != -1){
-            getFocalComments(focalTapID);
+            getFocalComments(userInterface.viewingFocalID, updateVisited: true);
             focalTapID = -1;
         }
     }
@@ -388,26 +410,48 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
     
     //MARK: Post new focal comment request and response middleware process
     func postNewComment(_ commentText: String) {
-        if(viewingFocalID
+        if(userInterface.viewingFocalID
             != -1){
-            networkRequest.postComment(self.networkWebSocket, focalID: realFocalIDs[viewingFocalID], username: loggedinUserData.username, commentText: commentText);
+            networkRequest.postComment(self.networkWebSocket, focalID: userInterface.viewingFocalID, username: userInterface.loggedinUserData.username, commentText: commentText);
         }
     }
     
     func postedCommentResponse(_ responseStr: String) {
         let responseJSON = networkSocket.processResponseAsJSON(responseStr);
-        self.userInterface.updateInfoLabel("Successfully Posted!", show: true, hideAfter: 2);
-        self.getFocalComments(self.viewingFocalID);
+        self.userInterface.updateInfoLabel(7, show: true, hideAfter: 2);
+        self.getFocalComments(self.userInterface.viewingFocalID, updateVisited: false);
     }
     
     //MARK: Vote focal comment request and response middleware process
     
     
     func newVoteComment(_ vote: Int, cID: Int){
-        networkRequest.newVoteComment(self.networkWebSocket, vote: vote, cID: cID, uID: loggedinUserData.id);
+        networkRequest.newVoteComment(self.networkWebSocket, vote: vote, cID: cID, uID: userInterface.loggedinUserData.id);
     }
     func votedCommentResponse(_ responseStr: String){
         
+    }
+    
+    //MARK: edit comment request and response middleware process
+    
+    func editComment(_ text: String, cID: Int) {
+        networkRequest.editComment(self.networkWebSocket, text: text, cID: cID);
+    }
+    
+    func editCommentResponse(_ responseStr: String){
+        self.userInterface.updateInfoLabel(27, show: true, hideAfter: 2);
+        self.networkRequest.getRegionData(self.networkWebSocket, currLocation: currentLocation);
+        self.getFocalComments(self.userInterface.viewingFocalID, updateVisited: false);
+    }
+    
+    //MARK: delete comment request and response middleware process
+    func deleteComment(_ cID: Int) {
+        networkRequest.deleteComment(self.networkWebSocket, cID: cID);
+    }
+    
+    func deletedCommentResponse(_ responseStr: String){
+        self.userInterface.updateInfoLabel(28, show: true, hideAfter: 2);
+        self.getFocalComments(self.userInterface.viewingFocalID, updateVisited: false);
     }
     
     //MARK: Delete focal request and response middleware process
@@ -418,7 +462,7 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
     func deletedFocalResponse(_ responseStr: String) {
         let responseJSON = networkSocket.processResponseAsJSON(responseStr);
         let success: Bool = (responseJSON["success"]=="true" ? true: false);
-        self.userInterface.updateInfoLabel("Successfully Deleted!", show: true, hideAfter: 2);
+        self.userInterface.updateInfoLabel(8, show: true, hideAfter: 2);
         self.userInterface.closeSingleFocalInfoViewWrap();
         self.requestUserFocals();
         self.networkRequest.getRegionData(self.networkWebSocket, currLocation: currentLocation);
@@ -431,25 +475,86 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
         gotKeyData = true;
         self.userInterface.renderHelpText(text: keyData["data"][0]["data"].rawString()!);
     }
-    
-    /*func userKnowsFocalsResponse(_ responseStr: String){
-     let userKnownFocalsJSON = networkSocket.processResponseAsJSON(responseStr);
-     userKnownFocals = userKnownFocalsJSON["focals"];
-     }*/
+
     
     func connWebRetry(){
         networkWebSocket.connect();
     }
     
     var checkLocatedTimer: Timer!;
+    var locateDeviceAttempts = 0;
     func locatingDeviceMessage(){
+        
         if(self.userInterface.locationFocused == false){
-            self.userInterface.updateInfoLabel("Locating your device, please wait...", show: true, hideAfter: 3);
+            self.userInterface.updateInfoLabel(9, show: true, hideAfter: 3);
+            locateDeviceAttempts += 1;
+            if(locateDeviceAttempts % 6 == 0){
+               self.userInterface.updateInfoLabel(30, show: true, hideAfter: 5);
+            }
         }else{
             self.checkLocatedTimer.invalidate();
             self.checkLocatedTimer = nil;
         }
     }
+    
+    func checkFirstLaunch(){
+        if(firstAppLaunch != "false"){
+            userInterface.helpView.isHidden = false;
+            UserDefaults.standard.set("false", forKey: "firstAppLaunch");
+        }
+    }
+    
+    func startMotionHandler(){
+        motionManager.deviceMotionUpdateInterval = 1.0 / 60.0;
+        motionManager.startDeviceMotionUpdates(
+            using: CMAttitudeReferenceFrame.xMagneticNorthZVertical,
+            to: OperationQueue.current!,
+            withHandler: {
+                (gyroData: CMDeviceMotion?, NSError) ->Void in
+                if(gyroData != nil){
+                    let mData: CMAttitude = gyroData!.attitude;
+                    self.phonePitch = 90 - Int(mData.pitch * (180 / M_PI));
+                    self.scene.rotateCamera(mData);
+                }
+        });
+        if(CMMotionActivityManager.isActivityAvailable()){
+            let motionActivityManager = CMMotionActivityManager();
+            motionActivityManager.startActivityUpdates(to: OperationQueue.current!, withHandler: {
+                (data: CMMotionActivity?)-> Void in
+                    if(data != nil){
+                        self.isStationary = (data?.stationary)!;
+                    }
+            });
+        }
+    }
+    
+    
+    func initizeNetwork(){
+        networkWebSocket = networkSocket.connectWebSocket();
+        networkSocket.networkResponseDelegate = self;
+        networkSocket.ui = userInterface;
+        
+        networkWebSocket.onDisconnect = { (error: NSError?) in
+            self.userInterface.updateInfoLabel(11, show: true, hideAfter: 5);
+            self.reconnectTimer = Timer.scheduledTimer(timeInterval: 5, target: self, selector: #selector(self.connWebRetry), userInfo: nil, repeats: false);
+        }
+        networkWebSocket.onConnect = {
+            if(self.reconnectTimer != nil){
+                self.userInterface.updateInfoLabel(12, show: true, hideAfter: 2);
+                self.reconnectTimer.invalidate();
+                self.reconnectTimer = nil;
+                if(self.userInterface.locationFocused == true){
+                    self.networkRequest.getRegionData(self.networkWebSocket, currLocation: self.currentLocation);
+                }
+
+            }
+            
+        }
+        
+        checkLocatedTimer = Timer.scheduledTimer(timeInterval: 2, target: self, selector: #selector(self.locatingDeviceMessage), userInfo: nil, repeats: true);
+    }
+    
+
     //MARK: Main stem
     override func viewDidLoad() {
         
@@ -474,49 +579,24 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
         
         appDelegate.viewController = self;
         
+    
         //Initilize UI component
         userInterface.renderAll(self.view);
         userInterface.actionDelegate = self;
-        userInterface.updateInfoLabel("Please calibrate your phone by twisting it around", show: true, hideAfter: 4);
+        userInterface.updateInfoLabel(10, show: true, hideAfter: 4);
         location.ui = userInterface;
         
-        //Initilize Motion Handler
-        motionManager.deviceMotionUpdateInterval = 1.0 / 60.0;
-        motionManager.startDeviceMotionUpdates(
-            using: CMAttitudeReferenceFrame.xMagneticNorthZVertical,
-            to: OperationQueue.current!,
-            withHandler: {
-                (gyroData: CMDeviceMotion?, NSError) ->Void in
-                let mData: CMAttitude = gyroData!.attitude;
-                self.phonePitch = 90 - Int(mData.pitch * (180 / M_PI));
-                self.scene.rotateCamera(mData);
-                if(NSError != nil){
-                    print("\(NSError)");
-                }
-        });
+        //Start Motion Handler
+        startMotionHandler();
         
-        //Initilize Network socket component
-        networkWebSocket = networkSocket.connectWebSocket();
-        networkSocket.networkResponseDelegate = self;
-        networkSocket.ui = userInterface;
-        
-        networkWebSocket.onDisconnect = { (error: NSError?) in
-            self.userInterface.updateInfoLabel("Disconnected. Trying to connect...", show: true, hideAfter: 5);
-            self.reconnectTimer = Timer.scheduledTimer(timeInterval: 5, target: self, selector: #selector(self.connWebRetry), userInfo: nil, repeats: false);
-        }
-        networkWebSocket.onConnect = {
-            if(self.reconnectTimer != nil){
-                self.userInterface.updateInfoLabel("Successfully connected!", show: true, hideAfter: 2);
-                self.reconnectTimer.invalidate();
-                self.reconnectTimer = nil;
-                // self.firstRender = true;
-                // self.networkRequest.getRegionData(self.networkWebSocket, currLocation: self.currentLocation);
-            }
-            
-        }
+        //Initilize Network component
+        initizeNetwork();
+    
+        //Startup jobs
+        checkFirstLaunch();
+        initlizeUser();
         
         
-        checkLocatedTimer = Timer.scheduledTimer(timeInterval: 2, target: self, selector: #selector(self.locatingDeviceMessage), userInfo: nil, repeats: true);
         
         super.viewDidLoad();
     }

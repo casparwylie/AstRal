@@ -1,0 +1,13 @@
+{
+  'version': 0,
+  'case-sensitive': 'false',
+  'roots': [{
+    'type': 'directory',
+    'name': '/Users/casparwylie/Desktop/Local/Projects/Astral/Build/Intermediates/ArchiveIntermediates/Astral/BuildProductsPath/Release-iphoneos/SwiftyJSON/SwiftyJSON.framework/Modules'
+    'contents': [{
+      'type': 'file',
+      'name': 'module.modulemap',
+      'external-contents': '/Users/casparwylie/Desktop/Local/Projects/Astral/Build/Intermediates/ArchiveIntermediates/Astral/IntermediateBuildFilesPath/Pods.build/Release-iphoneos/SwiftyJSON.build/unextended-module.modulemap',
+    }]
+  }]
+}
