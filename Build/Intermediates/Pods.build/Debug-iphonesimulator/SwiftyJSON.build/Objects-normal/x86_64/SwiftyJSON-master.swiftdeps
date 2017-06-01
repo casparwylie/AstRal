@@ -1,5 +1,5 @@
 version: "Apple Swift version 3.0.2 (swiftlang-800.0.63 clang-800.0.42.1)"
-options: "7676257b3b3f11f25f845c7c14421d69"
-build_time: [546101872, 852995000]
+options: "4b51af3ec6124e14cd0f7772a6d217a8"
+build_time: [549620759, 739852000]
 inputs:
-  "/Users/casparwylie/Desktop/Local Stuff/Projects/Astral/Pods/SwiftyJSON/Source/SwiftyJSON.swift": [543521316, 0]
+  "/Users/casparwylie/Desktop/Local/Projects/Astral/Pods/SwiftyJSON/Source/SwiftyJSON.swift": [547245415, 0]

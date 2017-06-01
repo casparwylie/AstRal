@@ -6,26 +6,26 @@ provides-nominal:
 provides-member:
 - ["C6Astral11AppDelegate", ""]
 provides-dynamic-lookup:
-- "viewController"
-- "applicationDidBecomeActive"
 - "applicationWillEnterForeground"
-- "application"
-- "application"
-- "window"
 - "applicationDidEnterBackground"
+- "viewController"
 - "applicationWillTerminate"
 - "applicationWillResignActive"
+- "window"
+- "applicationDidBecomeActive"
+- "application"
+- "application"
 depends-top-level:
-- "UIInterfaceOrientationMask"
+- "Bool"
 - "AppDelegate"
 - "ViewController"
-- "Bool"
 - "UIApplication"
-- "UIApplicationDelegate"
-- "UIWindow"
 - "UIApplicationLaunchOptionsKey"
 - "CLLocationManagerDelegate"
 - "UIResponder"
+- "UIInterfaceOrientationMask"
+- "UIApplicationDelegate"
+- "UIWindow"
 - !private "BooleanLiteralType"
 depends-member:
 - !private ["Ps9AnyObject", "UIInterfaceOrientationMask"]

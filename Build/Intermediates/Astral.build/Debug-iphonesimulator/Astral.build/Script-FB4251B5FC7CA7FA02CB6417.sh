@@ -1,3 +1,3 @@
 #!/bin/sh
-"${SRCROOT}/Pods/Target Support Files/Pods-Strands/Pods-Strands-resources.sh"
+"${SRCROOT}/Pods/Target Support Files/Pods-Astral/Pods-Astral-resources.sh"
 

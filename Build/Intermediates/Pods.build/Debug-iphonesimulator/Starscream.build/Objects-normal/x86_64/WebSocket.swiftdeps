@@ -23,169 +23,169 @@ provides-member:
 - ["OC10Starscream9WebSocket17InternalErrorCode", ""]
 - ["CC10Starscream9WebSocket10WSResponse", ""]
 provides-dynamic-lookup:
-- "headerWSVersionValue"
-- "OpCodeMask"
-- "onText"
-- "headerWSConnectionName"
-- "disableSSLCertValidation"
-- "PayloadLenMask"
-- "supportedSSLSchemes"
-- "headerWSVersionName"
-- "headerWSUpgradeValue"
-- "enabledSSLCipherSuites"
-- "MaskMask"
-- "voipEnabled"
-- "headerWSHostName"
-- "headerOriginName"
-- "optionalProtocols"
-- "FinMask"
-- "timeout"
-- "origin"
-- "onPong"
-- "MaxFrameSize"
-- "write"
-- "write"
-- "write"
-- "headerWSUpgradeName"
-- "headerWSKeyName"
-- "headerWSProtocolName"
-- "RSVMask"
-- "onData"
-- "stream"
-- "BUFFER_MAX"
-- "onDisconnect"
-- "connect"
-- "ErrorDomain"
-- "isConnected"
-- "callbackQueue"
-- "currentURL"
-- "httpSwitchProtocolCode"
-- "onConnect"
 - "headers"
-- "headerWSAcceptName"
+- "callbackQueue"
+- "ErrorDomain"
+- "headerWSVersionValue"
+- "headerWSUpgradeValue"
 - "headerWSConnectionValue"
+- "headerWSAcceptName"
+- "BUFFER_MAX"
+- "connect"
+- "origin"
+- "write"
+- "write"
+- "write"
+- "RSVMask"
+- "currentURL"
+- "stream"
+- "MaxFrameSize"
+- "headerWSVersionName"
+- "disableSSLCertValidation"
+- "onData"
+- "onConnect"
+- "headerWSUpgradeName"
+- "headerWSConnectionName"
+- "headerOriginName"
+- "FinMask"
+- "isConnected"
+- "MaskMask"
+- "headerWSHostName"
+- "voipEnabled"
+- "headerWSProtocolName"
+- "onText"
+- "httpSwitchProtocolCode"
+- "enabledSSLCipherSuites"
+- "headerWSKeyName"
+- "onDisconnect"
+- "optionalProtocols"
+- "OpCodeMask"
+- "supportedSSLSchemes"
+- "onPong"
+- "timeout"
+- "PayloadLenMask"
 depends-top-level:
-- "Void"
-- !private "NSData"
-- "NotificationCenter"
-- !private "UnicodeScalar"
-- !private "NSString"
-- !private "NSLocalizedDescriptionKey"
-- !private "CFReadStreamSetDispatchQueue"
-- !private "NSNumber"
-- "WebsocketDidDisconnectNotification"
 - "NSError"
-- "Data"
-- !private "CFWriteStreamSetDispatchQueue"
+- "Stream"
+- !private "MemoryLayout"
+- !private "CFURL"
 - "NSLock"
-- !private "NSDictionary"
-- !private "SSLSetEnabledCiphers"
-- !private "&&"
-- !private "+"
-- "OperationQueue"
-- "String"
-- !private "NSNotification"
-- !private "CFString"
-- !private "TernaryPrecedence"
-- !private "..."
-- !private "errSecSuccess"
-- !private "CFStreamPropertyKey"
-- !private "|="
-- !private "%"
-- !private "CUnsignedChar"
-- !private "<="
-- !private "arc4random_uniform"
-- !private "StreamNetworkServiceTypeValue"
+- !private "Error"
+- !private "BlockOperation"
+- !private "CFHTTPMessage"
+- !private "CFStreamCreatePairWithSocketToHost"
+- !private "UnicodeScalarType"
 - !private "autoreleasepool"
+- !private "|="
+- !private "kCFAllocatorDefault"
+- "QualityOfService"
+- !private "CFHTTPMessageCreateRequest"
+- !private "TernaryPrecedence"
+- "TimeInterval"
+- "String"
 - !private ">>"
-- "AssignmentPrecedence"
+- "DispatchQueue"
+- !private "errSecSuccess"
+- !private "UInt64"
+- "WebSocket"
+- "Void"
+- "Array"
+- "InputStream"
+- !private "!="
+- !private "NSDictionary"
+- !private "StreamSocketSecurityLevel"
 - "=="
 - !private "~="
-- "WebsocketDidConnectNotification"
-- !private "UInt32"
-- "TimeInterval"
 - "Bool"
-- "CastingPrecedence"
-- !private "CFURL"
-- "URL"
-- "Int"
-- !private "SecRandomCopyBytes"
-- "Stream"
-- !private "UnicodeScalarType"
-- !private "Character"
-- !private "^"
-- !private "kCFStreamPropertySSLPeerTrust"
-- !private "CFHTTPMessage"
-- !private "kCFStreamPropertySSLContext"
-- !private "SSLContext"
-- !private "kCFStreamSSLPeerName"
-- !private "kCFStreamPropertySSLSettings"
-- !private "kCFStreamSSLValidatesCertificateChain"
-- !private "CFReadStreamCopyProperty"
-- !private "&"
-- !private "UnsafeMutableRawPointer"
-- "UInt8"
-- !private "Unmanaged"
-- "UnsafeBufferPointer"
-- !private "CFWriteStreamCopyProperty"
-- !private "SecTrust"
+- "AssignmentPrecedence"
 - !private "kCFHTTPVersion1_1"
+- "CastingPrecedence"
+- !private "<="
+- "Int"
 - !private "UnsafePointer"
-- !private "+="
-- !private "!="
-- !private "StreamSocketSecurityLevel"
-- !private "CFHTTPMessageCopyAllHeaderFields"
-- !private "|"
-- !private ">="
-- !private "CFHTTPMessageSetHeaderFieldValue"
-- !private "CFStreamCreatePairWithSocketToHost"
-- !private "CFHTTPMessageAppendBytes"
-- !private "emptyBuffer"
-- !private "Error"
-- !private "usleep"
-- !private "..<"
-- !private "CFHTTPMessageCreateRequest"
-- !private "<<"
-- "StreamDelegate"
-- "WebSocket"
-- !private "UnsafeMutablePointer"
-- !private "CFHTTPMessageCreateEmpty"
-- "NSObject"
-- !private "AnyObject"
-- !private "kSecRandomDefault"
-- !private ">"
-- !private "numericCast"
-- !private "||"
-- !private "CFWriteStream"
-- !private "MemoryLayout"
-- !private "CFReadStream"
-- !private "UnsafeRawPointer"
-- !private "kCFNull"
-- "StringLiteralType"
-- "OutputStream"
-- !private "kCFAllocatorDefault"
-- "InputStream"
-- "BooleanLiteralType"
-- !private "-="
-- !private "BlockOperation"
-- "DispatchQueue"
-- !private "CFHTTPMessageCopySerializedMessage"
-- !private "-"
-- "WebsocketDisconnectionErrorKeyName"
-- "Array"
-- !private "Dictionary"
-- !private "<"
-- "UInt16"
-- !private "UInt64"
-- "NSMutableData"
+- !private "CFReadStreamSetDispatchQueue"
+- !private "SecTrust"
+- !private "%"
+- !private "Character"
 - !private "!"
-- !private "CFHTTPMessageGetResponseStatusCode"
-- "QualityOfService"
-- !private "*"
 - "WebSocketPongDelegate"
 - "WebSocketDelegate"
+- !private "^"
+- !private "CFWriteStreamSetDispatchQueue"
+- !private "CFHTTPMessageCopySerializedMessage"
+- "UInt16"
+- !private "..."
 - "SSLCipherSuite"
+- "OutputStream"
+- !private "CFWriteStream"
+- !private "&"
+- "Data"
+- !private "NSNotification"
+- !private "+="
+- !private "UnsafeMutableRawPointer"
+- "WebsocketDisconnectionErrorKeyName"
+- "NotificationCenter"
+- !private "Unmanaged"
+- !private "CFReadStream"
+- !private "NSLocalizedDescriptionKey"
+- !private "kCFStreamPropertySSLSettings"
+- !private "CUnsignedChar"
+- !private "usleep"
+- !private "UnicodeScalar"
+- "NSObject"
+- !private "SSLSetEnabledCiphers"
+- !private "&&"
+- !private "UInt32"
+- !private "Dictionary"
+- !private ">="
+- !private "..<"
+- !private "+"
+- !private "kCFStreamSSLPeerName"
+- !private "CFHTTPMessageCopyAllHeaderFields"
+- !private ">"
+- !private "CFHTTPMessageSetHeaderFieldValue"
+- !private "kCFNull"
+- !private "kCFStreamSSLValidatesCertificateChain"
+- "UnsafeBufferPointer"
+- "OperationQueue"
+- "WebsocketDidDisconnectNotification"
+- !private "numericCast"
+- !private "<<"
+- !private "CFHTTPMessageGetResponseStatusCode"
+- !private "NSNumber"
+- !private "arc4random_uniform"
+- !private "AnyObject"
+- !private "|"
+- !private "CFWriteStreamCopyProperty"
+- !private "UnsafeRawPointer"
+- "WebsocketDidConnectNotification"
+- "NSMutableData"
+- !private "StreamNetworkServiceTypeValue"
+- !private "NSString"
+- !private "||"
+- !private "kSecRandomDefault"
+- "UInt8"
+- "URL"
+- "StringLiteralType"
+- !private "UnsafeMutablePointer"
+- !private "CFHTTPMessageAppendBytes"
+- !private "-="
+- "BooleanLiteralType"
+- !private "-"
+- !private "CFString"
+- !private "SSLContext"
+- !private "SecRandomCopyBytes"
+- "StreamDelegate"
+- !private "kCFStreamPropertySSLPeerTrust"
+- !private "NSData"
+- !private "*"
+- !private "kCFStreamPropertySSLContext"
+- !private "CFHTTPMessageCreateEmpty"
+- !private "CFStreamPropertyKey"
 - "SSLTrustValidator"
+- !private "emptyBuffer"
+- !private "CFReadStreamCopyProperty"
+- !private "<"
 depends-member:
 - !private ["Ps16AbsoluteValuable", "Stride"]
 - !private ["Ps16AbsoluteValuable", "milliseconds"]
@@ -474,7 +474,7 @@ depends-member:
 - !private ["CSo12CFReadStream", "deinit"]
 - !private ["VSC19CFStreamPropertyKey", "deinit"]
 - !private ["VSC19CFStreamPropertyKey", "init"]
-- ["CSo8CFString", "deinit"]
+- !private ["CSo8CFString", "deinit"]
 - !private ["CSo5CFURL", "deinit"]
 - !private ["CSo13CFWriteStream", "deinit"]
 - !private ["V12CoreGraphics7CGFloat", "Stride"]
@@ -1562,7 +1562,6 @@ depends-member:
 - !private ["VCSo6Stream5Event", "endEncountered"]
 - !private ["VCSo6Stream5Event", "errorOccurred"]
 - !private ["VCSo6Stream5Event", "hasBytesAvailable"]
-- !private ["VCSo6Stream5Event", "hasSpaceAvailable"]
 - ["Ps25ExpressibleByArrayLiteral", "Element"]
 - !private ["Ps25ExpressibleByArrayLiteral", "Index"]
 - !private ["Ps25ExpressibleByArrayLiteral", "IndexDistance"]
@@ -1577,7 +1576,6 @@ depends-member:
 - !private ["Ps25ExpressibleByArrayLiteral", "errorOccurred"]
 - !private ["Ps25ExpressibleByArrayLiteral", "filter"]
 - !private ["Ps25ExpressibleByArrayLiteral", "hasBytesAvailable"]
-- !private ["Ps25ExpressibleByArrayLiteral", "hasSpaceAvailable"]
 - ["Ps25ExpressibleByArrayLiteral", "init"]
 - !private ["Ps25ExpressibleByArrayLiteral", "isEmpty"]
 - !private ["Ps25ExpressibleByArrayLiteral", "joined"]
@@ -2061,7 +2059,7 @@ depends-member:
 - !private ["CSo6NSData", "mutableBytes"]
 - !private ["CSo12NSDictionary", "deinit"]
 - !private ["CSo12NSDictionary", "subscript"]
-- ["CSo7NSError", "deinit"]
+- !private ["CSo7NSError", "deinit"]
 - !private ["CSo7NSError", "init"]
 - !private ["PSo17NSFastEnumeration", "subscript"]
 - ["CSo6NSLock", "deinit"]
@@ -2548,7 +2546,6 @@ depends-member:
 - !private ["Ps9OptionSet", "endEncountered"]
 - !private ["Ps9OptionSet", "errorOccurred"]
 - !private ["Ps9OptionSet", "hasBytesAvailable"]
-- !private ["Ps9OptionSet", "hasSpaceAvailable"]
 - !private ["Ps9OptionSet", "init"]
 - !private ["Sq", "RawValue"]
 - !private ["Sq", "assumingMemoryBound"]
@@ -2567,10 +2564,11 @@ depends-member:
 - !private ["CSo12OutputStream", "delegate"]
 - !private ["CSo12OutputStream", "hasSpaceAvailable"]
 - !private ["CSo12OutputStream", "open"]
+- !private ["CSo12OutputStream", "property"]
 - !private ["CSo12OutputStream", "setProperty"]
 - !private ["CSo12OutputStream", "streamError"]
 - !private ["CSo12OutputStream", "write"]
-- ["VCSo6Stream11PropertyKey", "deinit"]
+- !private ["VCSo6Stream11PropertyKey", "deinit"]
 - !private ["VCSo6Stream11PropertyKey", "networkServiceType"]
 - !private ["VCSo6Stream11PropertyKey", "socketSecurityLevelKey"]
 - ["OSC16QualityOfService", "deinit"]
@@ -2667,7 +2665,6 @@ depends-member:
 - !private ["Ps16RawRepresentable", "endEncountered"]
 - !private ["Ps16RawRepresentable", "errorOccurred"]
 - !private ["Ps16RawRepresentable", "hasBytesAvailable"]
-- !private ["Ps16RawRepresentable", "hasSpaceAvailable"]
 - ["Ps16RawRepresentable", "hashValue"]
 - ["Ps16RawRepresentable", "init"]
 - !private ["Ps16RawRepresentable", "negotiatedSSL"]
@@ -2697,9 +2694,9 @@ depends-member:
 - !private ["P10Foundation20ReferenceConvertible", "scheme"]
 - !private ["P10Foundation20ReferenceConvertible", "subscript"]
 - !private ["CSo10SSLContext", "deinit"]
-- ["P10Starscream17SSLTrustValidator", "deinit"]
+- !private ["P10Starscream17SSLTrustValidator", "deinit"]
 - !private ["P10Starscream17SSLTrustValidator", "isValid"]
-- ["CSo8SecTrust", "deinit"]
+- !private ["CSo8SecTrust", "deinit"]
 - ["Ps8Sequence", "Element"]
 - !private ["Ps8Sequence", "Index"]
 - !private ["Ps8Sequence", "IndexDistance"]
@@ -2728,7 +2725,6 @@ depends-member:
 - !private ["Ps10SetAlgebra", "endEncountered"]
 - !private ["Ps10SetAlgebra", "errorOccurred"]
 - !private ["Ps10SetAlgebra", "hasBytesAvailable"]
-- !private ["Ps10SetAlgebra", "hasSpaceAvailable"]
 - !private ["Ps10SetAlgebra", "init"]
 - !private ["Ps13SignedInteger", "IntegerLiteralType"]
 - !private ["Ps13SignedInteger", "Stride"]
@@ -3680,7 +3676,7 @@ depends-nominal:
 - !private "CSo13CFHTTPMessage"
 - !private "CSo12CFReadStream"
 - !private "VSC19CFStreamPropertyKey"
-- "CSo8CFString"
+- !private "CSo8CFString"
 - !private "CSo5CFURL"
 - !private "CSo13CFWriteStream"
 - !private "V12CoreGraphics7CGFloat"
@@ -3749,7 +3745,7 @@ depends-nominal:
 - "PSo9NSCopying"
 - !private "CSo6NSData"
 - !private "CSo12NSDictionary"
-- "CSo7NSError"
+- !private "CSo7NSError"
 - !private "PSo17NSFastEnumeration"
 - "CSo6NSLock"
 - "PSo9NSLocking"
@@ -3773,7 +3769,7 @@ depends-nominal:
 - "Ps9OptionSet"
 - "Sq"
 - !private "CSo12OutputStream"
-- "VCSo6Stream11PropertyKey"
+- !private "VCSo6Stream11PropertyKey"
 - "OSC16QualityOfService"
 - "Ps22RandomAccessCollection"
 - "Ps21RandomAccessIndexable"
@@ -3784,8 +3780,8 @@ depends-nominal:
 - "Ps16RawRepresentable"
 - !private "P10Foundation20ReferenceConvertible"
 - !private "CSo10SSLContext"
-- "P10Starscream17SSLTrustValidator"
-- "CSo8SecTrust"
+- !private "P10Starscream17SSLTrustValidator"
+- !private "CSo8SecTrust"
 - "Ps8Sequence"
 - "Ps10SetAlgebra"
 - !private "Ps13SignedInteger"
@@ -3847,8 +3843,8 @@ depends-nominal:
 depends-dynamic-lookup:
 depends-external:
 - "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphonesimulator/x86_64/Swift.swiftmodule"
-- "/Users/casparwylie/Desktop/Local Stuff/Projects/Astral/Pods/Target Support Files/Starscream/Starscream-umbrella.h"
-- "/Users/casparwylie/Desktop/Local Stuff/Projects/Astral/Build/Intermediates/Pods.build/Debug-iphonesimulator/Starscream.build/unextended-module.modulemap"
+- "/Users/casparwylie/Desktop/Local/Projects/Astral/Pods/Target Support Files/Starscream/Starscream-umbrella.h"
+- "/Users/casparwylie/Desktop/Local/Projects/Astral/Build/Intermediates/Pods.build/Debug-iphonesimulator/Starscream.build/unextended-module.modulemap"
 - "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphonesimulator/x86_64/UIKit.swiftmodule"
 - "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphonesimulator/x86_64/Foundation.swiftmodule"
 - "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphonesimulator/x86_64/Darwin.swiftmodule"

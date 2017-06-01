@@ -1,11 +1,11 @@
 version: "Apple Swift version 3.0.2 (swiftlang-800.0.63 clang-800.0.42.1)"
 options: "c3f26d52350d153ecb2a9fdf51b9afa0"
-build_time: [549570272, 980948000]
+build_time: [549621883, 287700000]
 inputs:
-  "/Users/casparwylie/Desktop/Local/Projects/Astral/Astral/AppDelegate.swift": [549568886, 0]
+  "/Users/casparwylie/Desktop/Local/Projects/Astral/Astral/AppDelegate.swift": [549621878, 0]
   "/Users/casparwylie/Desktop/Local/Projects/Astral/Network.swift": [549569092, 0]
   "/Users/casparwylie/Desktop/Local/Projects/Astral/Map.swift": [549296855, 0]
-  "/Users/casparwylie/Desktop/Local/Projects/Astral/Astral/ViewController.swift": [549570137, 0]
+  "/Users/casparwylie/Desktop/Local/Projects/Astral/Astral/ViewController.swift": [549621821, 0]
   "/Users/casparwylie/Desktop/Local/Projects/Astral/Misc.swift": [549371934, 0]
   "/Users/casparwylie/Desktop/Local/Projects/Astral/Scene.swift": [549570137, 0]
   "/Users/casparwylie/Desktop/Local/Projects/Astral/Location.swift": [549569094, 0]

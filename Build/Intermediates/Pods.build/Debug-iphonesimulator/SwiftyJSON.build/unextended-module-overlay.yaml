@@ -3,11 +3,11 @@
   'case-sensitive': 'false',
   'roots': [{
     'type': 'directory',
-    'name': '/Users/casparwylie/Desktop/Local Stuff/Projects/Astral/Build/Products/Debug-iphonesimulator/SwiftyJSON/SwiftyJSON.framework/Modules'
+    'name': '/Users/casparwylie/Desktop/Local/Projects/Astral/Build/Products/Debug-iphonesimulator/SwiftyJSON/SwiftyJSON.framework/Modules'
     'contents': [{
       'type': 'file',
       'name': 'module.modulemap',
-      'external-contents': '/Users/casparwylie/Desktop/Local Stuff/Projects/Astral/Build/Intermediates/Pods.build/Debug-iphonesimulator/SwiftyJSON.build/unextended-module.modulemap',
+      'external-contents': '/Users/casparwylie/Desktop/Local/Projects/Astral/Build/Intermediates/Pods.build/Debug-iphonesimulator/SwiftyJSON.build/unextended-module.modulemap',
     }]
   }]
 }

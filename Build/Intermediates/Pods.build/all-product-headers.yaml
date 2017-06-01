@@ -4,12 +4,12 @@
   'roots': [
     {
       'type': 'directory',
-      'name': "/Users/casparwylie/Desktop/Local/Projects/Astral/Build/Products/Debug-iphoneos/CryptoSwift/CryptoSwift.framework/Headers",
+      'name': "/Users/casparwylie/Desktop/Local/Projects/Astral/Build/Products/Debug-iphonesimulator/CryptoSwift/CryptoSwift.framework/Headers",
       'contents': [
         {
           'type': 'file',
           'name': "CryptoSwift-Swift.h",
-          'external-contents': "/Users/casparwylie/Desktop/Local/Projects/Astral/Build/Products/Debug-iphoneos/CryptoSwift/CryptoSwift.framework/Headers/CryptoSwift-Swift.h"
+          'external-contents': "/Users/casparwylie/Desktop/Local/Projects/Astral/Build/Products/Debug-iphonesimulator/CryptoSwift/CryptoSwift.framework/Headers/CryptoSwift-Swift.h"
         },
         {
           'type': 'file',
@@ -20,18 +20,18 @@
     },
     {
       'type': 'directory',
-      'name': "/Users/casparwylie/Desktop/Local/Projects/Astral/Build/Products/Debug-iphoneos/CryptoSwift/CryptoSwift.framework/Modules",
+      'name': "/Users/casparwylie/Desktop/Local/Projects/Astral/Build/Products/Debug-iphonesimulator/CryptoSwift/CryptoSwift.framework/Modules",
       'contents': [
         {
           'type': 'file',
           'name': "module.modulemap",
-          'external-contents': "/Users/casparwylie/Desktop/Local/Projects/Astral/Build/Intermediates/Pods.build/Debug-iphoneos/CryptoSwift.build/module.modulemap"
+          'external-contents': "/Users/casparwylie/Desktop/Local/Projects/Astral/Build/Intermediates/Pods.build/Debug-iphonesimulator/CryptoSwift.build/module.modulemap"
         }
       ]
     },
     {
       'type': 'directory',
-      'name': "/Users/casparwylie/Desktop/Local/Projects/Astral/Build/Products/Debug-iphoneos/Pods_Astral.framework/Headers",
+      'name': "/Users/casparwylie/Desktop/Local/Projects/Astral/Build/Products/Debug-iphonesimulator/Pods_Astral.framework/Headers",
       'contents': [
         {
           'type': 'file',
@@ -41,29 +41,29 @@
         {
           'type': 'file',
           'name': "Pods_Astral-Swift.h",
-          'external-contents': "/Users/casparwylie/Desktop/Local/Projects/Astral/Build/Products/Debug-iphoneos/Pods_Astral.framework/Headers/Pods_Astral-Swift.h"
+          'external-contents': "/Users/casparwylie/Desktop/Local/Projects/Astral/Build/Products/Debug-iphonesimulator/Pods_Astral.framework/Headers/Pods_Astral-Swift.h"
         }
       ]
     },
     {
       'type': 'directory',
-      'name': "/Users/casparwylie/Desktop/Local/Projects/Astral/Build/Products/Debug-iphoneos/Pods_Astral.framework/Modules",
+      'name': "/Users/casparwylie/Desktop/Local/Projects/Astral/Build/Products/Debug-iphonesimulator/Pods_Astral.framework/Modules",
       'contents': [
         {
           'type': 'file',
           'name': "module.modulemap",
-          'external-contents': "/Users/casparwylie/Desktop/Local/Projects/Astral/Build/Intermediates/Pods.build/Debug-iphoneos/Pods-Astral.build/module.modulemap"
+          'external-contents': "/Users/casparwylie/Desktop/Local/Projects/Astral/Build/Intermediates/Pods.build/Debug-iphonesimulator/Pods-Astral.build/module.modulemap"
         }
       ]
     },
     {
       'type': 'directory',
-      'name': "/Users/casparwylie/Desktop/Local/Projects/Astral/Build/Products/Debug-iphoneos/Starscream/Starscream.framework/Headers",
+      'name': "/Users/casparwylie/Desktop/Local/Projects/Astral/Build/Products/Debug-iphonesimulator/Starscream/Starscream.framework/Headers",
       'contents': [
         {
           'type': 'file',
           'name': "Starscream-Swift.h",
-          'external-contents': "/Users/casparwylie/Desktop/Local/Projects/Astral/Build/Products/Debug-iphoneos/Starscream/Starscream.framework/Headers/Starscream-Swift.h"
+          'external-contents': "/Users/casparwylie/Desktop/Local/Projects/Astral/Build/Products/Debug-iphonesimulator/Starscream/Starscream.framework/Headers/Starscream-Swift.h"
         },
         {
           'type': 'file',
@@ -74,23 +74,23 @@
     },
     {
       'type': 'directory',
-      'name': "/Users/casparwylie/Desktop/Local/Projects/Astral/Build/Products/Debug-iphoneos/Starscream/Starscream.framework/Modules",
+      'name': "/Users/casparwylie/Desktop/Local/Projects/Astral/Build/Products/Debug-iphonesimulator/Starscream/Starscream.framework/Modules",
       'contents': [
         {
           'type': 'file',
           'name': "module.modulemap",
-          'external-contents': "/Users/casparwylie/Desktop/Local/Projects/Astral/Build/Intermediates/Pods.build/Debug-iphoneos/Starscream.build/module.modulemap"
+          'external-contents': "/Users/casparwylie/Desktop/Local/Projects/Astral/Build/Intermediates/Pods.build/Debug-iphonesimulator/Starscream.build/module.modulemap"
         }
       ]
     },
     {
       'type': 'directory',
-      'name': "/Users/casparwylie/Desktop/Local/Projects/Astral/Build/Products/Debug-iphoneos/SwiftyJSON/SwiftyJSON.framework/Headers",
+      'name': "/Users/casparwylie/Desktop/Local/Projects/Astral/Build/Products/Debug-iphonesimulator/SwiftyJSON/SwiftyJSON.framework/Headers",
       'contents': [
         {
           'type': 'file',
           'name': "SwiftyJSON-Swift.h",
-          'external-contents': "/Users/casparwylie/Desktop/Local/Projects/Astral/Build/Products/Debug-iphoneos/SwiftyJSON/SwiftyJSON.framework/Headers/SwiftyJSON-Swift.h"
+          'external-contents': "/Users/casparwylie/Desktop/Local/Projects/Astral/Build/Products/Debug-iphonesimulator/SwiftyJSON/SwiftyJSON.framework/Headers/SwiftyJSON-Swift.h"
         },
         {
           'type': 'file',
@@ -101,12 +101,12 @@
     },
     {
       'type': 'directory',
-      'name': "/Users/casparwylie/Desktop/Local/Projects/Astral/Build/Products/Debug-iphoneos/SwiftyJSON/SwiftyJSON.framework/Modules",
+      'name': "/Users/casparwylie/Desktop/Local/Projects/Astral/Build/Products/Debug-iphonesimulator/SwiftyJSON/SwiftyJSON.framework/Modules",
       'contents': [
         {
           'type': 'file',
           'name': "module.modulemap",
-          'external-contents': "/Users/casparwylie/Desktop/Local/Projects/Astral/Build/Intermediates/Pods.build/Debug-iphoneos/SwiftyJSON.build/module.modulemap"
+          'external-contents': "/Users/casparwylie/Desktop/Local/Projects/Astral/Build/Intermediates/Pods.build/Debug-iphonesimulator/SwiftyJSON.build/module.modulemap"
         }
       ]
     }

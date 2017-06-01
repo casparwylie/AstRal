@@ -10,11 +10,11 @@
 		</data>
 		<key>Headers/Starscream-umbrella.h</key>
 		<data>
-		fb/1P83YEi/E6OVLy8S2wuzPnDE=
+		IPhBvO0wnp5Nc1N0CzN3fyjKBvA=
 		</data>
 		<key>Info.plist</key>
 		<data>
-		KcORKut+P4NqRQMVHg6Ubd1CIBw=
+		Fqqrz3JJgAIyst3h48TlWCVdIQQ=
 		</data>
 		<key>Modules/Starscream.swiftmodule/x86_64.swiftdoc</key>
 		<data>
@@ -22,7 +22,7 @@
 		</data>
 		<key>Modules/Starscream.swiftmodule/x86_64.swiftmodule</key>
 		<data>
-		hgbNlcf0FUySsUlZQm/36VtZDpQ=
+		5pYobgUseQ7zpQF8AIJFamrwqZc=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -46,11 +46,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			fb/1P83YEi/E6OVLy8S2wuzPnDE=
+			IPhBvO0wnp5Nc1N0CzN3fyjKBvA=
 			</data>
 			<key>hash2</key>
 			<data>
-			6qOGlYdfXwzboYunbMR6EMn6og7iFvRhz4WXIwD+WyI=
+			LP7mg5UEuvJYcCeuR4hduxtHTsyNDfC/SuRf2jq/vaA=
 			</data>
 		</dict>
 		<key>Modules/Starscream.swiftmodule/x86_64.swiftdoc</key>
@@ -68,11 +68,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			hgbNlcf0FUySsUlZQm/36VtZDpQ=
+			5pYobgUseQ7zpQF8AIJFamrwqZc=
 			</data>
 			<key>hash2</key>
 			<data>
-			QA5Cf0VDwl8OUMnKOIvpEm8f8mv4cjXD6DBR5AJfW24=
+			Q/HOyecZquA8KJudBaHwmtQ/xRd4oL1n+a5SPjPx9qg=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>

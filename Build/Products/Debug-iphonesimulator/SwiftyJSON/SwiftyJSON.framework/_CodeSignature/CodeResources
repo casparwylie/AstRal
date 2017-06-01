@@ -10,7 +10,7 @@
 		</data>
 		<key>Headers/SwiftyJSON-umbrella.h</key>
 		<data>
-		G/I6SY/KJ1+loKRF2yCOThMtI80=
+		pjY2rQUD4YMU/DMQ8+hnabAV1qQ=
 		</data>
 		<key>Info.plist</key>
 		<data>
@@ -22,7 +22,7 @@
 		</data>
 		<key>Modules/SwiftyJSON.swiftmodule/x86_64.swiftmodule</key>
 		<data>
-		32Qqd61TKbZMyAa1K+wqA3FVS2s=
+		SZOczyUFUvGuy8kEJhWtiWwJg9A=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -46,11 +46,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			G/I6SY/KJ1+loKRF2yCOThMtI80=
+			pjY2rQUD4YMU/DMQ8+hnabAV1qQ=
 			</data>
 			<key>hash2</key>
 			<data>
-			hyyyw+0BBmg1UF8vxqH7JHEDQmY+bNoXJPQnw+xjjg8=
+			X6op/uCh7v8qI8ZbfG4vAYv1Cg3/UJ5ICxsNtXCq6Bg=
 			</data>
 		</dict>
 		<key>Modules/SwiftyJSON.swiftmodule/x86_64.swiftdoc</key>
@@ -68,11 +68,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			32Qqd61TKbZMyAa1K+wqA3FVS2s=
+			SZOczyUFUvGuy8kEJhWtiWwJg9A=
 			</data>
 			<key>hash2</key>
 			<data>
-			VOl5aubfOA5wtxXnLb+AyPJG7Abrh/ve4N27dEleIW8=
+			pfhF9oPukZQp6oYOY3JK2d8Koz0l7OOdfHgtKwUfE2g=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>

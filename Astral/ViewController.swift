@@ -564,8 +564,8 @@ class ViewController: UIViewController, LocationDelegate, UIActionDelegate, mapA
         location.initLocation();
         
         //Initilize camera component
-        let capDevice = camera.initilizeCamera();
-        camera.startCameraFeed(capDevice, view: self.view);
+        //let capDevice = camera.initilizeCamera();
+        //camera.startCameraFeed(capDevice, view: self.view);
         
         //Initilize scene component
         scene.renderSceneLayer(self.view);

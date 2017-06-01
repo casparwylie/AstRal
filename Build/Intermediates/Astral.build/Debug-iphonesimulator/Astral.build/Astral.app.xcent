@@ -3,10 +3,10 @@
 <plist version="1.0">
 <dict>
 	<key>application-identifier</key>
-	<string>3WBLGY4N68.casparwylie.Strands</string>
+	<string>27QDUAD326.casparwylie.casparwylie</string>
 	<key>keychain-access-groups</key>
 	<array>
-		<string>3WBLGY4N68.casparwylie.Strands</string>
+		<string>27QDUAD326.casparwylie.casparwylie</string>
 	</array>
 </dict>
 </plist>

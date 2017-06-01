@@ -122,7 +122,7 @@
 		</data>
 		<key>Frameworks/CryptoSwift.framework/CryptoSwift</key>
 		<data>
-		BpeJITX9aiC4KkBQqFuqlrWwOiA=
+		ZXGachw5fAyAPRXsLU5vouhR8Bs=
 		</data>
 		<key>Frameworks/CryptoSwift.framework/Info.plist</key>
 		<data>
@@ -138,7 +138,7 @@
 		</data>
 		<key>Frameworks/Starscream.framework/Starscream</key>
 		<data>
-		bMEQPmBBM9rCy9SfYlpNafG6ko8=
+		+REXGd/ms/SumDYopQlGkcRpVV4=
 		</data>
 		<key>Frameworks/Starscream.framework/_CodeSignature/CodeResources</key>
 		<data>
@@ -150,7 +150,7 @@
 		</data>
 		<key>Frameworks/SwiftyJSON.framework/SwiftyJSON</key>
 		<data>
-		ssl39dxS+MtQ1gJdhXhBL1S/4bY=
+		Pab7U2TKmYvh+6tcWBq6s6wG2UQ=
 		</data>
 		<key>Frameworks/SwiftyJSON.framework/_CodeSignature/CodeResources</key>
 		<data>
@@ -230,7 +230,7 @@
 		</data>
 		<key>Info.plist</key>
 		<data>
-		EFF0IqtFEqZCbi+7x8s0Xvwi+wg=
+		ColF60KQt3/RuyrJyxwFhZ/iUQA=
 		</data>
 		<key>Launch Screen.storyboardc/01J-lp-oVM-view-Ze5-6b-2t3.nib</key>
 		<data>
@@ -646,11 +646,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			BpeJITX9aiC4KkBQqFuqlrWwOiA=
+			ZXGachw5fAyAPRXsLU5vouhR8Bs=
 			</data>
 			<key>hash2</key>
 			<data>
-			/JjUJ+NKTfvjqE2ECScOZHEZngc7b2oYI77YnTebbv8=
+			3/+lZPsxoraccYVX1cV/NAlhyNJna4YDT94Ir3j6iKo=
 			</data>
 		</dict>
 		<key>Frameworks/CryptoSwift.framework/Info.plist</key>
@@ -690,11 +690,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			bMEQPmBBM9rCy9SfYlpNafG6ko8=
+			+REXGd/ms/SumDYopQlGkcRpVV4=
 			</data>
 			<key>hash2</key>
 			<data>
-			FIR8LkqFyhfG0o+wfqejxp/oluUdQWi9yDKdjuPL91I=
+			iPk/zAG7oiYDNRdO5sx7opUB3/2skynEIksdjkjB/1A=
 			</data>
 		</dict>
 		<key>Frameworks/Starscream.framework/_CodeSignature/CodeResources</key>
@@ -723,11 +723,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			ssl39dxS+MtQ1gJdhXhBL1S/4bY=
+			Pab7U2TKmYvh+6tcWBq6s6wG2UQ=
 			</data>
 			<key>hash2</key>
 			<data>
-			p1yCbQ3gX/k/jyLUXjtgsjR+gjiySe8i0Z3+dXnsADg=
+			mNPkmt+srCN2ZqoBZWTdxk/IK1U2FgOBJGIJ0QWgIIw=
 			</data>
 		</dict>
 		<key>Frameworks/SwiftyJSON.framework/_CodeSignature/CodeResources</key>
