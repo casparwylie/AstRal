@@ -1,6 +1,0 @@
-version: "Apple Swift version 3.0.2 (swiftlang-800.0.63 clang-800.0.42.1)"
-options: "faf93b6919ffdf54a0a07c36c43f064c"
-build_time: [549571193, 961528000]
-inputs:
-  "/Users/casparwylie/Desktop/Local/Projects/Astral/Pods/Starscream/Source/SSLSecurity.swift": [9223372036854775807, 0]
-  "/Users/casparwylie/Desktop/Local/Projects/Astral/Pods/Starscream/Source/WebSocket.swift": [9223372036854775807, 0]
