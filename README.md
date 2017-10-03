@@ -1,5 +1,6 @@
 <img width="351" alt="logo copy 3" src="https://cloud.githubusercontent.com/assets/7353547/25748457/fefc7324-31a2-11e7-860a-985e9b906f80.png" style="text-align: center;margin: 0 auto;">
 
+SCROLL DOWN FOR SCREENSHOTS.
 
 If you are interested in contributing, or getting involved in anyway, please contact me so I can set you up with more info.
 
@@ -11,7 +12,6 @@ The key idea behind Astral is to allow people to see location bound information 
 
 This allows for many new ideas in advertising, communication, reviewing, tourism, and much more. Users are able to comment on these signposts, and more importantly, any user can post anything within reason. From humorous comments regarding their surroundings, to formal reviews on a cafes door steps, this app opens up a virtual social under world to our streets.
 
-![launch](https://user-images.githubusercontent.com/7353547/31125799-87a91b9a-a841-11e7-812d-0cf29d9435f5.PNG)
 ![new_comments](https://user-images.githubusercontent.com/7353547/31125801-8b52ea82-a841-11e7-9813-47b6ecc27bfa.PNG)
 ![new_focal](https://user-images.githubusercontent.com/7353547/31125806-8e127d3c-a841-11e7-97e4-56e774b44a16.PNG)
 ![new_map](https://user-images.githubusercontent.com/7353547/31125813-8fd09d34-a841-11e7-8d88-595043a4080f.PNG)
